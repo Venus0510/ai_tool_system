@@ -206,27 +206,22 @@ createApp({
           lines.push(`### ${item.label}`);
           lines.push(`- 文件路径：\`${item.path}\``);
 
-          if (item.metaPath) {
-            try {
-              const res = await fetch(`../UI-lib/${item.metaPath}`);
-              const meta = await res.json();
-              if (meta.description) lines.push(`- 组件说明：${meta.description}`);
-              if (meta.props && Object.keys(meta.props).length) {
-                lines.push('- 可配置参数：');
-                for (const [key, p] of Object.entries(meta.props)) {
-                  const required = p.required ? '（必填）' : '';
-                  lines.push(`  - \`${key}\` (${p.type})${required}：${p.desc}`);
-                }
+          if (item.meta) {
+            const meta = item.meta;
+            if (meta.description) lines.push(`- 组件说明：${meta.description}`);
+            if (meta.props && Object.keys(meta.props).length) {
+              lines.push('- 可配置参数：');
+              for (const [key, p] of Object.entries(meta.props)) {
+                const required = p.required ? '（必填）' : '';
+                lines.push(`  - \`${key}\` (${p.type})${required}：${p.desc}`);
               }
-              if (meta.slots && meta.slots.length) {
-                lines.push(`- 可填充区域：${meta.slots.join('、')}`);
-              }
-              if (meta.usage) lines.push(`- 使用示例：\n\`\`\`html\n${meta.usage}\n\`\`\``);
-              if (meta.promptHint) lines.push(`- 场景提示：${meta.promptHint}`);
-              if (meta.echarts) lines.push('- ⚠️ 需要引入 ECharts 5 CDN：`<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"><\/script>`');
-            } catch (e) {
-              lines.push('- （无法加载组件元信息）');
             }
+            if (meta.slots && meta.slots.length) {
+              lines.push(`- 可填充区域：${meta.slots.join('、')}`);
+            }
+            if (meta.usage) lines.push(`- 使用示例：\n\`\`\`html\n${meta.usage}\n\`\`\``);
+            if (meta.promptHint) lines.push(`- 场景提示：${meta.promptHint}`);
+            if (meta.echarts) lines.push('- ⚠️ 需要引入 ECharts 5 CDN：`<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"><\/script>`');
           }
           lines.push('');
         }

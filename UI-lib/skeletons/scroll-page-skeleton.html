@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <link rel="stylesheet" href="../tokens/dark-tech.css" />
+  <link id="token-css" rel="stylesheet" href="../tokens/dark-tech.css" />
 
   <script>
     tailwind.config = {
@@ -33,27 +33,28 @@
   3. 替换 {{ }} 占位符为实际内容
   4. 响应式：lg: 桌面  md: 平板  默认: 手机
   5. grid-cols-1 lg:grid-cols-2  → 手机单列 / 桌面多列
+  6. 所有颜色通过 CSS 变量控制，随主题切换自动适配
   ========================================
 -->
-<body class="font-sans text-white"
-      style="background: radial-gradient(circle at 20% 10%, rgba(110,168,255,0.28), transparent 32%),
-             radial-gradient(circle at 85% 20%, rgba(158,232,200,0.18), transparent 28%),
-             linear-gradient(180deg, #08101f 0%, #0b1020 46%, #0f172a 100%);">
+<body class="font-sans"
+      style="background: var(--bg); color: var(--text);">
 
 <div id="app">
 
   <!-- ===== Block 1: 导航栏 ===== -->
-  <nav class="sticky top-0 z-50 border-b border-white/10 safe-bottom"
-       style="backdrop-filter: blur(18px); background: rgba(8,16,31,0.72);">
+  <nav class="sticky top-0 z-50 border-b safe-bottom"
+       style="backdrop-filter: blur(18px); background: var(--surface); border-color: var(--border-light);">
     <div class="max-w-[1180px] mx-auto px-4 lg:px-6 py-3 lg:py-4 flex justify-between items-center gap-4">
-      <span class="font-bold tracking-[.02em] text-white text-base lg:text-lg shrink-0">{{ nav.brand }}</span>
+      <span class="font-bold tracking-[.02em] text-base lg:text-lg shrink-0" style="color: var(--text);">{{ nav.brand }}</span>
 
-      <div class="hidden md:flex gap-5 text-sm text-gray-400">
+      <div class="hidden md:flex gap-5 text-sm">
         <a v-for="link in nav.links" :key="link" :href="link.href"
-           class="hover:text-white cursor-pointer no-underline text-inherit transition-colors">{{ link.label }}</a>
+           class="hover:underline cursor-pointer no-underline transition-colors"
+           style="color: var(--text-muted);">{{ link.label }}</a>
       </div>
 
-      <button @click="menuOpen = !menuOpen" class="md:hidden text-white p-1.5 rounded-lg border border-white/20 bg-white/10">
+      <button @click="menuOpen = !menuOpen" class="md:hidden p-1.5 rounded-lg border"
+              style="color: var(--text); border-color: var(--border); background: var(--surface);">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path v-if="!menuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
           <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -63,7 +64,8 @@
     <div v-show="menuOpen" class="md:hidden px-4 pb-4 space-y-2">
       <a v-for="link in nav.links" :key="link.label" :href="link.href"
          @click="menuOpen = false"
-         class="block py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-sm text-gray-400 no-underline">{{ link.label }}</a>
+         class="block py-2.5 px-3 rounded-xl border text-sm no-underline"
+         style="border-color: var(--border-light); background: var(--surface); color: var(--text-muted);">{{ link.label }}</a>
     </div>
   </nav>
 
@@ -71,38 +73,42 @@
   <section class="max-w-[1180px] mx-auto px-4 lg:px-6 pt-12 sm:pt-16 lg:pt-[84px] pb-8 lg:pb-11
                   grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8 items-stretch">
     <div>
-      <span class="inline-flex items-center gap-2 px-2.5 py-1.5 lg:px-3 lg:py-2 border border-white/20 rounded-full
-                   text-green-300 bg-white/10 text-xs lg:text-sm mb-4 lg:mb-6">
-        <span class="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-green-300 inline-block"></span>
+      <span class="inline-flex items-center gap-2 px-2.5 py-1.5 lg:px-3 lg:py-2 border rounded-full
+                   text-xs lg:text-sm mb-4 lg:mb-6"
+            style="border-color: var(--border); background: var(--surface); color: var(--accent-green);">
+        <span class="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full inline-block" style="background: var(--accent-green);"></span>
         {{ hero.eyebrow }}
       </span>
       <h1 class="text-[clamp(32px,8vw,72px)] lg:text-[clamp(40px,6vw,72px)] leading-[1.05] lg:leading-[1.03]
-                 -tracking-[.04em] lg:-tracking-[.055em] font-bold m-0">{{ hero.title }}</h1>
-      <p class="text-gray-400 text-base lg:text-lg max-w-[720px] mt-4 lg:mt-6">{{ hero.desc }}</p>
+                 -tracking-[.04em] lg:-tracking-[.055em] font-bold m-0"
+          style="color: var(--text);">{{ hero.title }}</h1>
+      <p class="text-base lg:text-lg max-w-[720px] mt-4 lg:mt-6" style="color: var(--text-muted);">{{ hero.desc }}</p>
       <div class="flex gap-3 lg:gap-3.5 mt-6 lg:mt-8 flex-wrap">
         <a :href="hero.cta1.href"
            class="rounded-full px-4 lg:px-5 py-2.5 lg:py-3 font-semibold text-sm no-underline
-                  bg-gradient-to-br from-blue-400 to-green-300 text-gray-900 hover:-translate-y-0.5 transition-transform cursor-pointer">
+                  hover:-translate-y-0.5 transition-transform cursor-pointer"
+           style="background: linear-gradient(135deg, var(--primary-400), var(--accent-green)); color: #fff;">
           {{ hero.cta1.label }}
         </a>
         <a :href="hero.cta2.href"
            class="rounded-full px-4 lg:px-5 py-2.5 lg:py-3 font-semibold text-sm no-underline
-                  border border-white/20 bg-white/10 text-white hover:-translate-y-0.5 transition-transform cursor-pointer">
+                  border hover:-translate-y-0.5 transition-transform cursor-pointer"
+           style="border-color: var(--border); background: var(--surface); color: var(--text);">
           {{ hero.cta2.label }}
         </a>
       </div>
     </div>
 
     <!-- Hero 右侧：数据卡片 / 插图 / 图表占位 -->
-    <div class="rounded-[20px] lg:rounded-3xl border border-white/20 p-4 lg:p-6
-                shadow-[0_24px_80px_rgba(0,0,0,.32)] mt-6 lg:mt-0"
-         style="background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));">
-      <h3 class="text-lg lg:text-xl font-bold mb-4">{{ hero.card.title }}</h3>
+    <div class="rounded-[20px] lg:rounded-3xl border p-4 lg:p-6 mt-6 lg:mt-0"
+         style="border-color: var(--border); background: var(--surface); box-shadow: var(--shadow-card);">
+      <h3 class="text-lg lg:text-xl font-bold mb-4" style="color: var(--text);">{{ hero.card.title }}</h3>
       <div class="grid grid-cols-2 gap-2 lg:gap-3">
         <div v-for="stat in hero.card.stats" :key="stat.label"
-             class="p-3 lg:p-4 rounded-2xl border border-white/10 bg-white/10">
-          <strong class="block text-2xl lg:text-3xl -tracking-[.04em]">{{ stat.value }}</strong>
-          <span class="text-gray-400 text-xs lg:text-sm">{{ stat.label }}</span>
+             class="p-3 lg:p-4 rounded-2xl border"
+             style="border-color: var(--border-light); background: var(--surface-alt);">
+          <strong class="block text-2xl lg:text-3xl -tracking-[.04em]" style="color: var(--big-number-color);">{{ stat.value }}</strong>
+          <span class="text-xs lg:text-sm" style="color: var(--text-muted);">{{ stat.label }}</span>
         </div>
       </div>
     </div>
@@ -111,50 +117,53 @@
   <!-- ===== Block 3: Features 卡片网格 ===== -->
   <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-14">
     <div class="flex flex-col lg:flex-row justify-between gap-4 lg:gap-7 items-start lg:items-end mb-4 lg:mb-6">
-      <h2 class="text-[clamp(24px,6vw,44px)] leading-[1.1] -tracking-[.04em] font-bold m-0">{{ features.title }}</h2>
-      <p class="max-w-[520px] text-gray-400 text-sm lg:text-base">{{ features.desc }}</p>
+      <h2 class="text-[clamp(24px,6vw,44px)] leading-[1.1] -tracking-[.04em] font-bold m-0"
+          style="color: var(--text);">{{ features.title }}</h2>
+      <p class="max-w-[520px] text-sm lg:text-base" style="color: var(--text-muted);">{{ features.desc }}</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
       <div v-for="card in features.items" :key="card.title"
-           class="rounded-[20px] lg:rounded-3xl border border-white/20 p-4 lg:p-6
-                  shadow-[0_24px_80px_rgba(0,0,0,.32)]"
-           style="background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));">
-        <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-white/20
-                     bg-white/10 text-green-300 text-[11px] lg:text-xs font-bold mb-3 lg:mb-4">{{ card.tag }}</span>
-        <h3 class="text-lg lg:text-xl font-bold mb-2 lg:mb-3">{{ card.title }}</h3>
-        <p class="text-gray-400 text-sm leading-relaxed">{{ card.desc }}</p>
+           class="rounded-[20px] lg:rounded-3xl border p-4 lg:p-6"
+           style="border-color: var(--border); background: var(--surface); box-shadow: var(--shadow-card);">
+        <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border
+                     text-[11px] lg:text-xs font-bold mb-3 lg:mb-4"
+              style="border-color: var(--border); background: var(--tag-bg); color: var(--tag-text);">{{ card.tag }}</span>
+        <h3 class="text-lg lg:text-xl font-bold mb-2 lg:mb-3" style="color: var(--text);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ card.desc }}</p>
       </div>
     </div>
   </section>
 
   <!-- ===== Block 4: Content（通用内容区，可选） ===== -->
   <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-14">
-    <h2 class="text-[clamp(24px,6vw,44px)] font-bold mb-4 lg:mb-6">{{ content.title }}</h2>
+    <h2 class="text-[clamp(24px,6vw,44px)] font-bold mb-4 lg:mb-6" style="color: var(--text);">{{ content.title }}</h2>
 
     <!-- 可替换为：表格 / 代码块 / 图表 / 图片 / 时间线 / 任意内容 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
       <div v-for="item in content.items" :key="item.title"
-           class="rounded-2xl border border-white/10 bg-white/5 p-4 lg:p-6">
-        <h3 class="text-lg font-bold mb-2">{{ item.title }}</h3>
-        <p class="text-gray-400 text-sm leading-relaxed">{{ item.desc }}</p>
+           class="rounded-2xl border p-4 lg:p-6"
+           style="border-color: var(--border-light); background: var(--surface-alt);">
+        <h3 class="text-lg font-bold mb-2" style="color: var(--text);">{{ item.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ item.desc }}</p>
       </div>
     </div>
   </section>
 
   <!-- ===== Block 5: CTA 底部 ===== -->
   <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-16 text-center safe-bottom">
-    <div class="rounded-[20px] lg:rounded-3xl border border-white/20 p-6 lg:p-12 shadow-[0_24px_80px_rgba(0,0,0,.32)]"
-         style="background: linear-gradient(135deg, rgba(110,168,255,0.18), rgba(158,232,200,0.10));">
-      <h2 class="text-[clamp(22px,5vw,40px)] font-bold mb-3 lg:mb-4">{{ cta.title }}</h2>
-      <p class="text-gray-400 text-base lg:text-lg max-w-2xl mx-auto mb-6 lg:mb-8">{{ cta.desc }}</p>
+    <div class="rounded-[20px] lg:rounded-3xl border p-6 lg:p-12"
+         style="border-color: var(--border); background: linear-gradient(135deg, var(--primary-100), var(--primary-50)); box-shadow: var(--shadow-card);">
+      <h2 class="text-[clamp(22px,5vw,40px)] font-bold mb-3 lg:mb-4" style="color: var(--text);">{{ cta.title }}</h2>
+      <p class="text-base lg:text-lg max-w-2xl mx-auto mb-6 lg:mb-8" style="color: var(--text-muted);">{{ cta.desc }}</p>
       <a :href="cta.btn.href"
          class="inline-block rounded-full px-6 lg:px-8 py-3 lg:py-3.5 font-bold text-sm lg:text-base no-underline
-                bg-gradient-to-br from-blue-400 to-green-300 text-gray-900 hover:-translate-y-0.5 transition-transform cursor-pointer">
+                hover:-translate-y-0.5 transition-transform cursor-pointer"
+         style="background: linear-gradient(135deg, var(--primary-400), var(--accent-green)); color: #fff;">
         {{ cta.btn.label }}
       </a>
     </div>
-    <p class="text-gray-500 text-xs mt-6 lg:mt-8">{{ page.footer }}</p>
+    <p class="text-xs mt-6 lg:mt-8" style="color: var(--text-muted);">{{ page.footer }}</p>
   </section>
 
 </div><!-- /#app -->
@@ -219,5 +228,16 @@
   }).mount('#app');
 </script>
 
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../tokens/${theme}.css`;
+}
+</script>
 </body>
 </html>

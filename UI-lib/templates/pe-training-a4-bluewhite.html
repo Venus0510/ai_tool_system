@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>A4横版报告 · PE股权资产入门培训</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bw: {
+              primary: {
+                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                500: '#2563eb', 700: '#1e3a8a', 800: '#1e40af', 900: '#0f172a',
+              },
+              surface: '#ffffff',
+              alt: '#f8fafc',
+              bg: '#f3f6fb',
+              text: '#1f2937',
+              muted: '#64748b',
+              light: '#94a3b8',
+              border: '#e5e7eb',
+            }
+          },
+          fontFamily: {
+            bw: ['"Microsoft YaHei"', '"PingFang SC"', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+
+    .a4-page {
+      width: 297mm;
+      height: 210mm;
+      padding: 18mm 22mm;
+      page-break-after: always;
+      break-after: page;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .a4-page:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    @media print {
+      html, body {
+        width: 297mm;
+        height: 210mm;
+        background: white;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .a4-page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    @media screen {
+      .a4-page {
+        margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, .12);
+        border-radius: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-bw-bg font-bw">
+
+  <div id="app">
+
+    <!-- ========== 封面页 ========== -->
+    <section
+      class="a4-page flex flex-col justify-center bg-gradient-to-br from-bw-primary-900 to-bw-primary-700 text-white">
+      <h1 class="text-[40px] leading-tight mb-5">私募股权（PE）基金<br />入门知识培训</h1>
+      <p class="text-lg text-slate-300 max-w-[850px] mb-[26px]">
+        面向投资从业者，系统讲解PE股权资产的核心概念、运作机制、投资策略与风险管理框架，
+        帮助建立对私募股权投资的整体认知体系。
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-white text-bw-text rounded-2xl p-[18px] shadow-lg min-h-[120px]">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">基金运作机制</h3>
+          <p class="text-[15px] leading-relaxed">理解LP/GP结构、募投管退全流程、费用结构与利益分配机制。</p>
+        </div>
+        <div class="bg-white text-bw-text rounded-2xl p-[18px] shadow-lg min-h-[120px]">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">投资策略体系</h3>
+          <p class="text-[15px] leading-relaxed">掌握Buyout、Growth、VC、Distressed等核心策略的差异与适用场景。</p>
+        </div>
+        <div class="bg-white text-bw-text rounded-2xl p-[18px] shadow-lg min-h-[120px]">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">风险收益特征</h3>
+          <p class="text-[15px] leading-relaxed">认识PE的J曲线效应、非流动性溢价、核心评估指标与配置价值。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 内容页 1：PE定义与核心特征 ========== -->
+    <section class="a4-page bg-bw-alt">
+      <h2 class="text-[30px] text-bw-primary-900 mb-3.5 font-bold">一、私募股权的定义与核心特征</h2>
+      <p class="text-lg text-bw-muted mb-[26px] max-w-[850px]">
+        私募股权（Private Equity，简称PE）是指以非公开方式向合格投资者募集资金，
+        投资于未上市企业股权，通过主动管理提升标的价值并最终通过IPO、并购、股权转让等方式退出获利的投资模式。
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-bw-surface rounded-2xl p-[18px] shadow-lg" v-for="item in cards1" :key="item.num">
+          <div class="text-[48px] text-bw-primary-500 font-bold mb-2">{{ item.num }}</div>
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">{{ item.title }}</h3>
+          <p class="text-[15px] leading-relaxed text-bw-text">{{ item.desc }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-[18px]">
+        <div class="bg-bw-surface rounded-2xl p-[18px] shadow-lg">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">PE vs 公开市场投资</h3>
+          <p class="text-[15px] leading-relaxed text-bw-text">PE投资标的为非上市企业，信息透明度低、流动性差但收益潜力更高，需要主动参与价值创造而非被动持有。</p>
+        </div>
+        <div class="bg-bw-surface rounded-2xl p-[18px] shadow-lg">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">PE在资产配置中的角色</h3>
+          <p class="text-[15px] leading-relaxed text-bw-text">作为另类资产的重要组成部分，PE提供非流动性溢价和分散化收益，在机构投资者组合中配置比例通常为5%-20%。</p>
+        </div>
+      </div>
+
+      <div class="absolute bottom-[10mm] left-[22mm] right-[22mm] flex justify-between text-xs text-bw-light">
+        <span>PE定义与核心特征</span><span>02</span>
+      </div>
+    </section>
+
+    <!-- ========== 内容页 2：PE基金组织结构 ========== -->
+    <section class="a4-page bg-bw-alt">
+      <h2 class="text-[30px] text-bw-primary-900 mb-3.5 font-bold">二、PE基金的组织结构与参与者</h2>
+      <p class="text-lg text-bw-muted mb-6 max-w-[850px]">
+        PE基金通常采用有限合伙制，由普通合伙人（GP）和有限合伙人（LP）构成，各方权责明确、利益捆绑。
+      </p>
+
+      <table class="w-full border-collapse bg-bw-surface rounded-xl overflow-hidden text-[13px]">
+        <thead>
+          <tr>
+            <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold w-1/5">参与角色</th>
+            <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold w-[45%]">核心职责</th>
+            <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold w-[35%]">利益安排</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in tableRoles" :key="row.role" class="border-b border-bw-border">
+            <td class="p-3 align-top font-semibold">{{ row.role }}</td>
+            <td class="p-3 align-top">{{ row.duty }}</td>
+            <td class="p-3 align-top">{{ row.interest }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="grid grid-cols-2 gap-4 mt-[18px]">
+        <div class="bg-bw-surface rounded-2xl p-[18px] shadow-lg">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">费用结构：管理费+超额收益</h3>
+          <p class="text-[15px] leading-relaxed text-bw-text">管理费通常为承诺出资的1.5%-2%/年；超额收益分成（Carried Interest）通常为基金净收益的20%，并设有优先回报（Hurdle Rate）门槛。</p>
+        </div>
+        <div class="bg-bw-surface rounded-2xl p-[18px] shadow-lg">
+          <h3 class="text-lg text-bw-primary-700 mb-2.5 font-bold">关键中介服务机构</h3>
+          <p class="text-[15px] leading-relaxed text-bw-text">包括基金托管行（资产保管与净值核算）、律师事务所（LPA起草与合规）、会计师事务所（审计与税务）、配售代理（募资渠道）等。</p>
+        </div>
+      </div>
+
+      <div class="absolute bottom-[10mm] left-[22mm] right-[22mm] flex justify-between text-xs text-bw-light">
+        <span>PE基金组织结构</span><span>03</span>
+      </div>
+    </section>
+
+    <!-- ========== 内容页 3：PE投资生命周期 ========== -->
+    <section class="a4-page bg-bw-alt">
+      <h2 class="text-[30px] text-bw-primary-900 mb-3.5 font-bold">三、PE投资生命周期</h2>
+      <p class="text-lg text-bw-muted mb-6 max-w-[850px]">
+        PE基金的完整周期通常为8-12年，分为"募、投、管、退"四个阶段，投资人需要理解各阶段的现金流特征与价值创造逻辑。
+      </p>
+
+      <div v-for="(step, i) in lifecycleSteps" :key="i"
+        class="border-l-4 border-bw-primary-500 bg-bw-surface py-3.5 px-[18px] rounded-r-xl mb-3 shadow-[0_6px_18px_rgba(15,23,42,0.06)]">
+        <h3 class="text-lg text-bw-primary-700 mb-2 font-bold">{{ i+1 }}. {{ step.title }}</h3>
+        <p class="text-[15px] leading-relaxed text-bw-text">{{ step.desc }}</p>
+      </div>
+
+      <div class="absolute bottom-[10mm] left-[22mm] right-[22mm] flex justify-between text-xs text-bw-light">
+        <span>PE投资生命周期</span><span>04</span>
+      </div>
+    </section>
+
+
+
+    <!-- ========== 内容页 4：核心投资策略分类（暗色变体） ========== -->
+    <section class="a4-page bg-bw-primary-900 text-white">
+      <h2 class="text-[30px] text-white mb-3.5 font-bold">四、核心投资策略分类</h2>
+      <p class="text-lg text-slate-300 mb-6 max-w-[850px]">
+        PE投资策略覆盖企业从初创到成熟的全生命周期，不同策略在风险暴露、回报驱动和持有期限上存在显著差异。
+      </p>
+
+      <div class="grid grid-cols-4 gap-4">
+        <div v-for="s in strategies" :key="s.title"
+          class="bg-slate-800 text-white rounded-2xl p-[18px] shadow-lg min-h-[120px]">
+          <h3 class="text-lg text-blue-300 mb-2 font-bold">{{ s.title }}</h3>
+          <p class="text-[15px] leading-relaxed">{{ s.desc }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-6">
+        <div class="bg-slate-800 text-white rounded-2xl p-[18px] shadow-lg">
+          <h3 class="text-lg text-blue-300 mb-2 font-bold">策略选择的关键因素</h3>
+          <p class="text-[15px] leading-relaxed">GP的行业专长、基金规模、经济周期阶段及目标市场的退出渠道成熟度，共同决定适用的投资策略组合。</p>
+        </div>
+        <div class="bg-slate-800 text-white rounded-2xl p-[18px] shadow-lg">
+          <h3 class="text-lg text-blue-300 mb-2 font-bold">中国PE市场的特点</h3>
+          <p class="text-[15px] leading-relaxed">成长资本（Growth）占比较高；受IPO审核节奏影响显著；GP多元化转型趋势明显，Buyout和控股型交易占比逐步提升。</p>
+        </div>
+      </div>
+
+      <div class="absolute bottom-[10mm] left-[22mm] right-[22mm] flex justify-between text-xs text-slate-400">
+        <span>核心投资策略分类</span><span>05</span>
+      </div>
+    </section>
+
+    <!-- ========== 内容页 5：风险收益特征与核心评估指标 ========== -->
+    <section class="a4-page bg-bw-alt">
+      <h2 class="text-[30px] text-bw-primary-900 mb-3.5 font-bold">五、风险收益特征与核心评估指标</h2>
+      <p class="text-lg text-bw-muted mb-6 max-w-[850px]">
+        PE投资呈现明显的"J曲线效应"——早期因管理费和投资成本导致净现金流为负，中后期随着标的价值释放和退出实现，
+        收益曲线快速上升。理解风险来源和评估指标是投资决策的基础。
+      </p>
+
+      <div class="grid grid-cols-4 gap-4">
+        <div v-for="item in riskItems" :key="item.tag"
+          class="bg-bw-surface rounded-2xl p-[18px] shadow-lg min-h-[130px]">
+          <span
+            class="inline-block px-2.5 py-1 rounded-full bg-bw-primary-100 text-bw-primary-800 text-xs font-semibold mb-2.5">{{
+            item.tag }}</span>
+          <h3 class="text-lg text-bw-primary-700 mb-2 font-bold">{{ item.title }}</h3>
+          <p class="text-[15px] leading-relaxed text-bw-text">{{ item.desc }}</p>
+        </div>
+      </div>
+
+      <table class="w-full border-collapse bg-bw-surface rounded-xl overflow-hidden text-[13px] mt-[22px]">
+        <thead>
+          <tr>
+            <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">评估指标</th>
+            <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">定义与说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-bw-border">
+            <td class="p-3 font-semibold">IRR（内部收益率）</td>
+            <td class="p-3">基于现金流时点计算年化复合收益率，反映资金使用效率，但受Call/Distribution节奏影响较大。</td>
+          </tr>
+          <tr class="border-b border-bw-border">
+            <td class="p-3 font-semibold">MOIC / TVPI（投资回报倍数）</td>
+            <td class="p-3">MOIC = 总价值（已分配+未实现）/ 总投资额，反映绝对回报倍数；TVPI含未实现估值部分。</td>
+          </tr>
+          <tr class="border-b border-bw-border">
+            <td class="p-3 font-semibold">DPI（已分配/实缴）</td>
+            <td class="p-3">实际现金回款占LP已缴付资本的比例，是衡量基金真实回报的"硬指标"，成熟基金应>1.0x。</td>
+          </tr>
+          <tr class="border-b border-bw-border">
+            <td class="p-3 font-semibold">RVPI（剩余价值/实缴）</td>
+            <td class="p-3">未退出部分账面估值占已缴资本的比例，衡量在管组合的潜在价值，受估值方法影响存在主观性。</td>
+          </tr>
+          <tr class="border-b border-bw-border">
+            <td class="p-3 font-semibold">PML（公开市场等值）</td>
+            <td class="p-3">将PE基金IRR与同期公开市场指数IRR比较，分解超额收益中的非流动性溢价与GP主动管理α。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="absolute bottom-[10mm] left-[22mm] right-[22mm] flex justify-between text-xs text-bw-light">
+        <span>风险收益特征与核心评估指标</span><span>06</span>
+      </div>
+    </section>
+
+  </div><!-- /#app -->
+
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          cards1: [
+            { num: '01', title: '非公开募集', desc: '面向合格投资者（机构投资者、高净值个人等）非公开募资，不受公募基金的信息披露与注册要求约束。' },
+            { num: '02', title: '长期主动管理', desc: '持有期通常为3-7年，GP深度参与标的企业的战略规划、运营改善和管理层激励，创造超越公开市场的α收益。' },
+            { num: '03', title: '多元退出通道', desc: '退出方式包括IPO上市、战略并购、管理层回购（MBO）、S基金份额转让等，退出时点的选择直接影响IRR表现。' },
+          ],
+          tableRoles: [
+            { role: 'GP（普通合伙人）', duty: '基金管理人，负责项目筛选、尽职调查、投后管理与退出安排，对基金债务承担无限连带责任', interest: '收取管理费（1.5%-2%）及超额收益分成（通常20%），GP通常出资1%-5%以绑定利益' },
+            { role: 'LP（有限合伙人）', duty: '基金出资人，不参与日常管理决策，享有知情权与重大事项表决权', interest: '按出资比例享有基金净收益，在GP达到优先回报门槛（Hurdle Rate，通常8%）后方可分配Carry' },
+            { role: '投委会 / 顾问委员会', duty: '审批重大投资决策，部分基金设立LP顾问委员会（LPAC）处理利益冲突事项', interest: '保障LP权益，审核关联交易、估值方法及GP合规履职情况' },
+            { role: '标的公司管理层', duty: '在GP赋能下执行增长计划、成本优化、并购整合等价值创造举措', interest: '通常持有管理层股权激励（MIP），与基金退出收益深度绑定' },
+          ],
+          lifecycleSteps: [
+            { title: '募资期（Fundraising，12-18个月）', desc: 'GP向潜在LP进行路演，签署有限合伙协议（LPA），确定基金规模、投资策略、费用条款等核心要素。LP按Capital Call逐步缴付出资。' },
+            { title: '投资期（Investment Period，3-5年）', desc: 'GP筛选标的、执行尽职调查（财务/法务/商业/ESG），完成交易结构设计与交割。投后即启动百日计划，导入运营改善与管理赋能。' },
+            { title: '管理增值期（Value Creation，2-5年）', desc: 'GP通过战略重塑、运营优化、补强型并购（Add-on Acquisition）、管理层迭代等方式提升标的公司EBITDA与估值倍数，创造"买入-改造-退出"的核心价值。' },
+            { title: '退出期（Exit / Harvesting，1-3年）', desc: '择机通过IPO、战略出售、二级出售（Secondary Buyout）或股息资本重组（Dividend Recap）实现退出，向LP返还本金及收益。DPI（已分配/实缴）是此阶段核心KPI。' },
+          ],
+          strategies: [
+            { title: '杠杆收购（Buyout）', desc: '以债务融资收购成熟企业控股权，通过运营改善、成本优化和杠杆效应放大股权回报。典型标的：现金流稳定的传统行业龙头。' },
+            { title: '成长资本（Growth）', desc: '以少数股权参股成长期企业，资金用于产能扩张、市场拓展或产品研发。不承担控股风险，与创始团队利益共享。' },
+            { title: '风险投资（VC）', desc: '投资于早期/初创企业，以高失败率换取极少数项目的超额回报。聚焦技术驱动型赛道：AI、生物医药、硬科技等。' },
+            { title: '困境/特殊机会', desc: '投资财务困境企业进行重组或折价收购不良资产，要求GP具备强大的法务重组能力和运营 turnaround 经验。' },
+          ],
+          riskItems: [
+            { tag: '非流动性', title: '非流动性风险', desc: 'PE份额无公开交易市场，LP在基金存续期内难以提前赎回，需承受8-12年的资金锁定期。' },
+            { tag: '估值偏差', title: '估值主观风险', desc: '未退出标的按GP估值模型（DCF/可比法）计价，估值频率和假设选择可能偏离真实可变现价值。' },
+            { tag: '杠杆', title: '杠杆与融资风险', desc: 'Buyout策略依赖债务融资，利率上行或信贷收缩直接影响收购能力和标的偿债压力。' },
+            { tag: '退出', title: '退出不确定性', desc: 'IPO窗口期、并购监管审查和市场情绪均影响退出时点和估值，是IRR波动的主要来源。' },
+          ],
+        };
+      }
+    }).mount('#app');
+  </script>
+
+</body>
+
+</html>

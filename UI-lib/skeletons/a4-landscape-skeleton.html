@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <link rel="stylesheet" href="../tokens/business-bluewhite.css" />
+  <link id="token-css" rel="stylesheet" href="../tokens/business-bluewhite.css" />
 
   <style>
     @page { size: A4 landscape; margin: 0; }
@@ -26,97 +26,104 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="font-sans" style="background: var(--bg);">
 
 <!--
   版式骨架 · A4横版打印
   用法：复制此文件 → 替换 data() 中 {{ }} 占位符 → 双击打开 → Ctrl+P 打印
   页面变体：cover / card-grid / table / process / dark
   复制对应的 section.a4-page 即可增加新页面
-  页码从封面 01 开始自动计数
+  所有颜色通过 CSS 变量控制，随主题切换自动适配
 -->
 
 <div id="app">
 
   <!-- ===== 封面 · 页码 01 ===== -->
-  <section class="a4-page bg-gradient-to-br from-slate-900 to-blue-900 text-white flex flex-col justify-center">
-    <h1 class="text-5xl font-bold mb-5">{{ cover.title }}<br/>{{ cover.subtitle }}</h1>
-    <p class="text-lg text-slate-300 max-w-3xl mb-7">{{ cover.desc }}</p>
+  <section class="a4-page flex flex-col justify-center"
+           style="background: var(--cover-bg); color: var(--text-inverse);">
+    <h1 class="text-5xl font-bold mb-5" style="color: var(--text-inverse);">{{ cover.title }}<br/>{{ cover.subtitle }}</h1>
+    <p class="text-lg max-w-3xl mb-7" style="color: rgba(255,255,255,0.75);">{{ cover.desc }}</p>
     <div class="grid grid-cols-3 gap-4">
       <div v-for="card in cover.cards" :key="card.title"
-           class="bg-white text-gray-800 rounded-2xl p-5 shadow-lg">
-        <h3 class="text-lg text-blue-800 font-bold mb-2.5">{{ card.title }}</h3>
-        <p class="text-sm leading-relaxed">{{ card.desc }}</p>
+           class="rounded-2xl p-5 shadow-lg"
+           style="background: var(--surface); color: var(--text);">
+        <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
       </div>
     </div>
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">01</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.5);">01</div>
   </section>
 
   <!-- ===== 卡片网格 · 页码 02 ===== -->
-  <section class="a4-page bg-slate-50">
-    <h2 class="text-3xl text-slate-900 font-bold mb-3.5">{{ contentPage1.heading }}</h2>
-    <p class="text-lg text-slate-500 max-w-3xl mb-6">{{ contentPage1.sub }}</p>
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-3.5" style="color: var(--text);">{{ contentPage1.heading }}</h2>
+    <p class="text-lg max-w-3xl mb-6" style="color: var(--text-muted);">{{ contentPage1.sub }}</p>
     <div class="grid grid-cols-3 gap-4">
       <div v-for="card in contentPage1.cards" :key="card.num"
-           class="bg-white rounded-2xl p-5 shadow-lg">
-        <div class="text-5xl text-blue-600 font-bold mb-2">{{ card.num }}</div>
-        <h3 class="text-lg text-blue-800 font-bold mb-2.5">{{ card.title }}</h3>
-        <p class="text-sm leading-relaxed text-gray-700">{{ card.desc }}</p>
+           class="rounded-2xl p-5 shadow-lg"
+           style="background: var(--surface);">
+        <div class="text-5xl font-bold mb-2" style="color: var(--big-number-color);">{{ card.num }}</div>
+        <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
       </div>
     </div>
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">{{ contentPage1.pageNum }}</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">{{ contentPage1.pageNum }}</div>
   </section>
 
   <!-- ===== 表格+双栏 · 页码 03 ===== -->
-  <section class="a4-page bg-slate-50">
-    <h2 class="text-3xl text-slate-900 font-bold mb-3.5">{{ contentPage2.heading }}</h2>
-    <table class="w-full bg-white rounded-xl overflow-hidden text-sm">
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-3.5" style="color: var(--text);">{{ contentPage2.heading }}</h2>
+    <table class="w-full rounded-xl overflow-hidden text-sm" style="background: var(--surface);">
       <thead>
         <tr>
           <th v-for="h in contentPage2.tableHeaders" :key="h"
-              class="p-3 text-left bg-blue-100 text-blue-800 font-bold">{{ h }}</th>
+              class="p-3 text-left font-bold"
+              style="background: var(--table-th-bg); color: var(--table-th-text);">{{ h }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, i) in contentPage2.tableRows" :key="i" class="border-b border-gray-200">
-          <td v-for="(cell, j) in row" :key="j" class="p-3">{{ cell }}</td>
+        <tr v-for="(row, i) in contentPage2.tableRows" :key="i" class="border-b" style="border-color: var(--border-light);">
+          <td v-for="(cell, j) in row" :key="j" class="p-3" style="color: var(--text);">{{ cell }}</td>
         </tr>
       </tbody>
     </table>
     <div class="grid grid-cols-2 gap-4 mt-5">
       <div v-for="card in contentPage2.bottomCards" :key="card.title"
-           class="bg-white rounded-2xl p-5 shadow-lg">
-        <h3 class="text-lg text-blue-800 font-bold mb-2.5">{{ card.title }}</h3>
-        <p class="text-sm leading-relaxed text-gray-700">{{ card.desc }}</p>
+           class="rounded-2xl p-5 shadow-lg"
+           style="background: var(--surface);">
+        <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
       </div>
     </div>
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">{{ contentPage2.pageNum }}</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">{{ contentPage2.pageNum }}</div>
   </section>
 
   <!-- ===== 流程步骤 · 页码 04 ===== -->
-  <section class="a4-page bg-slate-50">
-    <h2 class="text-3xl text-slate-900 font-bold mb-3.5">{{ contentPage3.heading }}</h2>
-    <p class="text-lg text-slate-500 max-w-3xl mb-6">{{ contentPage3.sub }}</p>
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-3.5" style="color: var(--text);">{{ contentPage3.heading }}</h2>
+    <p class="text-lg max-w-3xl mb-6" style="color: var(--text-muted);">{{ contentPage3.sub }}</p>
     <div v-for="(step, i) in contentPage3.steps" :key="i"
-         class="border-l-4 border-blue-600 bg-white py-3.5 px-5 rounded-r-xl mb-3 shadow-md">
-      <h3 class="text-lg text-blue-800 font-bold mb-2">{{ i+1 }}. {{ step.title }}</h3>
-      <p class="text-sm leading-relaxed text-gray-700">{{ step.desc }}</p>
+         class="py-3.5 px-5 rounded-r-xl mb-3 shadow-md"
+         style="border-left: var(--process-border); background: var(--surface);">
+      <h3 class="text-lg font-bold mb-2" style="color: var(--primary-700);">{{ i+1 }}. {{ step.title }}</h3>
+      <p class="text-sm leading-relaxed" style="color: var(--text);">{{ step.desc }}</p>
     </div>
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">{{ contentPage3.pageNum }}</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">{{ contentPage3.pageNum }}</div>
   </section>
 
   <!-- ===== 暗色段 · 页码 05 ===== -->
-  <section class="a4-page bg-slate-900 text-white">
-    <h2 class="text-3xl text-white font-bold mb-3.5">{{ darkSection.heading }}</h2>
-    <p class="text-lg text-slate-300 max-w-3xl mb-6">{{ darkSection.sub }}</p>
+  <section class="a4-page" style="background: var(--primary-900); color: #fff;">
+    <h2 class="text-3xl font-bold mb-3.5" style="color: #fff;">{{ darkSection.heading }}</h2>
+    <p class="text-lg max-w-3xl mb-6" style="color: rgba(255,255,255,0.65);">{{ darkSection.sub }}</p>
     <div class="grid grid-cols-4 gap-4">
       <div v-for="card in darkSection.cards" :key="card.title"
-           class="bg-slate-800 rounded-2xl p-5 shadow-lg">
-        <h3 class="text-lg text-blue-300 font-bold mb-2">{{ card.title }}</h3>
-        <p class="text-sm leading-relaxed">{{ card.desc }}</p>
+           class="rounded-2xl p-5 shadow-lg"
+           style="background: rgba(255,255,255,0.08);">
+        <h3 class="text-lg font-bold mb-2" style="color: var(--primary-300);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: rgba(255,255,255,0.7);">{{ card.desc }}</p>
       </div>
     </div>
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-500">{{ darkSection.pageNum }}</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.4);">{{ darkSection.pageNum }}</div>
   </section>
 
 </div>
@@ -181,5 +188,16 @@
   }).mount('#app');
 </script>
 
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../tokens/${theme}.css`;
+}
+</script>
 </body>
 </html>

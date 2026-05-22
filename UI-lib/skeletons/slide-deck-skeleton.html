@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <link rel="stylesheet" href="../tokens/rc-lightblue.css" />
+  <link id="token-css" rel="stylesheet" href="../tokens/rc-lightblue.css" />
 
   <style>
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #eef2f6; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
     .slide {
       position: absolute; inset: 0;
       visibility: hidden; opacity: 0;
@@ -31,26 +31,34 @@
   用法：复制此文件 → 替换 data() → 双击打开 → 键盘 ← → 翻页
   扩展：复制对应 slide 类型 section 并调整 total 数量
   modules[0] = 第一个模块，modules[1] = 第二个，以此类推
+  所有颜色通过 CSS 变量控制，随主题切换自动适配
 -->
 
 <div id="app">
-  <main class="relative w-screen h-screen overflow-hidden bg-white">
+  <main class="relative w-screen h-screen overflow-hidden" style="background: var(--surface);">
 
     <!-- ===== Slide 0: 封面 ===== -->
     <section class="slide active" :class="{ active: current === 0 }">
       <div class="relative w-full h-full px-[7.2vw] py-[8.8vh] overflow-hidden
-                  before:absolute before:left-0 before:top-[24vh] before:w-[7px] before:h-[34vh] before:bg-[#0096d6]">
+                  before:absolute before:left-0 before:top-[24vh] before:w-[7px] before:h-[34vh]"
+           :style="{ '--before-bg': 'var(--primary-400)' }"
+           style="--before-bg: var(--primary-400);">
+        <div style="position:absolute;left:0;top:24vh;width:7px;height:34vh;background:var(--primary-400);"></div>
         <h1 class="mt-[8.5vh] max-w-[1180px] font-[STKaiti,'Kaiti SC',KaiTi,serif]
-                   text-[clamp(42px,6.1vw,78px)] font-black text-[#0096d6] tracking-[.08em] leading-tight">
+                   text-[clamp(42px,6.1vw,78px)] font-black tracking-[.08em] leading-tight"
+            style="color: var(--primary-400);">
           {{ deck.cover.title }}
         </h1>
-        <div class="mt-[21vh] font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(30px,4.1vw,52px)] font-black text-gray-500 tracking-[.04em]">
+        <div class="mt-[21vh] font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(30px,4.1vw,52px)] font-black tracking-[.04em]"
+             style="color: var(--text-muted);">
           {{ deck.cover.brand }}
         </div>
-        <div class="mt-[2.6vh] text-[clamp(24px,3.1vw,42px)] font-extrabold text-gray-500">
+        <div class="mt-[2.6vh] text-[clamp(24px,3.1vw,42px)] font-extrabold"
+             style="color: var(--text-muted);">
           {{ deck.cover.date }}
         </div>
-        <div class="absolute left-[7.2vw] bottom-[8.6vh] text-[clamp(40px,5.2vw,72px)] font-black text-gray-500">
+        <div class="absolute left-[7.2vw] bottom-[8.6vh] text-[clamp(40px,5.2vw,72px)] font-black"
+             style="color: var(--text-muted);">
           {{ deck.cover.org }}
         </div>
       </div>
@@ -58,28 +66,35 @@
 
     <!-- ===== Slide 1: 目录 ===== -->
     <section class="slide" :class="{ active: current === 1 }">
-      <div class="relative w-full h-full px-[7.6vw] py-[7.6vh] overflow-hidden
-                  before:absolute before:left-0 before:top-[18vh] before:w-[7px] before:h-[58vh] before:bg-[#0096d6]">
-        <div class="text-[clamp(14px,1.25vw,20px)] tracking-[.14em] text-gray-500 font-extrabold uppercase mb-[1.2vh]">Contents</div>
-        <h1 class="font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(42px,5.2vw,72px)] font-black text-[#0096d6] tracking-[.08em] leading-none">目录</h1>
+      <div class="relative w-full h-full px-[7.6vw] py-[7.6vh] overflow-hidden">
+        <div style="position:absolute;left:0;top:18vh;width:7px;height:58vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(14px,1.25vw,20px)] tracking-[.14em] font-extrabold uppercase mb-[1.2vh]"
+             style="color: var(--text-muted);">Contents</div>
+        <h1 class="font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(42px,5.2vw,72px)] font-black tracking-[.08em] leading-none"
+            style="color: var(--primary-400);">目录</h1>
 
         <div class="mt-[7.4vh] w-[min(1120px,92vw)]">
-          <div class="grid grid-cols-[minmax(72px,9vw)_1fr] items-center gap-x-[3.1vw] py-[1.55vh] border-b-2 border-[#0096d6] text-[clamp(17px,1.6vw,24px)] font-extrabold text-gray-900">
+          <div class="grid grid-cols-[minmax(72px,9vw)_1fr] items-center gap-x-[3.1vw] py-[1.55vh] border-b-2 text-[clamp(17px,1.6vw,24px)] font-extrabold"
+               style="border-color: var(--primary-400); color: var(--text);">
             <span>模块</span><span>主题</span>
           </div>
           <div v-for="(toc, i) in deck.tocItems" :key="i"
-               class="grid grid-cols-[minmax(72px,9vw)_1fr] items-center gap-x-[3.1vw] py-[1.55vh] border-b border-gray-200">
+               class="grid grid-cols-[minmax(72px,9vw)_1fr] items-center gap-x-[3.1vw] py-[1.55vh] border-b"
+               style="border-color: var(--border-light);">
             <span class="w-[clamp(44px,5vw,66px)] h-[clamp(44px,5vw,66px)] inline-flex items-center justify-center
-                         rounded-full bg-[#eef8fc] text-[#008bc7] font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(22px,2.8vw,38px)] font-black">
+                         rounded-full font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(22px,2.8vw,38px)] font-black"
+                  style="background: var(--primary-50); color: var(--primary-500);">
               {{ toc.num }}
             </span>
-            <span class="text-[clamp(24px,2.85vw,40px)] font-extrabold text-gray-800 tracking-[.015em] leading-tight">
+            <span class="text-[clamp(24px,2.85vw,40px)] font-extrabold tracking-[.015em] leading-tight"
+                  style="color: var(--text);">
               {{ toc.title }}
             </span>
           </div>
         </div>
 
-        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-gray-500 text-[clamp(13px,1.2vw,18px)] font-bold">
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
           <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
         </div>
       </div>
@@ -87,21 +102,28 @@
 
     <!-- ===== Slide 2: 模块一分隔页（固定引用 modules[0]） ===== -->
     <section class="slide" :class="{ active: current === 2 }">
-      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden
-                  bg-[radial-gradient(circle_at_88%_18%,rgba(0,150,214,.08)_0,rgba(0,150,214,.08)_18%,transparent_19%),linear-gradient(90deg,rgba(0,150,214,.055),transparent_34%)]
-                  before:absolute before:left-0 before:top-[21vh] before:w-[7px] before:h-[42vh] before:bg-[#0096d6]">
-        <div class="text-[clamp(16px,1.45vw,22px)] text-gray-500 font-extrabold tracking-[.14em] uppercase mb-[2.1vh]">Section Node</div>
+      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden"
+           style="background: radial-gradient(circle at 88% 18%, var(--primary-100) 0%, var(--primary-100) 18%, transparent 19%), linear-gradient(90deg, rgba(0,150,214,0.055), transparent 34%);">
+        <div style="position:absolute;left:0;top:21vh;width:7px;height:42vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(16px,1.45vw,22px)] font-extrabold tracking-[.14em] uppercase mb-[2.1vh]"
+             style="color: var(--text-muted);">Section Node</div>
         <div class="flex items-center gap-6 mb-[4.6vh]">
           <span class="w-[clamp(86px,9.4vw,132px)] h-[clamp(86px,9.4vw,132px)] inline-flex items-center justify-center
-                       rounded-full bg-[#eef8fc] text-[#0096d6] font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(42px,5.4vw,74px)] font-black
-                       shadow-[0_14px_38px_rgba(0,150,214,.12)]">{{ deck.modules[0].num }}</span>
-          <span class="text-[#0096d6] font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none">{{ deck.modules[0].label }}</span>
+                       rounded-full font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(42px,5.4vw,74px)] font-black"
+                style="background: var(--primary-50); color: var(--primary-400); box-shadow: 0 14px 38px rgba(0,150,214,0.12);">
+            {{ deck.modules[0].num }}
+          </span>
+          <span class="font-[STKaiti,'Kaiti SC',KaiTi,serif] text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none"
+                style="color: var(--primary-400);">{{ deck.modules[0].label }}</span>
         </div>
-        <h1 class="max-w-[1180px] text-[#123a63] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight">
+        <h1 class="max-w-[1180px] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight"
+            style="color: var(--primary-700);">
           {{ deck.modules[0].title }}
         </h1>
-        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full bg-[linear-gradient(90deg,#0096d6,#00a6de,rgba(0,166,222,0))]"></div>
-        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-gray-500 text-[clamp(13px,1.2vw,18px)] font-bold">
+        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full"
+             style="background: linear-gradient(90deg, var(--primary-400), var(--primary-400), rgba(0,166,222,0));"></div>
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
           <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
         </div>
       </div>
@@ -109,21 +131,22 @@
 
     <!-- ===== Slide 3: 模块一内容页（固定引用 modules[0]） ===== -->
     <section class="slide" :class="{ active: current === 3 }">
-      <div class="w-full h-full px-12 py-8 overflow-y-auto bg-[#f3f6fa]">
-        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b border-gray-300">
+      <div class="w-full h-full px-12 py-8 overflow-y-auto" style="background: var(--surface-alt);">
+        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b" style="border-color: var(--border);">
           <div>
-            <div class="text-sm text-[#0f5a96] font-extrabold tracking-[.04em] mb-2">SECTION {{ deck.modules[0].num }}</div>
-            <h1 class="text-4xl text-[#123a63] font-bold leading-tight mb-2.5">{{ deck.modules[0].title }}</h1>
-            <p class="text-lg text-gray-500 max-w-[980px] leading-relaxed">{{ deck.modules[0].desc }}</p>
+            <div class="text-sm font-extrabold tracking-[.04em] mb-2" style="color: var(--primary-800);">SECTION {{ deck.modules[0].num }}</div>
+            <h1 class="text-4xl font-bold leading-tight mb-2.5" style="color: var(--primary-700);">{{ deck.modules[0].title }}</h1>
+            <p class="text-lg max-w-[980px] leading-relaxed" style="color: var(--text-muted);">{{ deck.modules[0].desc }}</p>
           </div>
-          <span class="text-6xl font-black text-gray-300 leading-none shrink-0">{{ deck.modules[0].num }}</span>
+          <span class="text-6xl font-black leading-none shrink-0" style="color: var(--text-muted); opacity: 0.3;">{{ deck.modules[0].num }}</span>
         </div>
 
         <div class="grid gap-4 my-7" :class="'grid-cols-' + deck.contentCols">
           <div v-for="(card, j) in deck.modules[0].cards" :key="j"
-               class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm min-h-[130px]">
-            <h3 class="text-lg text-[#123a63] font-bold mb-2">{{ card.title }}</h3>
-            <p class="text-sm text-gray-500 leading-relaxed">{{ card.desc }}</p>
+               class="border rounded-2xl p-4 shadow-sm min-h-[130px]"
+               style="background: var(--surface); border-color: var(--border-light);">
+            <h3 class="text-lg font-bold mb-2" style="color: var(--primary-700);">{{ card.title }}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ card.desc }}</p>
           </div>
         </div>
 
@@ -136,13 +159,16 @@
   <!-- 导航控件 -->
   <div class="nav-fixed fixed right-6 bottom-5 z-50 flex gap-2.5">
     <button @click="prev" :disabled="current === 0"
-            class="border-0 rounded-full bg-[#123a63] text-white font-black px-4 py-2.5 cursor-pointer
-                   shadow-[0_8px_22px_rgba(18,58,99,.24)] hover:bg-[#0b2f52] disabled:opacity-30">←</button>
+            class="border-0 rounded-full text-white font-black px-4 py-2.5 cursor-pointer
+                   disabled:opacity-30"
+            style="background: var(--primary-700); box-shadow: 0 8px 22px rgba(18,58,99,0.24);">←</button>
     <button @click="next" :disabled="current === total - 1"
-            class="border-0 rounded-full bg-[#123a63] text-white font-black px-4 py-2.5 cursor-pointer
-                   shadow-[0_8px_22px_rgba(18,58,99,.24)] hover:bg-[#0b2f52] disabled:opacity-30">→</button>
+            class="border-0 rounded-full text-white font-black px-4 py-2.5 cursor-pointer
+                   disabled:opacity-30"
+            style="background: var(--primary-700); box-shadow: 0 8px 22px rgba(18,58,99,0.24);">→</button>
   </div>
-  <div class="nav-fixed fixed left-6 bottom-6 z-50 px-3 py-2 rounded-full bg-[rgba(18,58,99,.86)] text-white text-sm">
+  <div class="nav-fixed fixed left-6 bottom-6 z-50 px-3 py-2 rounded-full text-white text-sm"
+       style="background: var(--primary-700); opacity: 0.86;">
     {{ current + 1 }} / {{ total }}
   </div>
 </div>
@@ -200,5 +226,16 @@
   }).mount('#app');
 </script>
 
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../tokens/${theme}.css`;
+}
+</script>
 </body>
 </html>

@@ -123,7 +123,7 @@
         <!-- iframe 预览区 -->
         <div class="preview-area">
           <iframe v-if="selectedItem" :key="iframeKey" :src="iframeSrc" ref="previewFrame"
-                  style="width:100%;height:100%;border:none;"></iframe>
+                  @load="onIframeLoad" style="width:100%;height:100%;border:none;"></iframe>
           <div v-else class="preview-placeholder">
             ← 从左侧菜单选择一个组件开始预览
           </div>
@@ -134,11 +134,11 @@
           <div class="code-panel-header">
             <div class="code-tabs">
               <button class="code-tab" :class="{ active: activeTab === 'code' }" @click="switchTab('code')">完整代码</button>
-              <button class="code-tab" :class="{ active: activeTab === 'meta' }" @click="switchTab('meta')" v-if="selectedItem.meta">元信息 JSON</button>
+              <button class="code-tab" :class="{ active: activeTab === 'meta' }" @click="switchTab('meta')" v-if="selectedItem._meta">元信息 JSON</button>
             </div>
             <div class="code-actions">
               <button class="btn small" @click="copyCode">📋 复制代码</button>
-              <button class="btn small" @click="copyMeta" v-if="selectedItem.meta && metaContent">📋 复制元信息</button>
+              <button class="btn small" @click="copyMeta" v-if="selectedItem._meta && metaContent">📋 复制元信息</button>
               <button class="btn small primary" @click="addToBasket">🧺 加入提示词篮</button>
               <button class="btn small" @click="codePanelOpen = !codePanelOpen">
                 {{ codePanelOpen ? '▼ 收起' : '▲ 展开' }}
@@ -162,20 +162,20 @@ const MANIFEST_MENU = [
   {
     id: 'basic-components', label: '基础组件', icon: 'component', defaultOpen: true,
     children: [
-      { id: 'stat-card',     label: '数据卡片', path: 'components/stat-card/stat-card.html',         meta: 'components/stat-card/stat-card.meta.json',         theme: 'follow' },
-      { id: 'timeline',      label: '时间线',   path: 'components/timeline/timeline.html',           meta: 'components/timeline/timeline.meta.json',           theme: 'follow' },
-      { id: 'process-step',  label: '流程步骤', path: 'components/process-step/process-step.html',   meta: 'components/process-step/process-step.meta.json',   theme: 'follow' },
-      { id: 'circle-number', label: '圆形编号', path: 'components/circle-number/circle-number.html', meta: 'components/circle-number/circle-number.meta.json', theme: 'follow' },
-      { id: 'badge-tag',     label: '标签徽章', path: 'components/badge-tag/badge-tag.html',         meta: 'components/badge-tag/badge-tag.meta.json',         theme: 'follow' },
-      { id: 'data-table',    label: '数据表格', path: 'components/data-table/data-table.html',       meta: 'components/data-table/data-table.meta.json',       theme: 'follow' },
-      { id: 'hero-card',     label: '封面卡片', path: 'components/hero-card/hero-card.html',         meta: 'components/hero-card/hero-card.meta.json',         theme: 'follow' },
+      { id: 'stat-card',     label: '数据卡片', path: 'components/stat-card/stat-card.html',         theme: 'follow', _meta: {"name":"stat-card","label":"数据卡片","category":"基础组件","description":"单指标数据卡片，支持大数字编号、标题、描述文本，三种变体（大数字/简单/顶部色条）","props":{"variant":{"type":"enum","values":["numbered","simple","accent-top"],"desc":"卡片变体：numbered=带大数字编号，simple=纯标题描述，accent-top=顶部色条"},"num":{"type":"string","desc":"大数字编号（variant=numbered 时使用）"},"title":{"type":"string","required":true,"desc":"卡片标题"},"desc":{"type":"string","required":true,"desc":"卡片描述文本"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<div class=\"stat-card\">\n  <div class=\"num\">01</div>\n  <h3>卡片标题</h3>\n  <p>卡片描述内容。</p>\n</div>","promptHint":"适用于展示 KPI 指标、业绩数据、统计概览、核心能力等场景。可组合成网格布局使用。"} },
+      { id: 'timeline',      label: '时间线',   path: 'components/timeline/timeline.html',           theme: 'follow', _meta: {"name":"timeline","label":"时间线","category":"基础组件","description":"展示按时间顺序排列的关键节点。支持水平横轴和垂直纵轴两种布局。每个节点包含圆形标记、标题和描述卡片。","props":{"direction":{"type":"enum","values":["horizontal","vertical"],"desc":"布局方向：horizontal=水平横轴（4列网格），vertical=垂直纵轴"},"nodes":{"type":"array","desc":"节点数组，每项含 year/label（圆形标记文字）、color（圆形背景色）、title、desc"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<div class=\"timeline-h\">\n  <div class=\"node\">\n    <div class=\"dot\" style=\"background:#0f5a96;\">2014</div>\n    <div class=\"card\"><h3>节点标题</h3><p>描述</p></div>\n  </div>\n</div>","promptHint":"适用于政策演进时间线、项目里程碑、历史发展脉络、产品迭代记录等场景。"} },
+      { id: 'process-step',  label: '流程步骤', path: 'components/process-step/process-step.html',   theme: 'follow', _meta: {"name":"process-step","label":"流程步骤","category":"基础组件","description":"左侧色条流程步骤卡片，用于展示递进式流程、方法步骤、报告结构。支持左右色条两种变体。","props":{"side":{"type":"enum","values":["left","right"],"desc":"色条位置：left=左侧（默认），right=右侧"},"step":{"type":"number","desc":"步骤序号"},"title":{"type":"string","required":true,"desc":"步骤标题"},"desc":{"type":"string","required":true,"desc":"步骤描述文本"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<div class=\"process-step\">\n  <h3>1. 步骤标题</h3>\n  <p>步骤描述内容。</p>\n</div>","promptHint":"适用于报告方法步骤、项目流程展示、递进式论证、操作流程说明等场景。"} },
+      { id: 'circle-number', label: '圆形编号', path: 'components/circle-number/circle-number.html', theme: 'follow', _meta: {"name":"circle-number","label":"圆形编号","category":"基础组件","description":"圆形数字/文字编号，用于目录模块编号、步骤指示、章节标记。支持四种尺寸，可选阴影和实色反白。","props":{"size":{"type":"enum","values":["sm","md","lg","xl"],"desc":"尺寸：sm=44px，md=66px，lg=110px，xl=140px"},"variant":{"type":"enum","values":["default","shadow","accent"],"desc":"变体：default=浅底深字，shadow=带阴影，accent=实色反白"},"text":{"type":"string","required":true,"desc":"编号文字，如 一/二/三 或 01/02/03"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<span class=\"circle-num circle-md\">一</span>","promptHint":"适用于演示文稿目录、报告模块编号、步骤圆形指示器等场景。"} },
+      { id: 'badge-tag',     label: '标签徽章', path: 'components/badge-tag/badge-tag.html',         theme: 'follow', _meta: {"name":"badge-tag","label":"标签徽章","category":"基础组件","description":"圆角标签/徽章组件，支持填充、描边、实色、带点四种风格，小/默认/大三种尺寸","props":{"style":{"type":"enum","values":["fill","outline","accent","dot"],"desc":"徽章风格：fill=浅底深字，outline=描边，accent=实色反白，dot=带状态点"},"size":{"type":"enum","values":["sm","md","lg"],"desc":"尺寸：sm=小号，md=默认，lg=大号"},"label":{"type":"string","required":true,"desc":"标签文本"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<span class=\"badge badge-fill\">T+1 至 T+3</span>","promptHint":"适用于时间标签、分类标记、状态指示、模块标识等场景。"} },
+      { id: 'data-table',    label: '数据表格', path: 'components/data-table/data-table.html',       theme: 'follow', _meta: {"name":"data-table","label":"数据表格","category":"基础组件","description":"带主题色表头的数据表格组件，支持斑马纹、紧凑、全边框三种变体。","props":{"striped":{"type":"boolean","desc":"是否启用斑马纹（隔行变色）"},"compact":{"type":"boolean","desc":"是否使用紧凑模式（减小内边距和字号）"},"bordered":{"type":"boolean","desc":"是否显示全边框（单元格边框）"},"columns":{"type":"array","desc":"列定义数组，每项含 label 字段"},"rows":{"type":"array","desc":"行数据数组"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<table class=\"data-table\">\n  <thead><tr><th>列A</th><th>列B</th></tr></thead>\n  <tbody><tr><td>数据</td><td>数据</td></tr></tbody>\n</table>","promptHint":"适用于数据分析表、对比表、流程说明表、规格参数表等场景。"} },
+      { id: 'hero-card',     label: '封面卡片', path: 'components/hero-card/hero-card.html',         theme: 'follow', _meta: {"name":"hero-card","label":"封面卡片","category":"基础组件","description":"用于封面页或重点区域的卡片组合。支持三种模式：浅色卡片叠加深色渐变背景、暗色区半透明卡片、统计数字卡片。","props":{"mode":{"type":"enum","values":["light-on-dark","dark-section","stat-grid"],"desc":"卡片模式：light-on-dark=浅色卡片+深色渐变背景，dark-section=暗色区+半透明卡片，stat-grid=统计数字网格"},"heading":{"type":"string","desc":"区域标题"},"sub":{"type":"string","desc":"区域副标题/描述"},"items":{"type":"array","desc":"卡片数据数组"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":false,"usage":"<section class=\"hero-section\">\n  <h2>报告标题</h2>\n  <p class=\"sub\">描述文本</p>\n  <div class=\"hero-cards\">\n    <div class=\"hero-card\"><h3>卡片标题</h3><p>描述</p></div>\n  </div>\n</section>","promptHint":"适用于报告封面、团队介绍、产品亮点展示、核心指标概览等场景。"} },
     ]
   },
   {
     id: 'charts', label: '图表', icon: 'chart', defaultOpen: false,
     children: [
-      { id: 'bar-chart',       label: '柱状图',   path: 'charts/bar-chart/bar-chart.html',           meta: 'charts/bar-chart/bar-chart.meta.json',           theme: 'follow' },
-      { id: 'timeline-chart',  label: '时间线图', path: 'charts/timeline-chart/timeline-chart.html', meta: 'charts/timeline-chart/timeline-chart.meta.json', theme: 'follow' },
+      { id: 'bar-chart',       label: '柱状图',   path: 'charts/bar-chart/bar-chart.html',           theme: 'follow', _meta: {"name":"bar-chart","label":"柱状图","category":"图表","description":"基于 ECharts 5 的可主题切换柱状图组件。支持垂直柱状、横向柱状、分组柱状三种布局。","props":{"layout":{"type":"enum","values":["vertical","horizontal","grouped"],"desc":"柱状图布局：vertical=垂直，horizontal=横向，grouped=分组"},"data":{"type":"object","desc":"图表数据：categories（类别数组）、series（系列数组）"},"height":{"type":"string","desc":"图表高度，默认 360px"},"title":{"type":"string","desc":"图表标题"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":true,"usage":"<div class=\"chart\" id=\"myChart\" style=\"width:100%;height:360px;\"></div>\n<script>\n  const chart = echarts.init(document.getElementById('myChart'));\n  chart.setOption({ /* ECharts 配置 */ });\n<\/script>","promptHint":"适用于数据对比、收益归因展示、排名分析、月度趋势等场景。需要引入 ECharts 5 CDN。"} },
+      { id: 'timeline-chart',  label: '时间线图', path: 'charts/timeline-chart/timeline-chart.html', theme: 'follow', _meta: {"name":"timeline-chart","label":"时间线图","category":"图表","description":"基于 ECharts 5 的时序数据图表组件，支持折线面积图和双轴对比图（柱状+折线）。","props":{"layout":{"type":"enum","values":["line-area","dual-axis"],"desc":"图表类型：line-area=折线面积图，dual-axis=双轴对比图"},"data":{"type":"object","desc":"图表数据：categories（时间轴数组）、series（系列数组）"},"height":{"type":"string","desc":"图表高度，默认 360px"},"smooth":{"type":"boolean","desc":"折线是否平滑，默认 true"}},"slots":[],"cssPath":"../tokens/business-bluewhite.css","echarts":true,"usage":"<div class=\"chart\" id=\"myChart\" style=\"width:100%;height:360px;\"></div>\n<script>\n  const chart = echarts.init(document.getElementById('myChart'));\n  chart.setOption({ /* ECharts 配置，含 xAxis/yAxis/series */ });\n<\/script>","promptHint":"适用于时间序列分析、收益率走势图、规模变化趋势、多指标对比等场景。需要引入 ECharts 5 CDN。"} },
     ]
   },
   {
@@ -195,9 +195,9 @@ const MANIFEST_MENU = [
   {
     id: 'templates', label: '完整案例', icon: 'file', defaultOpen: false,
     children: [
-      { id: 'combo-a4-bluewhite', label: 'A4 + 商务蓝白',   path: 'templates/combo-a4-bluewhite.html', meta: null, theme: 'follow' },
-      { id: 'combo-slide-rc',     label: 'Slide + RC 浅蓝', path: 'templates/combo-slide-rc.html',     meta: null, theme: 'follow' },
-      { id: 'combo-scroll-dark',  label: '滚动 + 暗黑科技', path: 'templates/combo-scroll-dark.html',  meta: null, theme: 'follow' },
+      { id: 'combo-a4-bluewhite', label: 'A4 + 商务蓝白',   path: 'templates/combo-a4-bluewhite.html', meta: null, theme: 'fixed' },
+      { id: 'combo-slide-rc',     label: 'Slide + RC 浅蓝', path: 'templates/combo-slide-rc.html',     meta: null, theme: 'fixed' },
+      { id: 'combo-scroll-dark',  label: '滚动 + 暗黑科技', path: 'templates/combo-scroll-dark.html',  meta: null, theme: 'fixed' },
     ]
   },
 ];
@@ -249,36 +249,47 @@ createApp({
     toggleGroup(id) {
       this.openGroups[id] = !this.openGroups[id];
     },
-    async selectItem(item, group) {
+    selectItem(item, group) {
       this.selectedItem = { ...item, category: group?.label };
       this.activeTab = 'code';
       this.codePanelOpen = true;
       this.mobileMenuOpen = false;
-      this.iframeKey++;
 
-      // 加载源代码
+      // 元信息：从内联 _meta 读取，并合并路径信息
+      if (item._meta) {
+        const fullMeta = {
+          sourcePath: item.path,
+          tokenPath: 'tokens/business-bluewhite.css',
+          cssVars: ['--primary-50','--primary-100','--primary-200','--primary-300','--primary-400','--primary-500','--primary-700','--primary-800','--primary-900','--surface','--surface-alt','--bg','--text','--text-muted','--text-light','--text-inverse','--border','--border-light','--radius-card','--radius-tag','--radius-circle','--shadow-card','--font','--font-display','--accent-green','--accent-red','--accent-amber','--big-number','--big-number-color','--process-border','--table-th-bg','--table-th-text','--tag-bg','--tag-text','--cover-bg'],
+          ...item._meta
+        };
+        this.metaContent = JSON.stringify(fullMeta, null, 2);
+      } else {
+        this.metaContent = '';
+      }
+
+      // 源代码：优先 fetch/XHR，失败则等 iframe onLoad 回退
+      this.sourceCode = '';
+      this.loadSourceCode(item.path);
+
+      this.iframeKey++;
+    },
+    async loadSourceCode(path) {
       try {
-        const res = await fetch(item.path);
-        this.sourceCode = await res.text();
+        const resp = await fetch(path);
+        if (resp.ok) { this.sourceCode = await resp.text(); this.$nextTick(() => this.highlightCode()); return; }
+      } catch (e) { /* fetch 失败 */ }
+      try {
+        const text = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', path, true);
+          xhr.onload = () => { if (xhr.status === 200 || xhr.status === 0) resolve(xhr.responseText); else reject(new Error('XHR')); };
+          xhr.onerror = () => reject(new Error('XHR'));
+          xhr.send();
+        });
+        this.sourceCode = text;
         this.$nextTick(() => this.highlightCode());
-      } catch (e) {
-        this.sourceCode = '// 无法加载源代码（file:// 协议下请使用本地服务器）';
-      }
-
-      // 加载元信息
-      this.metaContent = '';
-      if (item.meta) {
-        try {
-          const res = await fetch(item.meta);
-          const json = await res.json();
-          this.metaContent = JSON.stringify(json, null, 2);
-          this.$nextTick(() => this.highlightCode());
-        } catch (e) {
-          this.metaContent = '// 无法加载元信息';
-        }
-      }
-
-      this.iframeKey++;
+      } catch (e) { /* XHR 失败，等 iframe onLoad 回退 */ }
     },
     switchTheme(themeId) {
       this.currentTheme = themeId;
@@ -310,22 +321,36 @@ createApp({
         });
       });
     },
-    async copyCode() {
+    onIframeLoad() {
+      if (this.sourceCode) return;
+      const iframe = this.$refs.previewFrame;
+      if (!iframe) return;
       try {
-        const text = this.sourceCode || (await (await fetch(this.selectedItem.path)).text());
-        await navigator.clipboard.writeText(text);
-        this.showToast('代码已复制');
-      } catch (e) {
-        this.showToast('复制失败，请手动复制');
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (doc && doc.documentElement) {
+          this.sourceCode = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+          this.$nextTick(() => this.highlightCode());
+        }
+      } catch (e) { /* 跨域读取失败 */ }
+    },
+    copyCode() {
+      if (this.sourceCode) {
+        navigator.clipboard.writeText(this.sourceCode).then(() => {
+          this.showToast('代码已复制');
+        }).catch(() => {
+          this.showToast('复制失败，请手动复制');
+        });
+      } else {
+        this.showToast('源代码尚未加载，请等待预览完成');
       }
     },
-    async copyMeta() {
-      try {
-        await navigator.clipboard.writeText(this.metaContent);
+    copyMeta() {
+      if (!this.metaContent) { this.showToast('无元信息可复制'); return; }
+      navigator.clipboard.writeText(this.metaContent).then(() => {
         this.showToast('元信息已复制');
-      } catch (e) {
+      }).catch(() => {
         this.showToast('复制失败');
-      }
+      });
     },
     addToBasket() {
       if (!this.selectedItem) return;
@@ -335,8 +360,8 @@ createApp({
         id: this.selectedItem.id,
         label: this.selectedItem.label,
         path: this.selectedItem.path,
-        metaPath: this.selectedItem.meta,
         category: this.selectedItem.category,
+        meta: this.selectedItem._meta || null,
         addedAt: new Date().toISOString(),
       });
       localStorage.setItem('prompt-basket', JSON.stringify(this.promptBasket));
