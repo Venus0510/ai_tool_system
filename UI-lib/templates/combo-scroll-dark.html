@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Landing Page · 暗黑科技风格</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="../../tokens/dark-tech.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dt: {
+              bg: '#0b1020', deep: '#08101f', soft: '#121a33', raised: '#0f172a',
+              surface: 'rgba(255,255,255,0.08)', 'surface-light': 'rgba(255,255,255,0.07)',
+              border: 'rgba(255,255,255,0.14)', 'border-light': 'rgba(255,255,255,0.1)',
+              text: '#f5f7fb', muted: '#aeb7cc', dim: '#7d869c',
+              accent: '#6ea8ff', 'accent-2': '#9ee8c8', warning: '#ffd166',
+            }
+          },
+          fontFamily: {
+            dt: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"PingFang SC"', '"Microsoft YaHei"', 'Arial', 'sans-serif'],
+          },
+          screens: {
+            'xs': '480px',
+            'sm': '640px',
+            'md': '768px',
+            'lg': '1024px',
+            'xl': '1180px',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* 移动端安全区域 */
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+  </style>
+</head>
+
+<body class="font-dt text-dt-text" style="background: radial-gradient(circle at 20% 10%, rgba(110,168,255,0.28), transparent 32%),
+             radial-gradient(circle at 85% 20%, rgba(158,232,200,0.18), transparent 28%),
+             linear-gradient(180deg, #08101f 0%, #0b1020 46%, #0f172a 100%);">
+
+  <div id="app">
+
+    <!-- ====== 导航栏 ====== -->
+    <nav class="sticky top-0 z-50 border-b border-white/10 safe-bottom"
+      style="backdrop-filter: blur(18px); background: rgba(8,16,31,0.72);">
+      <div class="max-w-[1180px] mx-auto px-4 lg:px-6 py-3 lg:py-4 flex justify-between items-center gap-4">
+        <span class="font-bold tracking-[.02em] text-white text-base lg:text-lg shrink-0">{{ brand }}</span>
+
+        <!-- Desktop 导航链接 -->
+        <div class="hidden md:flex gap-5 text-sm text-dt-muted flex-wrap">
+          <a v-for="link in navLinks" :key="link.label" :href="link.href"
+            class="hover:text-white cursor-pointer no-underline text-inherit transition-colors">{{ link.label }}</a>
+        </div>
+
+        <!-- Mobile 汉堡按钮 -->
+        <button @click="menuOpen = !menuOpen"
+          class="md:hidden text-white p-1.5 rounded-lg border border-white/20 bg-white/10" aria-label="菜单">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path v-if="!menuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16" />
+            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile 下拉菜单 -->
+      <div v-show="menuOpen" class="md:hidden px-4 pb-4 space-y-2">
+        <a v-for="link in navLinks" :key="link.label" :href="link.href" @click="menuOpen = false" class="block py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-sm text-dt-muted
+                hover:text-white hover:bg-white/10 no-underline transition-colors">
+          {{ link.label }}
+        </a>
+      </div>
+    </nav>
+
+    <!-- ====== Hero ====== -->
+    <section class="max-w-[1180px] mx-auto px-4 lg:px-6 pt-12 sm:pt-16 lg:pt-[84px] pb-8 lg:pb-11
+                  grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8 items-stretch">
+      <div>
+        <span class="inline-flex items-center gap-2 px-2.5 py-1.5 lg:px-3 lg:py-2 border border-white/20 rounded-full
+                   text-dt-accent-2 bg-white/10 text-xs lg:text-[13px] mb-4 lg:mb-[22px]">
+          <span class="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-dt-accent-2 inline-block"></span>
+          {{ hero.eyebrow }}
+        </span>
+        <h1 class="text-[clamp(32px,8vw,72px)] lg:text-[clamp(40px,6vw,72px)] leading-[1.05] lg:leading-[1.03]
+                 -tracking-[.04em] lg:-tracking-[.055em] font-bold m-0">
+          {{ hero.title }}
+        </h1>
+        <p class="text-dt-muted text-base lg:text-lg max-w-[720px] mt-4 lg:mt-6">{{ hero.desc }}</p>
+        <div class="flex gap-3 lg:gap-3.5 mt-6 lg:mt-[34px] flex-wrap">
+          <a :href="hero.cta1.href" class="rounded-full px-4 lg:px-[18px] py-2.5 lg:py-[13px] font-semibold text-sm no-underline
+                  bg-gradient-to-br from-dt-accent to-dt-accent-2 text-dt-deep
+                  hover:-translate-y-0.5 transition-transform cursor-pointer">
+            {{ hero.cta1.label }}
+          </a>
+          <a :href="hero.cta2.href" class="rounded-full px-4 lg:px-[18px] py-2.5 lg:py-[13px] font-semibold text-sm no-underline
+                  border border-white/20 bg-white/10 text-white
+                  hover:-translate-y-0.5 transition-transform cursor-pointer">
+            {{ hero.cta2.label }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero 数据卡片 -->
+      <div class="rounded-[20px] lg:rounded-[24px] border border-white/20 p-4 lg:p-6 flex flex-col justify-between
+                min-h-0 lg:min-h-[420px] shadow-[0_24px_80px_rgba(0,0,0,.32)] mt-6 lg:mt-0"
+        style="background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));">
+        <h3 class="text-lg lg:text-xl font-bold mb-2 lg:mb-3">{{ hero.card.title }}</h3>
+        <div class="grid grid-cols-2 gap-2 lg:gap-3 mt-3 lg:mt-[22px]">
+          <div v-for="stat in hero.card.stats" :key="stat.label"
+            class="p-3 lg:p-[18px] rounded-[14px] lg:rounded-[18px] border border-white/10 bg-white/10">
+            <strong class="block text-[24px] lg:text-[30px] -tracking-[.04em]">{{ stat.value }}</strong>
+            <span class="text-dt-muted text-[12px] lg:text-[13px]">{{ stat.label }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Features 卡片网格 ====== -->
+    <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-14">
+      <div class="flex flex-col lg:flex-row justify-between gap-4 lg:gap-7 items-start lg:items-end mb-4 lg:mb-6">
+        <h2
+          class="text-[clamp(24px,6vw,44px)] lg:text-[clamp(28px,4vw,44px)] leading-[1.1] -tracking-[.04em] font-bold m-0">
+          {{ features.title }}
+        </h2>
+        <p class="max-w-[520px] text-dt-muted text-sm lg:text-base">{{ features.desc }}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-[22px]">
+        <div v-for="card in features.items" :key="card.title" class="rounded-[20px] lg:rounded-[24px] border border-white/20 p-4 lg:p-6
+                  shadow-[0_24px_80px_rgba(0,0,0,.32)] min-h-0 lg:min-h-[180px]"
+          style="background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 lg:px-3 rounded-full border border-white/20
+                    bg-white/10 text-dt-accent-2 text-[11px] lg:text-xs font-bold mb-3 lg:mb-4">
+            {{ card.tag }}
+          </div>
+          <h3 class="text-lg lg:text-xl font-bold mb-2 lg:mb-3">{{ card.title }}</h3>
+          <p class="text-dt-muted text-sm leading-relaxed">{{ card.desc }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== 底部 CTA ====== -->
+    <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-16 text-center safe-bottom">
+      <div
+        class="rounded-[20px] lg:rounded-[24px] border border-white/20 p-6 lg:p-12 shadow-[0_24px_80px_rgba(0,0,0,.32)]"
+        style="background: linear-gradient(135deg, rgba(110,168,255,0.18), rgba(158,232,200,0.10));">
+        <h2 class="text-[clamp(22px,5vw,40px)] lg:text-[clamp(28px,4vw,40px)] font-bold mb-3 lg:mb-4">{{ cta.title }}
+        </h2>
+        <p class="text-dt-muted text-base lg:text-lg max-w-[640px] mx-auto mb-6 lg:mb-8">{{ cta.desc }}</p>
+        <a :href="cta.btn.href" class="inline-block rounded-full px-6 lg:px-8 py-3 lg:py-3.5 font-bold text-sm lg:text-base no-underline
+                bg-gradient-to-br from-dt-accent to-dt-accent-2 text-dt-deep
+                hover:-translate-y-0.5 transition-transform cursor-pointer">
+          {{ cta.btn.label }}
+        </a>
+      </div>
+      <p class="text-dt-dim text-xs mt-6 lg:mt-8">{{ footer }}</p>
+    </section>
+
+  </div><!-- /#app -->
+
+  <script>
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          menuOpen: false,
+          brand: 'RC 金融科技',
+          navLinks: [
+            { label: '服务方案', href: '#' },
+            { label: '案例研究', href: '#' },
+            { label: '数据产品', href: '#' },
+            { label: '关于我们', href: '#' },
+          ],
+          hero: {
+            eyebrow: '专业估值咨询服务',
+            title: '数据驱动的金融估值解决方案',
+            desc: '覆盖公募基金、私募资管、银行理财、信托计划等全品类资管产品，提供符合最新监管要求的估值政策咨询与系统落地服务。',
+            cta1: { label: '预约演示 →', href: '#' },
+            cta2: { label: '了解更多', href: '#' },
+            card: {
+              title: '核心指标',
+              stats: [
+                { value: '200+', label: '服务客户数' },
+                { value: '12类', label: '覆盖资管产品' },
+                { value: '500+', label: '估值方法库' },
+                { value: '99.7%', label: '估值准确率' },
+              ],
+            },
+          },
+          features: {
+            title: '全品类估值能力',
+            desc: '覆盖境内主要资管产品类型及各类底层资产，支持多会计准则与监管口径切换。',
+            items: [
+              { tag: '资管产品', title: '公募基金估值', desc: '覆盖货币、债券、混合、股票、FOF、REITs等全品类公募基金产品的估值政策设计与系统实施。' },
+              { tag: '资管产品', title: '私募与专户估值', desc: '支持私募证券基金、基金专户、券商资管等私募类产品的净值计算与复核服务。' },
+              { tag: '底层资产', title: '固收类资产估值', desc: '含利率债、信用债、ABS、同业存单、存款等资产的公允价值评估与中债/中证估值比对。' },
+              { tag: '底层资产', title: '衍生品与跨境资产', desc: '覆盖利率互换、国债期货、跨境基金、QDII等复杂资产的估值模型与参数校准。' },
+            ],
+          },
+          cta: {
+            title: '获取定制化估值方案',
+            desc: '联系我们获取针对贵司产品类型与业务规模的估值政策评估与落地方案。',
+            btn: { label: '立即咨询 →', href: '#' },
+          },
+          footer: '© 2026 RC Financial Technology. 容诚金融科技团队.',
+        };
+      }
+    }).mount('#app');
+  </script>
+
+</body>
+
+</html>

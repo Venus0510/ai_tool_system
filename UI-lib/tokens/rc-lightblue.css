@@ -1,0 +1,115 @@
+/* ========================================
+   Design Token: RC浅蓝主题风格 (RC Light Blue Theme)
+   提取自: ppt.html - 估值政策培训
+   适用场景: 演示文稿、培训Slide、分页展示型内容
+   ======================================== */
+
+:root {
+  /* ---- 色板 ---- */
+  --rc-primary-50:  #eef8fc;
+  --rc-primary-100: #d0eef8;
+  --rc-primary-200: #a3ddf2;
+  --rc-primary-400: #0096d6;
+  --rc-primary-500: #008bc7;
+  --rc-primary-600: #007ba8;
+
+  --rc-navy:        #123a63;
+  --rc-blue-dark:   #0f5a96;
+  --rc-blue-mid:    #00a6de;
+
+  --rc-surface:     #ffffff;
+  --rc-bg:          #eef2f6;
+
+  --rc-text:        #1f2937;
+  --rc-text-dark:   #20242a;
+  --rc-text-muted:  #7b8088;
+  --rc-text-muted2: #65758a;
+  --rc-text-light:  #666a70;
+
+  --rc-border:      #d9e3ee;
+  --rc-border-dark: #d7e4ef;
+  --rc-line:        #d9e4ef;
+
+  --rc-accent-green:  #39b54a;
+  --rc-accent-red:    #d13b32;
+  --rc-accent-amber:  #c89007;
+  --rc-accent-cyan:   #178f84;
+
+  /* ---- 排版 ---- */
+  --rc-font:           -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+  --rc-font-display:   "STKaiti", "Kaiti SC", "KaiTi", "Noto Serif SC", "Microsoft YaHei", serif;
+
+  --rc-text-h1:        clamp(44px, 5.35vw, 76px);
+  --rc-text-h2:        clamp(38px, 5vw, 68px);
+  --rc-text-h3:        clamp(24px, 2.85vw, 40px);
+  --rc-text-module:    clamp(42px, 5.2vw, 72px);
+  --rc-text-body:      16px;
+  --rc-text-sm:        14px;
+  --rc-text-xs:        13px;
+
+  --rc-leading:        1.55;
+  --rc-leading-head:   1.18;
+
+  /* ---- 间距 ---- */
+  --rc-slide-padding-x: 7.6vw;
+  --rc-slide-padding-y: 8.2vh;
+  --rc-section-gap:     4.6vh;
+
+  /* ---- 圆角 ---- */
+  --rc-radius-card:   18px;
+  --rc-radius-tag:    999px;
+  --rc-radius-circle: 999px;
+
+  /* ---- 阴影 ---- */
+  --rc-shadow-card:    0 8px 24px rgba(18, 58, 99, 0.035);
+  --rc-shadow-circle:  0 14px 38px rgba(0, 150, 214, 0.12);
+  --rc-shadow-nav:     0 8px 22px rgba(18, 58, 99, 0.24);
+
+  /* ---- 组件 Token ---- */
+  --rc-accent-bar-w:        7px;
+  --rc-accent-bar-color:    var(--rc-primary-400);
+  --rc-cover-title-color:   var(--rc-primary-400);
+  --rc-module-num-bg:       var(--rc-primary-50);
+  --rc-module-num-color:    var(--rc-primary-400);
+  --rc-divider-gradient:    linear-gradient(90deg, var(--rc-primary-400), var(--rc-blue-mid), rgba(0,166,222,0));
+  --rc-nav-bg:              var(--rc-navy);
+  --rc-table-border:        var(--rc-border);
+  --rc-footer-text:         var(--rc-text-muted);
+
+  /* === 通用变量别名（组件使用这些变量，适配所有主题） === */
+  --primary-50:      var(--rc-primary-50);
+  --primary-100:     var(--rc-primary-100);
+  --primary-200:     var(--rc-primary-200);
+  --primary-300:     #a3ddf2;
+  --primary-400:     var(--rc-primary-400);
+  --primary-500:     var(--rc-primary-500);
+  --primary-700:     var(--rc-navy);
+  --primary-800:     var(--rc-blue-dark);
+  --primary-900:     var(--rc-navy);
+  --surface:         var(--rc-surface);
+  --surface-alt:     #f3f6fa;
+  --bg:              var(--rc-bg);
+  --text:            var(--rc-text-dark);
+  --text-muted:      var(--rc-text-muted2);
+  --text-light:      var(--rc-text-light);
+  --text-inverse:    #ffffff;
+  --border:          var(--rc-border);
+  --border-light:    var(--rc-line);
+  --radius-card:     var(--rc-radius-card);
+  --radius-tag:      var(--rc-radius-tag);
+  --radius-circle:   var(--rc-radius-circle);
+  --shadow-card:     var(--rc-shadow-card);
+  --font:            var(--rc-font);
+  --font-display:    var(--rc-font-display);
+  --accent-green:    var(--rc-accent-green);
+  --accent-red:      var(--rc-accent-red);
+  --accent-amber:    var(--rc-accent-amber);
+  --big-number:      48px;
+  --big-number-color: var(--rc-primary-400);
+  --process-border:  4px solid var(--rc-primary-400);
+  --table-th-bg:     var(--rc-primary-50);
+  --table-th-text:   var(--rc-navy);
+  --tag-bg:          var(--rc-primary-50);
+  --tag-text:        var(--rc-blue-dark);
+  --cover-bg:        linear-gradient(135deg, var(--rc-navy), var(--rc-primary-500));
+}

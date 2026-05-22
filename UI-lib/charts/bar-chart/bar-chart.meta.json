@@ -1,0 +1,17 @@
+{
+  "name": "bar-chart",
+  "label": "柱状图",
+  "category": "图表",
+  "description": "基于 ECharts 5 的可主题切换柱状图组件。支持垂直柱状、横向柱状、分组柱状三种布局，图表颜色自动跟随 Design Token 主题。",
+  "props": {
+    "layout":  { "type": "enum", "values": ["vertical", "horizontal", "grouped"], "desc": "柱状图布局：vertical=垂直柱状，horizontal=横向柱状，grouped=分组柱状" },
+    "data":    { "type": "object", "desc": "图表数据：categories（类别数组）、series（系列数组，每项含 name、data、color 等）" },
+    "height":  { "type": "string", "desc": "图表高度，默认 360px" },
+    "title":   { "type": "string", "desc": "图表标题" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": true,
+  "usage": "<div class=\"chart\" id=\"myChart\" style=\"width:100%;height:360px;\"></div>\n<script>\n  const chart = echarts.init(document.getElementById('myChart'));\n  chart.setOption({ /* ECharts 配置 */ });\n<\/script>",
+  "promptHint": "适用于数据对比、收益归因展示、排名分析、月度趋势等场景。需要引入 ECharts 5 CDN。图表颜色读取 CSS 变量实现主题适配，核心颜色：--primary-500（主色）、--accent-green（辅助色）、--accent-amber（强调色）。"
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>封面卡片 · Hero Card</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 0; font-family: var(--font); }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .page-title { padding: 40px 24px 0; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0 0 32px; }
+    .section-label { padding: 0 24px; margin: 28px 0 14px; color: var(--text-light); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+
+    /* hero section with gradient bg */
+    .hero-section {
+      margin: 20px; border-radius: var(--radius-card);
+      padding: 48px 40px;
+      background: var(--cover-bg);
+      color: var(--text-inverse);
+    }
+    .hero-section h2 { font-size: 32px; margin: 0 0 8px; font-weight: 700; }
+    .hero-section .sub { font-size: 16px; opacity: 0.8; margin: 0 0 32px; max-width: 700px; line-height: 1.6; }
+
+    .hero-cards {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
+    }
+    .hero-card {
+      background: var(--surface); color: var(--text);
+      border-radius: var(--radius-card); padding: 20px 24px;
+      box-shadow: var(--shadow-card);
+      min-height: 100px;
+    }
+    .hero-card h3 { color: var(--primary-700); font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+    .hero-card p  { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0; }
+
+    /* dark section variant */
+    .dark-section {
+      margin: 20px; border-radius: var(--radius-card);
+      padding: 48px 40px;
+      background: var(--primary-900);
+      color: var(--text-inverse);
+    }
+    .dark-section h2 { font-size: 32px; margin: 0 0 8px; font-weight: 700; color: #fff; }
+    .dark-section .sub { font-size: 16px; opacity: 0.7; margin: 0 0 32px; max-width: 700px; line-height: 1.6; }
+
+    .dark-card {
+      background: rgba(255,255,255,0.08); color: #fff;
+      border-radius: var(--radius-card); padding: 20px 24px;
+      min-height: 100px;
+    }
+    .dark-card h3 { color: var(--primary-400); font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+    .dark-card p  { font-size: 14px; line-height: 1.6; margin: 0; opacity: 0.85; }
+
+    /* stat hero */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .stat-card-item {
+      background: var(--surface); border-radius: var(--radius-card);
+      padding: 18px 20px; text-align: center;
+      border: 1px solid var(--border-light);
+    }
+    .stat-card-item .value { font-size: 30px; font-weight: 700; color: var(--big-number-color); }
+    .stat-card-item .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    .demo-bg { background: var(--bg); padding: 32px 0; }
+  </style>
+</head>
+<body>
+
+<div class="demo-bg">
+  <div class="container">
+    <div class="page-title">
+      <h1>封面卡片 · Hero Card</h1>
+      <p>用于封面页或重点区域的卡片组合，支持浅色卡片叠加在深色渐变背景、暗色区卡片、以及统计数字卡片三种模式。</p>
+    </div>
+  </div>
+
+  <div class="section-label">模式一：浅色卡片 + 深色渐变背景</div>
+  <section class="hero-section">
+    <h2>货币基金月度收益归因分析<br>服务方案</h2>
+    <p class="sub">面向公募基金管理人的货币基金产品，提供基于收益拆解、同类对比、风险识别与管理建议的月度绩效分析服务。</p>
+    <div class="hero-cards">
+      <div class="hero-card">
+        <h3>收益来源拆解</h3>
+        <p>识别票息、杠杆、久期、交易/骑乘、费用调整等因素对收益的影响。</p>
+      </div>
+      <div class="hero-card">
+        <h3>同类表现定位</h3>
+        <p>结合竞品货币基金表现，判断产品收益水平的相对位置。</p>
+      </div>
+      <div class="hero-card">
+        <h3>管理建议输出</h3>
+        <p>形成月度复盘结论，为后续投资管理与风险控制提供支持。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-label">模式二：暗色背景 + 半透明卡片（暗色段）</div>
+  <section class="dark-section">
+    <h2>服务团队介绍</h2>
+    <p class="sub">本次服务由金融工程团队领衔，搭配资深资管行业高管与基金财务专业人员。</p>
+    <div class="hero-cards">
+      <div class="dark-card">
+        <h3>项目负责人</h3>
+        <p>负责整体服务质量、客户沟通、分析框架设计及关键结论审核。</p>
+      </div>
+      <div class="dark-card">
+        <h3>金融工程团队</h3>
+        <p>负责收益归因模型、久期分析、杠杆测算、曲线分析及数据处理逻辑。</p>
+      </div>
+      <div class="dark-card">
+        <h3>资深行业高管</h3>
+        <p>负责市场环境解读、同类产品比较、投资策略复盘及管理建议形成。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-label">模式三：统计数字卡片（Stat Card Grid）</div>
+  <div style="padding:0 20px 40px;">
+    <div class="stat-grid">
+      <div class="stat-card-item">
+        <div class="value">200+</div>
+        <div class="label">服务客户数</div>
+      </div>
+      <div class="stat-card-item">
+        <div class="value">12类</div>
+        <div class="label">覆盖资管产品</div>
+      </div>
+      <div class="stat-card-item">
+        <div class="value">500+</div>
+        <div class="label">估值方法库</div>
+      </div>
+      <div class="stat-card-item">
+        <div class="value">99.7%</div>
+        <div class="label">估值准确率</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../../tokens/${theme}.css`;
+}
+</script>
+</body>
+</html>

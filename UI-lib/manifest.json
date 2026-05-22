@@ -1,0 +1,173 @@
+{
+  "menu": [
+    {
+      "id": "basic-components",
+      "label": "基础组件",
+      "icon": "component",
+      "defaultOpen": true,
+      "children": [
+        {
+          "id": "stat-card",
+          "label": "数据卡片",
+          "path": "components/stat-card/stat-card.html",
+          "meta": "components/stat-card/stat-card.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "timeline",
+          "label": "时间线",
+          "path": "components/timeline/timeline.html",
+          "meta": "components/timeline/timeline.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "process-step",
+          "label": "流程步骤",
+          "path": "components/process-step/process-step.html",
+          "meta": "components/process-step/process-step.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "circle-number",
+          "label": "圆形编号",
+          "path": "components/circle-number/circle-number.html",
+          "meta": "components/circle-number/circle-number.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "badge-tag",
+          "label": "标签徽章",
+          "path": "components/badge-tag/badge-tag.html",
+          "meta": "components/badge-tag/badge-tag.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "data-table",
+          "label": "数据表格",
+          "path": "components/data-table/data-table.html",
+          "meta": "components/data-table/data-table.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "hero-card",
+          "label": "封面卡片",
+          "path": "components/hero-card/hero-card.html",
+          "meta": "components/hero-card/hero-card.meta.json",
+          "theme": "follow"
+        }
+      ]
+    },
+    {
+      "id": "charts",
+      "label": "图表",
+      "icon": "chart",
+      "defaultOpen": false,
+      "children": [
+        {
+          "id": "bar-chart",
+          "label": "柱状图",
+          "path": "charts/bar-chart/bar-chart.html",
+          "meta": "charts/bar-chart/bar-chart.meta.json",
+          "theme": "follow"
+        },
+        {
+          "id": "timeline-chart",
+          "label": "时间线图",
+          "path": "charts/timeline-chart/timeline-chart.html",
+          "meta": "charts/timeline-chart/timeline-chart.meta.json",
+          "theme": "follow"
+        }
+      ]
+    },
+    {
+      "id": "layouts",
+      "label": "版式骨架",
+      "icon": "layout",
+      "defaultOpen": true,
+      "children": [
+        {
+          "id": "a4-landscape",
+          "label": "A4 横版",
+          "path": "skeletons/a4-landscape-skeleton.html",
+          "meta": null,
+          "theme": "follow"
+        },
+        {
+          "id": "slide-deck",
+          "label": "Slide 翻页",
+          "path": "skeletons/slide-deck-skeleton.html",
+          "meta": null,
+          "theme": "follow"
+        },
+        {
+          "id": "scroll-page",
+          "label": "自由滚动",
+          "path": "skeletons/scroll-page-skeleton.html",
+          "meta": null,
+          "theme": "follow"
+        }
+      ]
+    },
+    {
+      "id": "token-preview",
+      "label": "Token 预览",
+      "icon": "palette",
+      "defaultOpen": false,
+      "children": [
+        {
+          "id": "token-business",
+          "label": "商务蓝白",
+          "path": "previews/token-preview.html",
+          "meta": null,
+          "theme": "fixed",
+          "params": { "token": "business-bluewhite" }
+        },
+        {
+          "id": "token-rc",
+          "label": "RC 浅蓝",
+          "path": "previews/token-preview.html",
+          "meta": null,
+          "theme": "fixed",
+          "params": { "token": "rc-lightblue" }
+        },
+        {
+          "id": "token-dark",
+          "label": "暗黑科技",
+          "path": "previews/token-preview.html",
+          "meta": null,
+          "theme": "fixed",
+          "params": { "token": "dark-tech" }
+        }
+      ]
+    },
+    {
+      "id": "templates",
+      "label": "完整案例",
+      "icon": "file",
+      "defaultOpen": false,
+      "children": [
+        {
+          "id": "combo-a4-bluewhite",
+          "label": "A4 + 商务蓝白",
+          "path": "templates/combo-a4-bluewhite.html",
+          "meta": null,
+          "theme": "follow"
+        },
+        {
+          "id": "combo-slide-rc",
+          "label": "Slide + RC 浅蓝",
+          "path": "templates/combo-slide-rc.html",
+          "meta": null,
+          "theme": "follow"
+        },
+        {
+          "id": "combo-scroll-dark",
+          "label": "滚动 + 暗黑科技",
+          "path": "templates/combo-scroll-dark.html",
+          "meta": null,
+          "theme": "follow"
+        }
+      ]
+    }
+  ]
+}

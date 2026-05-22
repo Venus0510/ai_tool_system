@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>流程步骤 · Process Step</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 40px 24px; background: var(--bg); font-family: var(--font); }
+    .container { max-width: 860px; margin: 0 auto; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0 0 32px; }
+    .section-label { margin: 28px 0 14px; color: var(--text-light); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+
+    .process-step {
+      border-left: var(--process-border);
+      background: var(--surface);
+      padding: 16px 20px; margin-bottom: 12px;
+      border-radius: 0 var(--radius-card) var(--radius-card) 0;
+      box-shadow: var(--shadow-card);
+    }
+    .process-step h3 { color: var(--primary-700); font-size: 18px; font-weight: 700; margin: 0 0 6px; }
+    .process-step p  { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0; }
+    .process-step .step-num { color: var(--primary-500); font-weight: 700; margin-right: 4px; }
+
+    /* right accent variant */
+    .process-step.right-accent { border-left: none; border-right: var(--process-border); border-radius: var(--radius-card) 0 0 var(--radius-card); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-title">
+    <h1>流程步骤 · Process Step</h1>
+    <p>左侧色条流程步骤卡片，用于展示递进式流程、方法步骤、报告结构等。</p>
+  </div>
+
+  <div class="section-label">默认：左侧色条</div>
+  <div class="process-step">
+    <h3><span class="step-num">1.</span> 产品表现概览</h3>
+    <p>展示基金七日年化、万份收益、规模变化、同类排名及相对业绩基准表现。</p>
+  </div>
+  <div class="process-step">
+    <h3><span class="step-num">2.</span> 收益核心归因</h3>
+    <p>按照五个维度量化和解释收益贡献，形成"主因—次因—扰动项"的归因结论。</p>
+  </div>
+  <div class="process-step">
+    <h3><span class="step-num">3.</span> 管理操作复盘</h3>
+    <p>复盘正偏离释放规模、时点、效果，帮助管理层讨论投资与销售部门的协调。</p>
+  </div>
+  <div class="process-step">
+    <h3><span class="step-num">4.</span> 同类产品比较</h3>
+    <p>在数据可得情况下，比较竞品货币基金收益、久期、杠杆和资产配置差异，解释相对表现。</p>
+  </div>
+  <div class="process-step">
+    <h3><span class="step-num">5.</span> 后续展望与建议</h3>
+    <p>结合产品正偏离储备、存单利率水平、回购成本和申赎趋势，提出下月管理关注事项。</p>
+  </div>
+
+  <div class="section-label">变体：右侧色条（right-accent）</div>
+  <div class="process-step right-accent">
+    <h3><span class="step-num">1.</span> 数据收集与整理</h3>
+    <p>获取组合持仓、收益表现、规模变化、申赎数据及市场利率数据。</p>
+  </div>
+  <div class="process-step right-accent">
+    <h3><span class="step-num">2.</span> 归因测算与复核</h3>
+    <p>完成五维度收益归因测算，并对异常波动和关键假设进行复核。</p>
+  </div>
+</div>
+
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../../tokens/${theme}.css`;
+}
+</script>
+</body>
+</html>

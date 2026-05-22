@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>A4 横版报告 · 版式骨架</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="../tokens/business-bluewhite.css" />
+
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm;
+      padding: 18mm 22mm;
+      page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { margin: 0; box-shadow: none; }
+    }
+    @media screen {
+      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<!--
+  版式骨架 · A4横版打印
+  用法：复制此文件 → 替换 data() 中 {{ }} 占位符 → 双击打开 → Ctrl+P 打印
+  页面变体：cover / card-grid / table / process / dark
+  复制对应的 section.a4-page 即可增加新页面
+  页码从封面 01 开始自动计数
+-->
+
+<div id="app">
+
+  <!-- ===== 封面 · 页码 01 ===== -->
+  <section class="a4-page bg-gradient-to-br from-slate-900 to-blue-900 text-white flex flex-col justify-center">
+    <h1 class="text-5xl font-bold mb-5">{{ cover.title }}<br/>{{ cover.subtitle }}</h1>
+    <p class="text-lg text-slate-300 max-w-3xl mb-7">{{ cover.desc }}</p>
+    <div class="grid grid-cols-3 gap-4">
+      <div v-for="card in cover.cards" :key="card.title"
+           class="bg-white text-gray-800 rounded-2xl p-5 shadow-lg">
+        <h3 class="text-lg text-blue-800 font-bold mb-2.5">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed">{{ card.desc }}</p>
+      </div>
+    </div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">01</div>
+  </section>
+
+  <!-- ===== 卡片网格 · 页码 02 ===== -->
+  <section class="a4-page bg-slate-50">
+    <h2 class="text-3xl text-slate-900 font-bold mb-3.5">{{ contentPage1.heading }}</h2>
+    <p class="text-lg text-slate-500 max-w-3xl mb-6">{{ contentPage1.sub }}</p>
+    <div class="grid grid-cols-3 gap-4">
+      <div v-for="card in contentPage1.cards" :key="card.num"
+           class="bg-white rounded-2xl p-5 shadow-lg">
+        <div class="text-5xl text-blue-600 font-bold mb-2">{{ card.num }}</div>
+        <h3 class="text-lg text-blue-800 font-bold mb-2.5">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed text-gray-700">{{ card.desc }}</p>
+      </div>
+    </div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">{{ contentPage1.pageNum }}</div>
+  </section>
+
+  <!-- ===== 表格+双栏 · 页码 03 ===== -->
+  <section class="a4-page bg-slate-50">
+    <h2 class="text-3xl text-slate-900 font-bold mb-3.5">{{ contentPage2.heading }}</h2>
+    <table class="w-full bg-white rounded-xl overflow-hidden text-sm">
+      <thead>
+        <tr>
+          <th v-for="h in contentPage2.tableHeaders" :key="h"
+              class="p-3 text-left bg-blue-100 text-blue-800 font-bold">{{ h }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, i) in contentPage2.tableRows" :key="i" class="border-b border-gray-200">
+          <td v-for="(cell, j) in row" :key="j" class="p-3">{{ cell }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="grid grid-cols-2 gap-4 mt-5">
+      <div v-for="card in contentPage2.bottomCards" :key="card.title"
+           class="bg-white rounded-2xl p-5 shadow-lg">
+        <h3 class="text-lg text-blue-800 font-bold mb-2.5">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed text-gray-700">{{ card.desc }}</p>
+      </div>
+    </div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">{{ contentPage2.pageNum }}</div>
+  </section>
+
+  <!-- ===== 流程步骤 · 页码 04 ===== -->
+  <section class="a4-page bg-slate-50">
+    <h2 class="text-3xl text-slate-900 font-bold mb-3.5">{{ contentPage3.heading }}</h2>
+    <p class="text-lg text-slate-500 max-w-3xl mb-6">{{ contentPage3.sub }}</p>
+    <div v-for="(step, i) in contentPage3.steps" :key="i"
+         class="border-l-4 border-blue-600 bg-white py-3.5 px-5 rounded-r-xl mb-3 shadow-md">
+      <h3 class="text-lg text-blue-800 font-bold mb-2">{{ i+1 }}. {{ step.title }}</h3>
+      <p class="text-sm leading-relaxed text-gray-700">{{ step.desc }}</p>
+    </div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-400">{{ contentPage3.pageNum }}</div>
+  </section>
+
+  <!-- ===== 暗色段 · 页码 05 ===== -->
+  <section class="a4-page bg-slate-900 text-white">
+    <h2 class="text-3xl text-white font-bold mb-3.5">{{ darkSection.heading }}</h2>
+    <p class="text-lg text-slate-300 max-w-3xl mb-6">{{ darkSection.sub }}</p>
+    <div class="grid grid-cols-4 gap-4">
+      <div v-for="card in darkSection.cards" :key="card.title"
+           class="bg-slate-800 rounded-2xl p-5 shadow-lg">
+        <h3 class="text-lg text-blue-300 font-bold mb-2">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed">{{ card.desc }}</p>
+      </div>
+    </div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs text-slate-500">{{ darkSection.pageNum }}</div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        cover: {
+          title: '{{ 报告主标题 }}', subtitle: '{{ 副标题 }}',
+          desc: '{{ 封面描述文本，简要说明报告目的和范围。 }}',
+          cards: [
+            { title: '{{ 要点一 }}', desc: '{{ 要点描述 }}' },
+            { title: '{{ 要点二 }}', desc: '{{ 要点描述 }}' },
+            { title: '{{ 要点三 }}', desc: '{{ 要点描述 }}' },
+          ],
+        },
+        contentPage1: {
+          heading: '{{ 章节标题 }}', sub: '{{ 章节副标题 }}',
+          cards: [
+            { num: '01', title: '{{ 卡片标题 }}', desc: '{{ 卡片描述 }}' },
+            { num: '02', title: '{{ 卡片标题 }}', desc: '{{ 卡片描述 }}' },
+            { num: '03', title: '{{ 卡片标题 }}', desc: '{{ 卡片描述 }}' },
+          ],
+          pageNum: '02',
+        },
+        contentPage2: {
+          heading: '{{ 章节标题 }}',
+          tableHeaders: ['列A', '列B', '列C'],
+          tableRows: [
+            ['数据', '数据', '数据'],
+            ['数据', '数据', '数据'],
+          ],
+          bottomCards: [
+            { title: '{{ 卡片标题 }}', desc: '{{ 卡片描述 }}' },
+            { title: '{{ 卡片标题 }}', desc: '{{ 卡片描述 }}' },
+          ],
+          pageNum: '03',
+        },
+        contentPage3: {
+          heading: '{{ 章节标题 }}', sub: '{{ 章节副标题 }}',
+          steps: [
+            { title: '{{ 步骤一 }}', desc: '{{ 步骤描述 }}' },
+            { title: '{{ 步骤二 }}', desc: '{{ 步骤描述 }}' },
+            { title: '{{ 步骤三 }}', desc: '{{ 步骤描述 }}' },
+          ],
+          pageNum: '04',
+        },
+        darkSection: {
+          heading: '{{ 章节标题 }}', sub: '{{ 章节副标题 }}',
+          cards: [
+            { title: '{{ 卡片A }}', desc: '{{ 描述 }}' },
+            { title: '{{ 卡片B }}', desc: '{{ 描述 }}' },
+            { title: '{{ 卡片C }}', desc: '{{ 描述 }}' },
+            { title: '{{ 卡片D }}', desc: '{{ 描述 }}' },
+          ],
+          pageNum: '05',
+        },
+      };
+    }
+  }).mount('#app');
+</script>
+
+</body>
+</html>

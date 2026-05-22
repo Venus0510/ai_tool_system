@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>柱状图 · Bar Chart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 32px 24px; background: var(--bg); font-family: var(--font); }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0 0 28px; }
+    .chart-box { background: var(--surface); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); margin-bottom: 24px; }
+    .chart-box h3 { color: var(--text); font-size: 16px; margin: 0 0 16px; font-weight: 700; }
+    .chart { width: 100%; height: 360px; }
+    .demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 768px) { .demo-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-title">
+    <h1>柱状图 · Bar Chart</h1>
+    <p>基于 ECharts 5 的柱状图组件，支持垂直柱状、横向柱状、分组柱状三种布局。图表颜色通过 CSS 变量适配主题切换。</p>
+  </div>
+
+  <div class="chart-box">
+    <h3>垂直柱状图 · 月度收益归因（单位：bp）</h3>
+    <div class="chart" id="chart1"></div>
+  </div>
+
+  <div class="demo-row">
+    <div class="chart-box">
+      <h3>横向柱状图 · 同类产品对比</h3>
+      <div class="chart" id="chart2"></div>
+    </div>
+    <div class="chart-box">
+      <h3>分组柱状图 · 多维度对比</h3>
+      <div class="chart" id="chart3"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getChartColors() {
+  const style = getComputedStyle(document.documentElement);
+  return {
+    primary: style.getPropertyValue('--primary-500').trim() || '#2563eb',
+    primaryLight: style.getPropertyValue('--primary-300').trim() || '#93c5fd',
+    accent: style.getPropertyValue('--accent-green').trim() || '#16a34a',
+    accentAmber: style.getPropertyValue('--accent-amber').trim() || '#d97706',
+    accentRed: style.getPropertyValue('--accent-red').trim() || '#dc2626',
+    textMuted: style.getPropertyValue('--text-muted').trim() || '#64748b',
+    text: style.getPropertyValue('--text').trim() || '#1f2937',
+    border: style.getPropertyValue('--border').trim() || '#e5e7eb',
+    surface: style.getPropertyValue('--surface').trim() || '#ffffff',
+  };
+}
+
+function buildCharts() {
+  const c = getChartColors();
+
+  // Chart 1: Vertical bar
+  const c1 = echarts.init(document.getElementById('chart1'));
+  c1.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+    xAxis: { type: 'category', data: ['票息收益','杠杆套息','久期管理','交易骑乘','费用调整'], axisLabel: { color: c.textMuted, fontSize: 12 } },
+    yAxis: { type: 'value', name: 'bp', axisLabel: { color: c.textMuted }, nameTextStyle: { color: c.textMuted } },
+    series: [{
+      type: 'bar', data: [42, 18, 8, 5, -3],
+      itemStyle: { color: c.primary, borderRadius: [6, 6, 0, 0] },
+      barWidth: '50%',
+    }],
+  });
+
+  // Chart 2: Horizontal bar
+  const c2 = echarts.init(document.getElementById('chart2'));
+  c2.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+    xAxis: { type: 'value', axisLabel: { color: c.textMuted } },
+    yAxis: { type: 'category', data: ['产品A','产品B','产品C','产品D','本产品'], axisLabel: { color: c.text, fontSize: 12, fontWeight: 600 } },
+    series: [{
+      type: 'bar', data: [2.35, 2.18, 2.42, 2.08, 2.56],
+      itemStyle: {
+        color: function(p) {
+          const colors = [c.primaryLight, c.primaryLight, c.primaryLight, c.primaryLight, c.primary];
+          return colors[p.dataIndex];
+        },
+        borderRadius: [0, 6, 6, 0],
+      },
+      barWidth: '55%',
+      label: { show: true, position: 'right', color: c.textMuted, fontSize: 12, formatter: '{c}%' },
+    }],
+  });
+
+  // Chart 3: Grouped bar
+  const c3 = echarts.init(document.getElementById('chart3'));
+  c3.setOption({
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    legend: { data: ['1月','2月','3月'], textStyle: { color: c.textMuted, fontSize: 12 }, bottom: 0 },
+    grid: { left: '3%', right: '4%', bottom: '12%', containLabel: true },
+    xAxis: { type: 'category', data: ['收益','风险','流动','规模'], axisLabel: { color: c.textMuted, fontSize: 12 } },
+    yAxis: { type: 'value', axisLabel: { color: c.textMuted } },
+    series: [
+      { type: 'bar', name: '1月', data: [65, 42, 58, 70], itemStyle: { color: c.primary, borderRadius: [6,6,0,0] }, barGap: '10%' },
+      { type: 'bar', name: '2月', data: [72, 38, 52, 75], itemStyle: { color: c.accent, borderRadius: [6,6,0,0] } },
+      { type: 'bar', name: '3月', data: [68, 45, 60, 72], itemStyle: { color: c.accentAmber, borderRadius: [6,6,0,0] } },
+    ],
+  });
+
+  window.__charts = [c1, c2, c3];
+}
+
+function disposeCharts() {
+  if (window.__charts) { window.__charts.forEach(c => c.dispose()); window.__charts = []; }
+}
+
+buildCharts();
+
+// Theme switching
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) {
+    link.href = `../../tokens/${theme}.css`;
+    // Rebuild charts after CSS variables are updated
+    link.addEventListener('load', () => { disposeCharts(); buildCharts(); }, { once: true });
+  }
+}
+</script>
+</body>
+</html>

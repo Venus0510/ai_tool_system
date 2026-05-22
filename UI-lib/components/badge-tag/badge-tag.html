@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>标签徽章 · Badge Tag</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 40px 24px; background: var(--bg); font-family: var(--font); }
+    .container { max-width: 900px; margin: 0 auto; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0 0 32px; }
+    .section-label { margin: 28px 0 14px; color: var(--text-light); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+    .demo-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: var(--radius-tag);
+      font-size: 12px; font-weight: 600; line-height: 1.5;
+      white-space: nowrap;
+    }
+    .badge-fill    { background: var(--tag-bg); color: var(--tag-text); }
+    .badge-outline { background: transparent; color: var(--primary-500); border: 1.5px solid var(--primary-500); }
+    .badge-accent  { background: var(--primary-500); color: var(--text-inverse); }
+    .badge-dot     { background: var(--tag-bg); color: var(--tag-text); }
+    .badge-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); display: inline-block; }
+
+    /* size variants */
+    .badge-sm { padding: 2px 8px; font-size: 10px; }
+    .badge-lg { padding: 6px 16px; font-size: 14px; }
+
+    /* card with badge */
+    .card { background: var(--surface); border-radius: var(--radius-card); padding: 20px 24px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); margin-top: 16px; }
+    .card h3 { color: var(--primary-700); font-size: 18px; margin: 0 0 8px; }
+    .card p { color: var(--text-muted); font-size: 14px; margin: 0; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-title">
+    <h1>标签徽章 · Badge Tag</h1>
+    <p>圆角标签/徽章组件，支持填充、描边、实色、带点四种风格，三种尺寸。</p>
+  </div>
+
+  <div class="section-label">填充风格（badge-fill）</div>
+  <div class="demo-row">
+    <span class="badge badge-fill">T+1 至 T+3</span>
+    <span class="badge badge-fill">数据收集</span>
+    <span class="badge badge-fill">归因测算</span>
+    <span class="badge badge-fill">报告撰写</span>
+  </div>
+
+  <div class="section-label">描边风格（badge-outline）</div>
+  <div class="demo-row">
+    <span class="badge badge-outline">2014-2016</span>
+    <span class="badge badge-outline">起步阶段</span>
+    <span class="badge badge-outline">资管新规</span>
+  </div>
+
+  <div class="section-label">实色风格（badge-accent）</div>
+  <div class="demo-row">
+    <span class="badge badge-accent">资管产品</span>
+    <span class="badge badge-accent">底层资产</span>
+    <span class="badge badge-accent">跨境估值</span>
+  </div>
+
+  <div class="section-label">带点风格（badge-dot）</div>
+  <div class="demo-row">
+    <span class="badge badge-dot">运行中</span>
+    <span class="badge badge-dot">已完成</span>
+  </div>
+
+  <div class="section-label">尺寸变体</div>
+  <div class="demo-row">
+    <span class="badge badge-fill badge-sm">小号标签</span>
+    <span class="badge badge-fill">默认标签</span>
+    <span class="badge badge-fill badge-lg">大号标签</span>
+  </div>
+
+  <div class="section-label">卡片内使用示例</div>
+  <div class="card">
+    <span class="badge badge-fill" style="margin-bottom:10px;">T+1 至 T+3</span>
+    <h3>数据收集与整理</h3>
+    <p>获取组合持仓、收益表现、规模变化、申赎数据及市场利率数据。</p>
+  </div>
+</div>
+
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../../tokens/${theme}.css`;
+}
+</script>
+</body>
+</html>

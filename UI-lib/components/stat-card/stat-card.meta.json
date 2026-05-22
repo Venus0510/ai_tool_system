@@ -1,0 +1,17 @@
+{
+  "name": "stat-card",
+  "label": "数据卡片",
+  "category": "基础组件",
+  "description": "单指标数据卡片，支持大数字编号、标题、描述文本，三种变体（大数字/简单/顶部色条）",
+  "props": {
+    "variant": { "type": "enum", "values": ["numbered", "simple", "accent-top"], "desc": "卡片变体：numbered=带大数字编号，simple=纯标题描述，accent-top=顶部色条" },
+    "num":    { "type": "string", "desc": "大数字编号（variant=numbered 时使用）" },
+    "title":  { "type": "string", "required": true, "desc": "卡片标题" },
+    "desc":   { "type": "string", "required": true, "desc": "卡片描述文本" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<div class=\"stat-card\">\n  <div class=\"num\">01</div>\n  <h3>卡片标题</h3>\n  <p>卡片描述内容。</p>\n</div>",
+  "promptHint": "适用于展示 KPI 指标、业绩数据、统计概览、核心能力等场景。可组合成网格布局使用。"
+}

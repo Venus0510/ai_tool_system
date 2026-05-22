@@ -1,0 +1,37 @@
+{
+  "layouts": [
+    {
+      "id": "a4-bluewhite",
+      "label": "A4 横版 + 商务蓝白",
+      "templatePath": "../UI-lib/templates/combo-a4-bluewhite.html",
+      "tokenPath": "../UI-lib/tokens/business-bluewhite.css",
+      "printCss": "@page { size: A4 landscape; margin: 0; }",
+      "pageSpec": "每页 297mm × 210mm，固定页高，page-break-after: always",
+      "sections": "封面 + 卡片网格 + 表格双栏 + 流程步骤 + 暗色段，共 5 页",
+      "features": ["A4 横版打印", "商务蓝白配色", "页码自动递增", "渐变封面"],
+      "promptSnippet": "## 版式要求\n- 版式：A4 横版打印（@page { size: A4 landscape; margin: 0; }）\n- 页面尺寸：297mm × 210mm，padding: 18mm 22mm\n- 每页使用 section.a4-page，page-break-after: always\n- 屏幕预览时 margin: 20px auto + box-shadow 卡片效果\n- @media print 中设置 print-color-adjust: exact 保留颜色\n- 使用 CSS 变量引用颜色，通过 <link> 引入 Token CSS"
+    },
+    {
+      "id": "slide-rc",
+      "label": "Slide 翻页 + RC 浅蓝",
+      "templatePath": "../UI-lib/templates/combo-slide-rc.html",
+      "tokenPath": "../UI-lib/tokens/rc-lightblue.css",
+      "printCss": "",
+      "pageSpec": "全屏 slide，position: absolute，visibility 切换，键盘翻页",
+      "sections": "封面 + 目录 + 模块分隔页 + 内容卡片 + 内容表格，共 5 页",
+      "features": ["全屏演示", "键盘 ← → 翻页", "左侧 7px 蓝色装饰条", "圆形目录编号", "淡入淡出过渡"],
+      "promptSnippet": "## 版式要求\n- 版式：Slide 全屏翻页演示\n- CSS：.slide { position: absolute; inset: 0; visibility: hidden; opacity: 0; } .slide.active { visibility: visible; opacity: 1; }\n- 翻页按钮固定在右下角（nav-fixed），页码指示器在左下角\n- 关键装饰：左侧 7px 蓝色竖条（before 伪元素），圆形编号（rounded-full bg-[#eef8fc]）\n- 字体：标题用 STKaiti/Kaiti SC 楷体系列，正文用系统默认\n- @media print 展开所有 slide 为连续页面"
+    },
+    {
+      "id": "scroll-dark",
+      "label": "自由滚动 + 暗黑科技",
+      "templatePath": "../UI-lib/templates/combo-scroll-dark.html",
+      "tokenPath": "../UI-lib/tokens/dark-tech.css",
+      "printCss": "",
+      "pageSpec": "自由滚动页面，max-width: 1180px，响应式布局",
+      "sections": "Nav + Hero + Features 网格 + CTA 区域，共 5 个 section",
+      "features": ["暗黑科技风格", "毛玻璃导航栏", "渐变色背景", "响应式（手机/平板/桌面）", "统计数字卡片"],
+      "promptSnippet": "## 版式要求\n- 版式：自由滚动 Landing Page，max-width: 1180px，居中布局\n- 背景：多层 radial-gradient 叠加的暗色渐变\n- 导航栏：sticky top，backdrop-filter: blur(18px)，半透明深色背景\n- 卡片：毛玻璃效果，rgba(255,255,255,0.08) 背景，border: 1px solid rgba(255,255,255,0.14)\n- 按钮：渐变主按钮 gradient(135deg, #6ea8ff, #9ee8c8)\n- 响应式：grid-cols-1 → lg:grid-cols-2，手机端汉堡菜单"
+    }
+  ]
+}

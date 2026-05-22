@@ -1,0 +1,128 @@
+/* ========================================
+   Design Token: 暗黑科技风格 (Dark Tech Theme)
+   提取自: web.html - 金融报告目的估值咨询服务 Landing Page
+   适用场景: 产品Landing Page、数据仪表盘、科技感展示页
+   ======================================== */
+
+:root {
+  /* ---- 色板 ---- */
+  --dt-bg-deep:      #08101f;
+  --dt-bg:           #0b1020;
+  --dt-bg-soft:      #121a33;
+  --dt-bg-raised:    #0f172a;
+
+  --dt-surface:      rgba(255, 255, 255, 0.08);
+  --dt-surface-hover: rgba(255, 255, 255, 0.11);
+  --dt-surface-light: rgba(255, 255, 255, 0.07);
+  --dt-surface-subtle: rgba(255, 255, 255, 0.06);
+
+  --dt-border:       rgba(255, 255, 255, 0.14);
+  --dt-border-light: rgba(255, 255, 255, 0.10);
+  --dt-border-subtle: rgba(255, 255, 255, 0.08);
+
+  --dt-text:         #f5f7fb;
+  --dt-text-muted:   #aeb7cc;
+  --dt-text-dim:     #7d869c;
+
+  --dt-accent:       #6ea8ff;
+  --dt-accent-2:     #9ee8c8;
+  --dt-warning:      #ffd166;
+  --dt-danger:       #ff7b7b;
+
+  --dt-gradient-1:   radial-gradient(circle at 20% 10%, rgba(110,168,255,0.28), transparent 32%);
+  --dt-gradient-2:   radial-gradient(circle at 85% 20%, rgba(158,232,200,0.18), transparent 28%);
+  --dt-bg-gradient:  linear-gradient(180deg, #08101f 0%, #0b1020 46%, #0f172a 100%);
+
+  --dt-btn-primary:  linear-gradient(135deg, var(--dt-accent), var(--dt-accent-2));
+
+  /* ---- 排版 ---- */
+  --dt-font:         -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+
+  --dt-text-h1:      clamp(40px, 6vw, 72px);
+  --dt-text-h2:      clamp(28px, 4vw, 44px);
+  --dt-text-h3:      20px;
+  --dt-text-body:    16px;
+  --dt-text-sm:      14px;
+  --dt-text-xs:      13px;
+
+  --dt-leading:      1.6;
+  --dt-leading-head: 1.1;
+
+  --dt-letter-spacing-h1: -0.055em;
+  --dt-letter-spacing-h2: -0.04em;
+
+  /* ---- 间距 ---- */
+  --dt-max-width:     1180px;
+  --dt-section-gap:   56px;
+  --dt-card-padding:  24px;
+  --dt-grid-gap:      22px;
+
+  /* ---- 圆角 ---- */
+  --dt-radius-card:   24px;
+  --dt-radius-stat:   18px;
+  --dt-radius-btn:    999px;
+  --dt-radius-tag:    999px;
+
+  /* ---- 阴影 ---- */
+  --dt-shadow-card:   0 24px 80px rgba(0,0,0,0.32);
+  --dt-shadow-nav:    none;
+
+  /* ---- 毛玻璃 ---- */
+  --dt-blur-nav:      18px;
+  --dt-nav-bg:        rgba(8, 16, 31, 0.72);
+
+  /* ---- 组件 Token ---- */
+  --dt-nav-border:    1px solid var(--dt-border-subtle);
+  --dt-card-border:   1px solid var(--dt-border);
+  --dt-stat-bg:       var(--dt-surface-light);
+  --dt-stat-border:   1px solid var(--dt-border-light);
+  --dt-stat-number:   30px;
+  --dt-eyebrow-bg:    var(--dt-surface-subtle);
+  --dt-eyebrow-border: 1px solid var(--dt-border);
+  --dt-eyebrow-text:  var(--dt-accent-2);
+
+  /* ---- 图表配色 (ECharts 暗色主题) ---- */
+  --dt-chart-1: #6ea8ff;
+  --dt-chart-2: #9ee8c8;
+  --dt-chart-3: #ffd166;
+  --dt-chart-4: #ff7b7b;
+  --dt-chart-5: #c4b5fd;
+  --dt-chart-6: #67e8f9;
+
+  /* === 通用变量别名（组件使用这些变量，适配所有主题） === */
+  --primary-50:      rgba(110,168,255,0.1);
+  --primary-100:     rgba(110,168,255,0.15);
+  --primary-200:     rgba(110,168,255,0.22);
+  --primary-300:     rgba(110,168,255,0.35);
+  --primary-400:     var(--dt-accent);
+  --primary-500:     var(--dt-accent);
+  --primary-700:     var(--dt-accent-2);
+  --primary-800:     var(--dt-accent);
+  --primary-900:     var(--dt-bg-deep);
+  --surface:         var(--dt-surface);
+  --surface-alt:     var(--dt-surface-light);
+  --bg:              var(--dt-bg);
+  --text:            var(--dt-text);
+  --text-muted:      var(--dt-text-muted);
+  --text-light:      var(--dt-text-dim);
+  --text-inverse:    var(--dt-bg-deep);
+  --border:          var(--dt-border);
+  --border-light:    var(--dt-border-light);
+  --radius-card:     var(--dt-radius-card);
+  --radius-tag:      var(--dt-radius-tag);
+  --radius-circle:   999px;
+  --shadow-card:     var(--dt-shadow-card);
+  --font:            var(--dt-font);
+  --font-display:    var(--dt-font);
+  --accent-green:    var(--dt-accent-2);
+  --accent-red:      var(--dt-danger);
+  --accent-amber:    var(--dt-warning);
+  --big-number:      30px;
+  --big-number-color: var(--dt-accent);
+  --process-border:  4px solid var(--dt-accent);
+  --table-th-bg:     var(--dt-surface-light);
+  --table-th-text:   var(--dt-accent);
+  --tag-bg:          var(--dt-surface-light);
+  --tag-text:        var(--dt-accent-2);
+  --cover-bg:        linear-gradient(180deg, #08101f 0%, #0b1020 46%, #0f172a 100%);
+}

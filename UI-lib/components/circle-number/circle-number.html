@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>圆形编号 · Circle Number</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 40px 24px; background: var(--bg); font-family: var(--font); }
+    .container { max-width: 900px; margin: 0 auto; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0 0 32px; }
+    .section-label { margin: 28px 0 14px; color: var(--text-light); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+    .demo-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+
+    .circle-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-circle);
+      background: var(--primary-50); color: var(--primary-500);
+      font-family: var(--font-display); font-weight: 900;
+      flex-shrink: 0;
+    }
+    .circle-sm  { width: 44px; height: 44px; font-size: 22px; }
+    .circle-md  { width: 66px; height: 66px; font-size: 32px; }
+    .circle-lg  { width: 110px; height: 110px; font-size: 56px; }
+    .circle-xl  { width: 140px; height: 140px; font-size: 72px; }
+
+    .circle-shadow { box-shadow: var(--shadow-card); }
+    .circle-accent { background: var(--primary-500); color: var(--text-inverse); }
+
+    /* toc row */
+    .toc-row { display: flex; align-items: center; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+    .toc-row .label { font-size: 26px; font-weight: 800; color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-title">
+    <h1>圆形编号 · Circle Number</h1>
+    <p>圆形数字编号，用于目录模块编号、步骤指示、章节标记等场景。</p>
+  </div>
+
+  <div class="section-label">尺寸变体（sm / md / lg / xl）</div>
+  <div class="demo-row">
+    <span class="circle-num circle-sm">一</span>
+    <span class="circle-num circle-md">二</span>
+    <span class="circle-num circle-lg">三</span>
+    <span class="circle-num circle-xl">01</span>
+  </div>
+
+  <div class="section-label">带阴影（circle-shadow）</div>
+  <div class="demo-row">
+    <span class="circle-num circle-md circle-shadow">一</span>
+    <span class="circle-num circle-lg circle-shadow">二</span>
+    <span class="circle-num circle-xl circle-shadow">01</span>
+  </div>
+
+  <div class="section-label">实色反白（circle-accent）</div>
+  <div class="demo-row">
+    <span class="circle-num circle-sm circle-accent">1</span>
+    <span class="circle-num circle-md circle-accent">2</span>
+    <span class="circle-num circle-lg circle-accent">3</span>
+  </div>
+
+  <div class="section-label">目录列表中的应用</div>
+  <div class="toc-row">
+    <span class="circle-num circle-md">一</span>
+    <span class="label">估值政策的监管框架与演进</span>
+  </div>
+  <div class="toc-row">
+    <span class="circle-num circle-md">二</span>
+    <span class="label">境内主要资管产品类型的估值政策对比</span>
+  </div>
+  <div class="toc-row">
+    <span class="circle-num circle-md">三</span>
+    <span class="label">各类底层资产的估值方法依据</span>
+  </div>
+</div>
+
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../../tokens/${theme}.css`;
+}
+</script>
+</body>
+</html>

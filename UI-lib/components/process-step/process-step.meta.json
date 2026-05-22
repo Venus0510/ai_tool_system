@@ -1,0 +1,17 @@
+{
+  "name": "process-step",
+  "label": "流程步骤",
+  "category": "基础组件",
+  "description": "左侧色条流程步骤卡片，用于展示递进式流程、方法步骤、报告结构。支持左右色条两种变体。",
+  "props": {
+    "side":  { "type": "enum", "values": ["left", "right"], "desc": "色条位置：left=左侧（默认），right=右侧" },
+    "step":  { "type": "number", "desc": "步骤序号" },
+    "title": { "type": "string", "required": true, "desc": "步骤标题" },
+    "desc":  { "type": "string", "required": true, "desc": "步骤描述文本" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<div class=\"process-step\">\n  <h3>1. 步骤标题</h3>\n  <p>步骤描述内容。</p>\n</div>",
+  "promptHint": "适用于报告方法步骤、项目流程展示、递进式论证、操作流程说明等场景。色条颜色由 --process-border 变量控制，跟随主题。"
+}

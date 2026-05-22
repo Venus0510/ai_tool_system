@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>数据表格 · Data Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 40px 24px; background: var(--bg); font-family: var(--font); }
+    .container { max-width: 960px; margin: 0 auto; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0 0 32px; }
+    .section-label { margin: 28px 0 14px; color: var(--text-light); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+
+    .data-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface); border-radius: var(--radius-card);
+      overflow: hidden; font-size: 13px;
+      border: 1px solid var(--border-light);
+    }
+    .data-table thead th {
+      padding: 12px 16px; text-align: left;
+      background: var(--table-th-bg); color: var(--table-th-text);
+      font-weight: 700; font-size: 13px;
+    }
+    .data-table tbody td {
+      padding: 12px 16px; vertical-align: top;
+      color: var(--text); border-bottom: 1px solid var(--border-light);
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table .col-label { font-weight: 600; color: var(--primary-700); }
+
+    /* striped variant */
+    .data-table.striped tbody tr:nth-child(even) { background: var(--surface-alt); }
+
+    /* compact variant */
+    .data-table.compact thead th,
+    .data-table.compact tbody td { padding: 8px 12px; font-size: 12px; }
+
+    /* bordered variant */
+    .data-table.bordered { border: 1px solid var(--border); }
+    .data-table.bordered thead th,
+    .data-table.bordered tbody td { border: 1px solid var(--border-light); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-title">
+    <h1>数据表格 · Data Table</h1>
+    <p>带主题色表头的数据表格组件，支持斑马纹、紧凑、全边框三种变体。</p>
+  </div>
+
+  <div class="section-label">默认样式</div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>分析模块</th>
+        <th>主要内容</th>
+        <th>输出结果</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-label">产品表现概览</td>
+        <td>统计区间、七日年化、万份收益均值、相对业绩基准及同类超额</td>
+        <td>本月整体表现判断</td>
+      </tr>
+      <tr>
+        <td class="col-label">票息收益</td>
+        <td>分析同业存单、短债、存款等资产的加权收益率及收益贡献</td>
+        <td>判断基础收益来源</td>
+      </tr>
+      <tr>
+        <td class="col-label">杠杆套息</td>
+        <td>比较资产收益率与回购融资成本，测算杠杆对收益的增强效果</td>
+        <td>判断杠杆使用效率</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">斑马纹（striped）</div>
+  <table class="data-table striped">
+    <thead>
+      <tr><th>流程特点</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="col-label">标准化</td><td>固定数据口径、固定归因维度、固定报告结构，便于持续追踪。</td></tr>
+      <tr><td class="col-label">可复核</td><td>保留归因测算底稿，便于客户内部复核和口径沟通。</td></tr>
+      <tr><td class="col-label">可扩展</td><td>可根据客户需求增加产品横向比较、专项分析或管理层摘要。</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">紧凑模式（compact）+ 全边框（bordered）</div>
+  <table class="data-table compact bordered">
+    <thead>
+      <tr><th>列A</th><th>列B</th><th>列C</th><th>列D</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>数据</td><td>数据</td><td>数据</td><td>数据</td></tr>
+      <tr><td>数据</td><td>数据</td><td>数据</td><td>数据</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../../tokens/${theme}.css`;
+}
+</script>
+</body>
+</html>

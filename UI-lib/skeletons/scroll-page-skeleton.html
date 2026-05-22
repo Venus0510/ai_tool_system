@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>自由滚动页 · 版式骨架</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="../tokens/dark-tech.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          screens: { 'xs': '480px', 'sm': '640px', 'md': '768px', 'lg': '1024px', 'xl': '1180px' },
+        }
+      }
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { margin: 0; line-height: 1.6; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  </style>
+</head>
+<!--
+  ========================================
+  版式骨架说明：
+  1. 五个 Block：Nav / Hero / Features / Content / CTA
+  2. 每个 Block 可独立删减或复制
+  3. 替换 {{ }} 占位符为实际内容
+  4. 响应式：lg: 桌面  md: 平板  默认: 手机
+  5. grid-cols-1 lg:grid-cols-2  → 手机单列 / 桌面多列
+  ========================================
+-->
+<body class="font-sans text-white"
+      style="background: radial-gradient(circle at 20% 10%, rgba(110,168,255,0.28), transparent 32%),
+             radial-gradient(circle at 85% 20%, rgba(158,232,200,0.18), transparent 28%),
+             linear-gradient(180deg, #08101f 0%, #0b1020 46%, #0f172a 100%);">
+
+<div id="app">
+
+  <!-- ===== Block 1: 导航栏 ===== -->
+  <nav class="sticky top-0 z-50 border-b border-white/10 safe-bottom"
+       style="backdrop-filter: blur(18px); background: rgba(8,16,31,0.72);">
+    <div class="max-w-[1180px] mx-auto px-4 lg:px-6 py-3 lg:py-4 flex justify-between items-center gap-4">
+      <span class="font-bold tracking-[.02em] text-white text-base lg:text-lg shrink-0">{{ nav.brand }}</span>
+
+      <div class="hidden md:flex gap-5 text-sm text-gray-400">
+        <a v-for="link in nav.links" :key="link" :href="link.href"
+           class="hover:text-white cursor-pointer no-underline text-inherit transition-colors">{{ link.label }}</a>
+      </div>
+
+      <button @click="menuOpen = !menuOpen" class="md:hidden text-white p-1.5 rounded-lg border border-white/20 bg-white/10">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path v-if="!menuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div v-show="menuOpen" class="md:hidden px-4 pb-4 space-y-2">
+      <a v-for="link in nav.links" :key="link.label" :href="link.href"
+         @click="menuOpen = false"
+         class="block py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-sm text-gray-400 no-underline">{{ link.label }}</a>
+    </div>
+  </nav>
+
+  <!-- ===== Block 2: Hero ===== -->
+  <section class="max-w-[1180px] mx-auto px-4 lg:px-6 pt-12 sm:pt-16 lg:pt-[84px] pb-8 lg:pb-11
+                  grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6 lg:gap-8 items-stretch">
+    <div>
+      <span class="inline-flex items-center gap-2 px-2.5 py-1.5 lg:px-3 lg:py-2 border border-white/20 rounded-full
+                   text-green-300 bg-white/10 text-xs lg:text-sm mb-4 lg:mb-6">
+        <span class="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-green-300 inline-block"></span>
+        {{ hero.eyebrow }}
+      </span>
+      <h1 class="text-[clamp(32px,8vw,72px)] lg:text-[clamp(40px,6vw,72px)] leading-[1.05] lg:leading-[1.03]
+                 -tracking-[.04em] lg:-tracking-[.055em] font-bold m-0">{{ hero.title }}</h1>
+      <p class="text-gray-400 text-base lg:text-lg max-w-[720px] mt-4 lg:mt-6">{{ hero.desc }}</p>
+      <div class="flex gap-3 lg:gap-3.5 mt-6 lg:mt-8 flex-wrap">
+        <a :href="hero.cta1.href"
+           class="rounded-full px-4 lg:px-5 py-2.5 lg:py-3 font-semibold text-sm no-underline
+                  bg-gradient-to-br from-blue-400 to-green-300 text-gray-900 hover:-translate-y-0.5 transition-transform cursor-pointer">
+          {{ hero.cta1.label }}
+        </a>
+        <a :href="hero.cta2.href"
+           class="rounded-full px-4 lg:px-5 py-2.5 lg:py-3 font-semibold text-sm no-underline
+                  border border-white/20 bg-white/10 text-white hover:-translate-y-0.5 transition-transform cursor-pointer">
+          {{ hero.cta2.label }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Hero 右侧：数据卡片 / 插图 / 图表占位 -->
+    <div class="rounded-[20px] lg:rounded-3xl border border-white/20 p-4 lg:p-6
+                shadow-[0_24px_80px_rgba(0,0,0,.32)] mt-6 lg:mt-0"
+         style="background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));">
+      <h3 class="text-lg lg:text-xl font-bold mb-4">{{ hero.card.title }}</h3>
+      <div class="grid grid-cols-2 gap-2 lg:gap-3">
+        <div v-for="stat in hero.card.stats" :key="stat.label"
+             class="p-3 lg:p-4 rounded-2xl border border-white/10 bg-white/10">
+          <strong class="block text-2xl lg:text-3xl -tracking-[.04em]">{{ stat.value }}</strong>
+          <span class="text-gray-400 text-xs lg:text-sm">{{ stat.label }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Block 3: Features 卡片网格 ===== -->
+  <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-14">
+    <div class="flex flex-col lg:flex-row justify-between gap-4 lg:gap-7 items-start lg:items-end mb-4 lg:mb-6">
+      <h2 class="text-[clamp(24px,6vw,44px)] leading-[1.1] -tracking-[.04em] font-bold m-0">{{ features.title }}</h2>
+      <p class="max-w-[520px] text-gray-400 text-sm lg:text-base">{{ features.desc }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
+      <div v-for="card in features.items" :key="card.title"
+           class="rounded-[20px] lg:rounded-3xl border border-white/20 p-4 lg:p-6
+                  shadow-[0_24px_80px_rgba(0,0,0,.32)]"
+           style="background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));">
+        <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-white/20
+                     bg-white/10 text-green-300 text-[11px] lg:text-xs font-bold mb-3 lg:mb-4">{{ card.tag }}</span>
+        <h3 class="text-lg lg:text-xl font-bold mb-2 lg:mb-3">{{ card.title }}</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">{{ card.desc }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Block 4: Content（通用内容区，可选） ===== -->
+  <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-14">
+    <h2 class="text-[clamp(24px,6vw,44px)] font-bold mb-4 lg:mb-6">{{ content.title }}</h2>
+
+    <!-- 可替换为：表格 / 代码块 / 图表 / 图片 / 时间线 / 任意内容 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+      <div v-for="item in content.items" :key="item.title"
+           class="rounded-2xl border border-white/10 bg-white/5 p-4 lg:p-6">
+        <h3 class="text-lg font-bold mb-2">{{ item.title }}</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">{{ item.desc }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Block 5: CTA 底部 ===== -->
+  <section class="max-w-[1180px] mx-auto px-4 lg:px-6 py-10 lg:py-16 text-center safe-bottom">
+    <div class="rounded-[20px] lg:rounded-3xl border border-white/20 p-6 lg:p-12 shadow-[0_24px_80px_rgba(0,0,0,.32)]"
+         style="background: linear-gradient(135deg, rgba(110,168,255,0.18), rgba(158,232,200,0.10));">
+      <h2 class="text-[clamp(22px,5vw,40px)] font-bold mb-3 lg:mb-4">{{ cta.title }}</h2>
+      <p class="text-gray-400 text-base lg:text-lg max-w-2xl mx-auto mb-6 lg:mb-8">{{ cta.desc }}</p>
+      <a :href="cta.btn.href"
+         class="inline-block rounded-full px-6 lg:px-8 py-3 lg:py-3.5 font-bold text-sm lg:text-base no-underline
+                bg-gradient-to-br from-blue-400 to-green-300 text-gray-900 hover:-translate-y-0.5 transition-transform cursor-pointer">
+        {{ cta.btn.label }}
+      </a>
+    </div>
+    <p class="text-gray-500 text-xs mt-6 lg:mt-8">{{ page.footer }}</p>
+  </section>
+
+</div><!-- /#app -->
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        menuOpen: false,
+        /* ===== 填入你的内容 ===== */
+        nav: {
+          brand: '{{ 品牌名 }}',
+          links: [
+            { label: '{{ 链接1 }}', href: '#' },
+            { label: '{{ 链接2 }}', href: '#' },
+            { label: '{{ 链接3 }}', href: '#' },
+          ],
+        },
+        hero: {
+          eyebrow: '{{ 眼眉标签 }}',
+          title: '{{ 主标题 }}',
+          desc: '{{ 描述文本，简要说明产品/服务的核心价值主张。 }}',
+          cta1: { label: '{{ 主按钮 }} →', href: '#' },
+          cta2: { label: '{{ 次按钮 }}', href: '#' },
+          card: {
+            title: '{{ 数据卡片标题 }}',
+            stats: [
+              { value: '{{ 数字 }}', label: '{{ 标签 }}' },
+              { value: '{{ 数字 }}', label: '{{ 标签 }}' },
+              { value: '{{ 数字 }}', label: '{{ 标签 }}' },
+              { value: '{{ 数字 }}', label: '{{ 标签 }}' },
+            ],
+          },
+        },
+        features: {
+          title: '{{ 区块标题 }}',
+          desc: '{{ 区块副标题 }}',
+          items: [
+            { tag: '{{ 标签 }}', title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+            { tag: '{{ 标签 }}', title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+            { tag: '{{ 标签 }}', title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+            { tag: '{{ 标签 }}', title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+          ],
+        },
+        content: {
+          title: '{{ 可选内容区块标题 }}',
+          items: [
+            { title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+            { title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+            { title: '{{ 标题 }}', desc: '{{ 描述 }}' },
+          ],
+        },
+        cta: {
+          title: '{{ 行动号召标题 }}',
+          desc: '{{ 行动号召描述 }}',
+          btn: { label: '{{ 按钮文字 }} →', href: '#' },
+        },
+        page: { footer: '{{ 页脚版权 }}' },
+      };
+    }
+  }).mount('#app');
+</script>
+
+</body>
+</html>

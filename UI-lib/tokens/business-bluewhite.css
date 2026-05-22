@@ -1,0 +1,116 @@
+/* ========================================
+   Design Token: 商务蓝白风格 (Business Blue-White)
+   提取自: A4.html - 货币基金月度收益归因分析
+   适用场景: A4打印报告、正式商务文档、金融分析报告
+   ======================================== */
+
+:root {
+  /* ---- 色板 ---- */
+  --bw-primary-50:  #eff6ff;
+  --bw-primary-100: #dbeafe;
+  --bw-primary-200: #bfdbfe;
+  --bw-primary-300: #93c5fd;
+  --bw-primary-500: #2563eb;
+  --bw-primary-700: #1e3a8a;
+  --bw-primary-800: #1e40af;
+  --bw-primary-900: #0f172a;
+
+  --bw-surface:       #ffffff;
+  --bw-surface-alt:   #f8fafc;
+  --bw-bg:            #f3f6fb;
+
+  --bw-text:          #1f2937;
+  --bw-text-muted:    #64748b;
+  --bw-text-light:    #94a3b8;
+  --bw-text-inverse:  #ffffff;
+
+  --bw-border:        #e5e7eb;
+  --bw-border-light:  #f1f5f9;
+
+  --bw-accent-green:  #16a34a;
+  --bw-accent-red:    #dc2626;
+  --bw-accent-amber:  #d97706;
+
+  /* ---- 排版 ---- */
+  --bw-font:          "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  --bw-font-mono:     "SF Mono", "Cascadia Code", monospace;
+
+  --bw-text-h1:       40px;
+  --bw-text-h2:       30px;
+  --bw-text-h3:       18px;
+  --bw-text-body:     15px;
+  --bw-text-sm:       13px;
+  --bw-text-xs:       12px;
+
+  --bw-leading:       1.7;
+  --bw-leading-head:  1.25;
+
+  /* ---- 间距 ---- */
+  --bw-page-padding-x: 22mm;
+  --bw-page-padding-y: 18mm;
+  --bw-card-padding:   18px;
+  --bw-grid-gap:       16px;
+  --bw-section-gap:    24px;
+
+  /* ---- 圆角 ---- */
+  --bw-radius-card:    14px;
+  --bw-radius-table:   12px;
+  --bw-radius-tag:     999px;
+  --bw-radius-process: 0 12px 12px 0;
+
+  /* ---- 阴影 ---- */
+  --bw-shadow-card:    0 8px 24px rgba(15, 23, 42, 0.08);
+  --bw-shadow-process: 0 6px 18px rgba(15, 23, 42, 0.06);
+
+  /* ---- 页面 ---- */
+  --bw-page-width:     297mm;
+  --bw-page-height:    210mm;
+
+  /* ---- 组件 Token ---- */
+  --bw-cover-bg:       linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
+  --bw-table-th-bg:    var(--bw-primary-100);
+  --bw-table-th-text:  var(--bw-primary-700);
+  --bw-tag-bg:         var(--bw-primary-100);
+  --bw-tag-text:       var(--bw-primary-800);
+  --bw-big-number:     48px;
+  --bw-big-number-color: var(--bw-primary-500);
+  --bw-process-border: 4px solid var(--bw-primary-500);
+  --bw-footer-text:    var(--bw-text-light);
+
+  /* === 通用变量别名（组件使用这些变量，适配所有主题） === */
+  --primary-50:      var(--bw-primary-50);
+  --primary-100:     var(--bw-primary-100);
+  --primary-200:     var(--bw-primary-200);
+  --primary-300:     var(--bw-primary-300);
+  --primary-400:     #3b82f6;
+  --primary-500:     var(--bw-primary-500);
+  --primary-700:     var(--bw-primary-700);
+  --primary-800:     var(--bw-primary-800);
+  --primary-900:     var(--bw-primary-900);
+  --surface:         var(--bw-surface);
+  --surface-alt:     var(--bw-surface-alt);
+  --bg:              var(--bw-bg);
+  --text:            var(--bw-text);
+  --text-muted:      var(--bw-text-muted);
+  --text-light:      var(--bw-text-light);
+  --text-inverse:    var(--bw-text-inverse);
+  --border:          var(--bw-border);
+  --border-light:    var(--bw-border-light);
+  --radius-card:     var(--bw-radius-card);
+  --radius-tag:      var(--bw-radius-tag);
+  --radius-circle:   999px;
+  --shadow-card:     var(--bw-shadow-card);
+  --font:            var(--bw-font);
+  --font-display:    var(--bw-font);
+  --accent-green:    var(--bw-accent-green);
+  --accent-red:      var(--bw-accent-red);
+  --accent-amber:    var(--bw-accent-amber);
+  --big-number:      var(--bw-big-number);
+  --big-number-color: var(--bw-big-number-color);
+  --process-border:  var(--bw-process-border);
+  --table-th-bg:     var(--bw-table-th-bg);
+  --table-th-text:   var(--bw-table-th-text);
+  --tag-bg:          var(--bw-tag-bg);
+  --tag-text:        var(--bw-tag-text);
+  --cover-bg:        var(--bw-cover-bg);
+}

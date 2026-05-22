@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>提示词工具 · 生成 AI 报告</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+    .page-header p { font-size: 14px; color: #64748b; }
+    .link-back { display: inline-flex; align-items: center; gap: 4px; color: #2563eb; font-size: 13px; font-weight: 600; text-decoration: none; margin-bottom: 12px; }
+    .link-back:hover { text-decoration: underline; }
+
+    .step-card { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); border: 1px solid #e5e7eb; }
+    .step-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+    .step-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #2563eb; color: #fff; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    .step-desc { font-size: 13px; color: #94a3b8; margin-bottom: 16px; }
+
+    .layout-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+    .layout-card { padding: 16px; border-radius: 10px; border: 2px solid #e5e7eb; cursor: pointer; transition: all .15s ease; }
+    .layout-card:hover { border-color: #93c5fd; background: #f8fafc; }
+    .layout-card.selected { border-color: #2563eb; background: #eff6ff; }
+    .layout-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .layout-card .features { font-size: 12px; color: #64748b; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .layout-card .features span { background: #f1f5f9; padding: 2px 8px; border-radius: 6px; }
+
+    .basket-list { max-height: 300px; overflow-y: auto; }
+    .basket-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 6px; }
+    .basket-item .info { flex: 1; }
+    .basket-item .info .name { font-weight: 600; font-size: 14px; }
+    .basket-item .info .hint { font-size: 12px; color: #64748b; }
+    .btn { padding: 6px 14px; border-radius: 6px; border: 1px solid #d1d5db; cursor: pointer; font-size: 13px; font-weight: 600; background: #fff; color: #374151; display: inline-flex; align-items: center; gap: 4px; }
+    .btn:hover { background: #f9fafb; }
+    .btn.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .btn.primary:hover { background: #1d4ed8; }
+    .btn.danger { color: #dc2626; border-color: #fecaca; }
+    .btn.danger:hover { background: #fef2f2; }
+    .btn.small { padding: 3px 10px; font-size: 11px; }
+    .empty-state { text-align: center; padding: 32px 16px; color: #94a3b8; font-size: 14px; }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 4px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 14px; font-family: inherit; resize: vertical; }
+    .form-group textarea { min-height: 70px; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+    .output-area textarea { width: 100%; min-height: 320px; padding: 16px; border-radius: 10px; border: 1px solid #d1d5db; font-family: "SF Mono", "Cascadia Code", monospace; font-size: 13px; line-height: 1.6; resize: vertical; background: #f8fafc; }
+    .output-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+    @media (max-width: 640px) {
+      .container { padding: 16px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="container">
+
+    <a href="../UI-lib/index.html" class="link-back">← 返回组件库</a>
+
+    <div class="page-header">
+      <h1>提示词工具 · 生成 AI 报告</h1>
+      <p>选择版式、勾选组件、填写内容要求，一键生成完整提示词，复制到 Claude 即可生成 HTML 报告。</p>
+    </div>
+
+    <!-- ====== 步骤 1：选择版式 ====== -->
+    <section class="step-card">
+      <h2><span class="step-num">1</span> 选择版式</h2>
+      <p class="step-desc">版式决定报告的页面结构、打印尺寸和基础配色方案。</p>
+      <div class="layout-options">
+        <div v-for="layout in layouts" :key="layout.id"
+             class="layout-card" :class="{ selected: selectedLayout?.id === layout.id }"
+             @click="selectedLayout = layout">
+          <h3>{{ layout.label }}</h3>
+          <div class="features">
+            <span v-for="f in layout.features" :key="f">{{ f }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== 步骤 2：提示词篮 ====== -->
+    <section class="step-card">
+      <h2><span class="step-num">2</span> 提示词篮</h2>
+      <p class="step-desc">从左侧 UI 组件库中「加入提示词篮」的组件会出现在这里。</p>
+      <div class="basket-list" v-if="basket.length">
+        <div v-for="item in basket" :key="item.id" class="basket-item">
+          <div class="info">
+            <div class="name">{{ item.label }}</div>
+            <div class="hint">{{ item.category }} · {{ item.path }}</div>
+          </div>
+          <button class="btn small danger" @click="removeFromBasket(item.id)">移除</button>
+        </div>
+      </div>
+      <div v-else class="empty-state">
+        提示词篮为空 — 请前往 <a href="../UI-lib/index.html" style="color:#2563eb;">UI 组件库</a> 浏览组件并点击「加入提示词篮」
+      </div>
+      <div v-if="basket.length" style="margin-top:12px;text-align:right;">
+        <button class="btn small danger" @click="clearBasket">清空全部</button>
+        <span style="font-size:12px;color:#94a3b8;margin-left:8px;">共 {{ basket.length }} 个组件</span>
+      </div>
+    </section>
+
+    <!-- ====== 步骤 3：补充内容要求 ====== -->
+    <section class="step-card">
+      <h2><span class="step-num">3</span> 补充内容要求</h2>
+      <p class="step-desc">填写报告主题、内容要点和风格偏好，这些将直接写入提示词。</p>
+      <div class="form-group">
+        <label>报告主题</label>
+        <input v-model="contentForm.topic" placeholder="例如：2026年Q1货币基金收益分析报告" />
+      </div>
+      <div class="form-group">
+        <label>内容要点（每行一个）</label>
+        <textarea v-model="contentForm.points" placeholder="例如：&#10;产品七日年化收益率表现概览&#10;收益归因五维度拆解分析&#10;正偏离释放操作复盘"></textarea>
+      </div>
+      <div class="form-group">
+        <label>风格要求</label>
+        <input v-model="contentForm.style" placeholder="例如：专业正式、数据驱动、简洁有力" />
+      </div>
+      <div class="form-group">
+        <label>其他补充（可选）</label>
+        <textarea v-model="contentForm.extra" placeholder="任何额外的要求或说明..."></textarea>
+      </div>
+    </section>
+
+    <!-- ====== 步骤 4：生成结果 ====== -->
+    <section class="step-card">
+      <h2><span class="step-num">4</span> 生成结果</h2>
+      <p class="step-desc">点击生成按钮，系统将合并版式、组件和内容要求，输出完整提示词。</p>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button class="btn primary" @click="generatePrompt">⚡ 生成提示词</button>
+        <button class="btn" @click="copyPrompt" v-if="generatedPrompt">📋 复制提示词</button>
+        <span v-if="copied" style="color:#16a34a;font-size:13px;font-weight:600;display:flex;align-items:center;">✓ 已复制</span>
+      </div>
+      <div class="output-area">
+        <textarea v-model="generatedPrompt" placeholder="点击「生成提示词」后，完整提示词将显示在这里..." readonly></textarea>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      layouts: [],
+      selectedLayout: null,
+      basket: [],
+      contentForm: { topic: '', points: '', style: '', extra: '' },
+      generatedPrompt: '',
+      copied: false,
+    };
+  },
+  methods: {
+    async loadLayouts() {
+      try {
+        const res = await fetch('meta/layout-meta.json');
+        const data = await res.json();
+        this.layouts = data.layouts;
+        if (this.layouts.length) this.selectedLayout = this.layouts[0];
+      } catch (e) {
+        console.error('Failed to load layout meta:', e);
+      }
+    },
+    loadBasket() {
+      this.basket = JSON.parse(localStorage.getItem('prompt-basket') || '[]');
+    },
+    removeFromBasket(id) {
+      this.basket = this.basket.filter(b => b.id !== id);
+      localStorage.setItem('prompt-basket', JSON.stringify(this.basket));
+    },
+    clearBasket() {
+      this.basket = [];
+      localStorage.removeItem('prompt-basket');
+    },
+    async generatePrompt() {
+      const lines = ['请使用以下组件生成一份HTML报告页面：', ''];
+
+      // 全局约束
+      lines.push('## 全局约束');
+      lines.push('- 纯静态HTML，CDN引入Vue3（unpkg）和Tailwind CSS（cdn.tailwindcss.com），零构建');
+      lines.push(`- 通过相对路径引用 Design Token CSS：\`<link rel="stylesheet" href="${this.selectedLayout?.tokenPath || '../UI-lib/tokens/business-bluewhite.css'}">\``);
+      lines.push('- 所有颜色使用CSS变量：`color: var(--primary-500)`，`background: var(--surface)`');
+      lines.push('- @media print 中设置 `print-color-adjust: exact; -webkit-print-color-adjust: exact;` 保留打印颜色');
+      lines.push('');
+
+      // 版式要求
+      if (this.selectedLayout) {
+        lines.push(this.selectedLayout.promptSnippet);
+        lines.push('');
+      }
+
+      // 组件要求
+      if (this.basket.length) {
+        lines.push('## 使用的组件');
+        for (const item of this.basket) {
+          lines.push(`### ${item.label}`);
+          lines.push(`- 文件路径：\`${item.path}\``);
+
+          if (item.metaPath) {
+            try {
+              const res = await fetch(`../UI-lib/${item.metaPath}`);
+              const meta = await res.json();
+              if (meta.description) lines.push(`- 组件说明：${meta.description}`);
+              if (meta.props && Object.keys(meta.props).length) {
+                lines.push('- 可配置参数：');
+                for (const [key, p] of Object.entries(meta.props)) {
+                  const required = p.required ? '（必填）' : '';
+                  lines.push(`  - \`${key}\` (${p.type})${required}：${p.desc}`);
+                }
+              }
+              if (meta.slots && meta.slots.length) {
+                lines.push(`- 可填充区域：${meta.slots.join('、')}`);
+              }
+              if (meta.usage) lines.push(`- 使用示例：\n\`\`\`html\n${meta.usage}\n\`\`\``);
+              if (meta.promptHint) lines.push(`- 场景提示：${meta.promptHint}`);
+              if (meta.echarts) lines.push('- ⚠️ 需要引入 ECharts 5 CDN：`<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"><\/script>`');
+            } catch (e) {
+              lines.push('- （无法加载组件元信息）');
+            }
+          }
+          lines.push('');
+        }
+      }
+
+      // 内容要求
+      lines.push('## 内容要求');
+      if (this.contentForm.topic) lines.push(`- 报告主题：${this.contentForm.topic}`);
+      if (this.contentForm.points.trim()) {
+        const points = this.contentForm.points.split('\n').filter(p => p.trim());
+        points.forEach(p => lines.push(`- ${p.trim()}`));
+      }
+      if (this.contentForm.style) lines.push(`- 风格要求：${this.contentForm.style}`);
+      if (this.contentForm.extra) lines.push(`- 补充说明：${this.contentForm.extra}`);
+      lines.push('');
+
+      // 输出要求
+      lines.push('## 输出要求');
+      lines.push('- 生成完整的 index.html 文件（或指定文件名）');
+      lines.push('- 保留 `print-color-adjust: exact` 确保打印颜色不丢失');
+      lines.push('- 代码高亮如需使用 Prism.js CDN，自行引入');
+      lines.push('- 生成的 HTML 可以双击直接在浏览器中打开');
+
+      this.generatedPrompt = lines.join('\n');
+      this.copied = false;
+    },
+    async copyPrompt() {
+      if (!this.generatedPrompt) return;
+      try {
+        await navigator.clipboard.writeText(this.generatedPrompt);
+        this.copied = true;
+        setTimeout(() => { this.copied = false; }, 3000);
+      } catch (e) {
+        alert('复制失败，请手动复制。');
+      }
+    },
+  },
+  mounted() {
+    this.loadLayouts();
+    this.loadBasket();
+    // 监听 storage 变化（跨页面同步）
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'prompt-basket') this.loadBasket();
+    });
+  },
+}).mount('#app');
+</script>
+</body>
+</html>

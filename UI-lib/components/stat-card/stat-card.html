@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>数据卡片 · Stat Card</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link id="token-css" rel="stylesheet" href="../../tokens/business-bluewhite.css" />
+  <style>
+    body { margin: 0; padding: 40px 24px; background: var(--bg); font-family: var(--font); }
+    .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+    .stat-card {
+      background: var(--surface); border-radius: var(--radius-card);
+      padding: 24px; box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+    }
+    .stat-card .num { font-size: var(--big-number); color: var(--big-number-color); font-weight: 700; line-height: 1; margin-bottom: 8px; }
+    .stat-card h3 { font-size: 18px; color: var(--primary-700); font-weight: 700; margin: 0 0 8px; }
+    .stat-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+    .stat-card.simple { padding: 20px 24px; }
+    .stat-card.simple h3 { font-size: 16px; }
+    .stat-card.accent-top { border-top: 4px solid var(--primary-500); }
+    .page-title { max-width: 1100px; margin: 0 auto 28px; }
+    .page-title h1 { color: var(--text); font-size: 28px; margin: 0 0 6px; }
+    .page-title p { color: var(--text-muted); font-size: 14px; margin: 0; }
+    .section-label { max-width: 1100px; margin: 32px auto 16px; color: var(--text-light); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  </style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>数据卡片 · Stat Card</h1>
+  <p>单指标数据卡片，支持标题、数值、趋势箭头。适用于展示 KPI 指标、业绩数据、统计概览等场景。</p>
+</div>
+
+<div class="section-label">变体一：大数字卡片</div>
+<div class="demo-grid">
+  <div class="stat-card">
+    <div class="num">01</div>
+    <h3>七日年化收益率归因</h3>
+    <p>识别收益提升或回落是由资产配置、杠杆套息、久期管理还是市场利率变化导致。</p>
+  </div>
+  <div class="stat-card">
+    <div class="num">02</div>
+    <h3>正偏离储备与释放</h3>
+    <p>定期查看产品正偏离储备，回溯当月正偏离释放对收益率的稳定作用和规模刺激。</p>
+  </div>
+  <div class="stat-card">
+    <div class="num">03</div>
+    <h3>申赎与流动性管理</h3>
+    <p>检视申赎造成的流动性压力和净值波动，回顾临时费用调整等应对手段的执行。</p>
+  </div>
+</div>
+
+<div class="section-label">变体二：简单卡片（无编号）</div>
+<div class="demo-grid">
+  <div class="stat-card simple">
+    <h3>核心能力一</h3>
+    <p>描述你的核心能力或服务亮点，突出关键优势。</p>
+  </div>
+  <div class="stat-card simple">
+    <h3>核心能力二</h3>
+    <p>描述你的核心能力或服务亮点，突出关键优势。</p>
+  </div>
+  <div class="stat-card simple">
+    <h3>核心能力三</h3>
+    <p>描述你的核心能力或服务亮点，突出关键优势。</p>
+  </div>
+</div>
+
+<div class="section-label">变体三：顶部色条卡片</div>
+<div class="demo-grid">
+  <div class="stat-card accent-top">
+    <h3>团队优势</h3>
+    <p>兼具估值、金融工程、基金产品分析和监管理解能力。</p>
+  </div>
+  <div class="stat-card accent-top">
+    <h3>服务方式</h3>
+    <p>采用固定月度交付机制，并根据客户反馈持续优化。</p>
+  </div>
+</div>
+
+<script>
+const urlTheme = new URLSearchParams(location.search).get('theme');
+if (urlTheme) setTheme(urlTheme);
+window.addEventListener('message', (e) => {
+  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
+});
+function setTheme(theme) {
+  const link = document.querySelector('#token-css');
+  if (link) link.href = `../../tokens/${theme}.css`;
+}
+</script>
+</body>
+</html>

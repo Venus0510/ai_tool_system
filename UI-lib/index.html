@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>UI 组件库 · 团队内部工具</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js"></script>
+  <link id="token-css" rel="stylesheet" href="tokens/business-bluewhite.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body, #app { height: 100%; overflow: hidden; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+
+    .app-shell { display: flex; flex-direction: column; height: 100%; background: var(--bg); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--border-light); z-index: 10; flex-shrink: 0; }
+    .main-area { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border-light); overflow-y: auto; transition: width .2s ease; display: flex; flex-direction: column; }
+    .sidebar.collapsed { width: 40px; }
+    .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+    .preview-area { flex: 1; position: relative; }
+    .preview-area iframe { width: 100%; height: 100%; border: none; background: #fff; }
+    .preview-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 16px; }
+
+    .code-panel { border-top: 2px solid var(--border); background: var(--surface); flex-shrink: 0; }
+    .code-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; border-bottom: 1px solid var(--border-light); }
+    .code-tabs { display: flex; gap: 4px; }
+    .code-tab { padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: var(--text-muted); }
+    .code-tab.active { background: var(--primary-100); color: var(--primary-700); }
+    .code-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; font-size: 13px; font-weight: 600; background: var(--surface); color: var(--text); white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+    .btn:hover { background: var(--surface-alt); }
+    .btn.primary { background: var(--primary-500); color: #fff; border-color: var(--primary-500); }
+    .btn.primary:hover { background: var(--primary-700); }
+    .btn.small { padding: 3px 10px; font-size: 11px; }
+    .code-body { overflow: auto; max-height: 240px; }
+    .code-body pre { margin: 0; padding: 16px; font-size: 13px; line-height: 1.5; }
+    .code-body code { font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace; }
+
+    .logo { font-size: 18px; font-weight: 800; color: var(--primary-700); letter-spacing: .02em; }
+    .theme-btns { display: flex; gap: 6px; }
+    .theme-btn { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--border); cursor: pointer; font-size: 12px; font-weight: 600; background: var(--surface); color: var(--text-muted); transition: all .15s ease; }
+    .theme-btn.active { background: var(--primary-500); color: #fff; border-color: var(--primary-500); }
+
+    /* sidebar toggle bar */
+    .sidebar-bar { display: flex; align-items: center; justify-content: flex-end; padding: 6px 10px; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
+    .sidebar-bar button { background: none; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; color: var(--text-muted); font-size: 12px; padding: 3px 7px; }
+    .sidebar-bar button:hover { color: var(--text); background: var(--surface-alt); }
+
+    /* menu groups */
+    .menu-scroll { flex: 1; overflow-y: auto; }
+    .menu-group { border-bottom: 1px solid var(--border-light); }
+    .menu-group-header { display: flex; align-items: center; gap: 8px; padding: 10px 16px; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text); user-select: none; transition: background .1s; }
+    .menu-group-header:hover { background: var(--surface-alt); }
+    .menu-group-header .arrow { font-size: 10px; transition: transform .15s ease; color: var(--text-muted); display: inline-block; }
+    .menu-group-header .arrow.open { transform: rotate(90deg); }
+    .menu-group-header .count { margin-left: auto; font-size: 11px; color: var(--text-light); font-weight: 500; }
+    .menu-items { overflow: hidden; }
+    .menu-item { padding: 9px 16px 9px 40px; cursor: pointer; font-size: 13px; color: var(--text-muted); border-left: 3px solid transparent; transition: all .12s ease; display: block; }
+    .menu-item:hover { color: var(--text); background: var(--surface-alt); }
+    .menu-item.active { color: var(--primary-500); background: var(--primary-50); border-left-color: var(--primary-500); font-weight: 600; }
+    .menu-item-empty { padding: 8px 16px 8px 40px; color: var(--text-light); font-size: 12px; }
+
+    .sidebar.collapsed .menu-scroll,
+    .sidebar.collapsed .sidebar-bar span { display: none; }
+    .sidebar.collapsed .sidebar-bar { justify-content: center; }
+    .sidebar.collapsed .menu-group-header { padding: 10px 12px; justify-content: center; }
+    .sidebar.collapsed .menu-group-header .arrow,
+    .sidebar.collapsed .menu-group-header .count,
+    .sidebar.collapsed .menu-group-header span:not(.arrow) { display: none; }
+
+    .basket-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; border-radius: 999px; background: var(--primary-500); color: #fff; font-size: 10px; font-weight: 700; padding: 0 5px; }
+    .overlay { display: none; position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.3); }
+
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 50; width: 260px; transform: translateX(-100%); transition: transform .2s ease; }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .sidebar.collapsed { width: 260px; }
+      .overlay.show { display: block; }
+      .topbar { padding: 8px 12px; }
+      .logo { font-size: 15px; }
+      .theme-btn { padding: 4px 10px; font-size: 11px; }
+      .code-panel-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .code-body { max-height: 160px; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <div class="app-shell">
+    <!-- ====== 顶部栏 ====== -->
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button @click="mobileMenuOpen = true" class="btn small" :style="{display: isMobile ? 'inline-flex' : 'none'}">☰</button>
+        <span class="logo">UI 组件库</span>
+        <span v-if="basketCount" class="basket-count">{{ basketCount }}</span>
+      </div>
+      <div class="theme-btns">
+        <button v-for="t in themes" :key="t.id" @click="switchTheme(t.id)"
+                class="theme-btn" :class="{ active: currentTheme === t.id }">{{ t.label }}</button>
+      </div>
+    </header>
+
+    <div class="main-area">
+      <!-- 手机端遮罩 -->
+      <div class="overlay" :class="{ show: mobileMenuOpen }" @click="mobileMenuOpen = false"></div>
+
+      <!-- ====== 左侧多级菜单 ====== -->
+      <aside class="sidebar" :class="{ collapsed: !sidebarOpen && !isMobile, 'mobile-open': mobileMenuOpen }">
+        <!-- 侧边栏整体折叠按钮 -->
+        <div class="sidebar-bar">
+          <button @click="sidebarOpen = !sidebarOpen" :title="sidebarOpen ? '折叠侧边栏' : '展开侧边栏'">
+            {{ sidebarOpen ? '◀' : '▶' }}
+          </button>
+        </div>
+
+        <!-- 菜单树（滚动区） -->
+        <nav class="menu-scroll">
+          <div v-for="group in menuTree" :key="group.id" class="menu-group">
+            <!-- 一级菜单：可展开/收起 -->
+            <div class="menu-group-header" @click="toggleGroup(group.id)">
+              <span class="arrow" :class="{ open: openGroups[group.id] }">▶</span>
+              <span>{{ group.label }}</span>
+              <span class="count" v-if="group.children.length">{{ group.children.length }}项</span>
+            </div>
+            <!-- 二级菜单项 -->
+            <div class="menu-items" v-show="openGroups[group.id]">
+              <div v-for="item in group.children" :key="item.id"
+                   class="menu-item" :class="{ active: selectedItem?.id === item.id }"
+                   @click="selectItem(item, group)">
+                {{ item.label }}
+              </div>
+              <div v-if="!group.children.length" class="menu-item-empty">暂无组件</div>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- ====== 右侧内容区 ====== -->
+      <main class="content">
+        <!-- iframe 预览区 -->
+        <div class="preview-area">
+          <iframe v-if="selectedItem" :key="iframeKey" :src="iframeSrc" ref="previewFrame"
+                  style="width:100%;height:100%;border:none;"></iframe>
+          <div v-else class="preview-placeholder">
+            ← 从左侧菜单选择一个组件开始预览
+          </div>
+        </div>
+
+        <!-- 代码面板 -->
+        <div class="code-panel" v-if="selectedItem">
+          <div class="code-panel-header">
+            <div class="code-tabs">
+              <button class="code-tab" :class="{ active: activeTab === 'code' }" @click="switchTab('code')">完整代码</button>
+              <button class="code-tab" :class="{ active: activeTab === 'meta' }" @click="switchTab('meta')" v-if="selectedItem.meta">元信息 JSON</button>
+            </div>
+            <div class="code-actions">
+              <button class="btn small" @click="copyCode">📋 复制代码</button>
+              <button class="btn small" @click="copyMeta" v-if="selectedItem.meta && metaContent">📋 复制元信息</button>
+              <button class="btn small primary" @click="addToBasket">🧺 加入提示词篮</button>
+              <button class="btn small" @click="codePanelOpen = !codePanelOpen">
+                {{ codePanelOpen ? '▼ 收起' : '▲ 展开' }}
+              </button>
+            </div>
+          </div>
+          <div class="code-body" v-show="codePanelOpen">
+            <pre v-if="activeTab === 'code'"><code class="language-html">{{ sourceCode }}</code></pre>
+            <pre v-else><code class="language-json">{{ metaContent }}</code></pre>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* === 组件注册表（内联，避免 file:// 协议下 fetch CORS 限制） === */
+const MANIFEST_MENU = [
+  {
+    id: 'basic-components', label: '基础组件', icon: 'component', defaultOpen: true,
+    children: [
+      { id: 'stat-card',     label: '数据卡片', path: 'components/stat-card/stat-card.html',         meta: 'components/stat-card/stat-card.meta.json',         theme: 'follow' },
+      { id: 'timeline',      label: '时间线',   path: 'components/timeline/timeline.html',           meta: 'components/timeline/timeline.meta.json',           theme: 'follow' },
+      { id: 'process-step',  label: '流程步骤', path: 'components/process-step/process-step.html',   meta: 'components/process-step/process-step.meta.json',   theme: 'follow' },
+      { id: 'circle-number', label: '圆形编号', path: 'components/circle-number/circle-number.html', meta: 'components/circle-number/circle-number.meta.json', theme: 'follow' },
+      { id: 'badge-tag',     label: '标签徽章', path: 'components/badge-tag/badge-tag.html',         meta: 'components/badge-tag/badge-tag.meta.json',         theme: 'follow' },
+      { id: 'data-table',    label: '数据表格', path: 'components/data-table/data-table.html',       meta: 'components/data-table/data-table.meta.json',       theme: 'follow' },
+      { id: 'hero-card',     label: '封面卡片', path: 'components/hero-card/hero-card.html',         meta: 'components/hero-card/hero-card.meta.json',         theme: 'follow' },
+    ]
+  },
+  {
+    id: 'charts', label: '图表', icon: 'chart', defaultOpen: false,
+    children: [
+      { id: 'bar-chart',       label: '柱状图',   path: 'charts/bar-chart/bar-chart.html',           meta: 'charts/bar-chart/bar-chart.meta.json',           theme: 'follow' },
+      { id: 'timeline-chart',  label: '时间线图', path: 'charts/timeline-chart/timeline-chart.html', meta: 'charts/timeline-chart/timeline-chart.meta.json', theme: 'follow' },
+    ]
+  },
+  {
+    id: 'layouts', label: '版式骨架', icon: 'layout', defaultOpen: true,
+    children: [
+      { id: 'a4-landscape', label: 'A4 横版',   path: 'skeletons/a4-landscape-skeleton.html', meta: null, theme: 'follow' },
+      { id: 'slide-deck',   label: 'Slide 翻页', path: 'skeletons/slide-deck-skeleton.html',   meta: null, theme: 'follow' },
+      { id: 'scroll-page',  label: '自由滚动',   path: 'skeletons/scroll-page-skeleton.html',  meta: null, theme: 'follow' },
+    ]
+  },
+  {
+    id: 'token-preview', label: 'Token 预览', icon: 'palette', defaultOpen: false,
+    children: [
+      { id: 'token-business', label: '商务蓝白', path: 'previews/token-preview.html', meta: null, theme: 'fixed', params: { token: 'business-bluewhite' } },
+      { id: 'token-rc',       label: 'RC 浅蓝',  path: 'previews/token-preview.html', meta: null, theme: 'fixed', params: { token: 'rc-lightblue' } },
+      { id: 'token-dark',     label: '暗黑科技', path: 'previews/token-preview.html', meta: null, theme: 'fixed', params: { token: 'dark-tech' } },
+    ]
+  },
+  {
+    id: 'templates', label: '完整案例', icon: 'file', defaultOpen: false,
+    children: [
+      { id: 'combo-a4-bluewhite', label: 'A4 + 商务蓝白',   path: 'templates/combo-a4-bluewhite.html', meta: null, theme: 'follow' },
+      { id: 'combo-slide-rc',     label: 'Slide + RC 浅蓝', path: 'templates/combo-slide-rc.html',     meta: null, theme: 'follow' },
+      { id: 'combo-scroll-dark',  label: '滚动 + 暗黑科技', path: 'templates/combo-scroll-dark.html',  meta: null, theme: 'follow' },
+    ]
+  },
+];
+
+const { createApp } = Vue;
+createApp({
+  data() {
+    const openGroups = {};
+    MANIFEST_MENU.forEach(g => { if (g.defaultOpen) openGroups[g.id] = true; });
+    return {
+      currentTheme: 'business-bluewhite',
+      themes: [
+        { id: 'business-bluewhite', label: '商务蓝白' },
+        { id: 'rc-lightblue', label: 'RC 浅蓝' },
+        { id: 'dark-tech', label: '暗黑科技' },
+      ],
+      sidebarOpen: true,
+      menuTree: MANIFEST_MENU,
+      openGroups,
+      selectedItem: null,
+      activeTab: 'code',
+      sourceCode: '',
+      metaContent: '',
+      codePanelOpen: true,
+      promptBasket: [],
+      iframeKey: 0,
+      isMobile: window.innerWidth < 768,
+      mobileMenuOpen: false,
+    };
+  },
+  computed: {
+    basketCount() {
+      return this.promptBasket.length;
+    },
+    iframeSrc() {
+      if (!this.selectedItem) return '';
+      let src = this.selectedItem.path;
+      const sep = src.includes('?') ? '&' : '?';
+      if (this.selectedItem.theme === 'follow') {
+        src += `${sep}theme=${this.currentTheme}`;
+      }
+      if (this.selectedItem.params) {
+        const p = new URLSearchParams(this.selectedItem.params).toString();
+        src += (src.includes('?') ? '&' : '?') + p;
+      }
+      return src;
+    },
+  },
+  methods: {
+    toggleGroup(id) {
+      this.openGroups[id] = !this.openGroups[id];
+    },
+    async selectItem(item, group) {
+      this.selectedItem = { ...item, category: group?.label };
+      this.activeTab = 'code';
+      this.codePanelOpen = true;
+      this.mobileMenuOpen = false;
+      this.iframeKey++;
+
+      // 加载源代码
+      try {
+        const res = await fetch(item.path);
+        this.sourceCode = await res.text();
+        this.$nextTick(() => this.highlightCode());
+      } catch (e) {
+        this.sourceCode = '// 无法加载源代码（file:// 协议下请使用本地服务器）';
+      }
+
+      // 加载元信息
+      this.metaContent = '';
+      if (item.meta) {
+        try {
+          const res = await fetch(item.meta);
+          const json = await res.json();
+          this.metaContent = JSON.stringify(json, null, 2);
+          this.$nextTick(() => this.highlightCode());
+        } catch (e) {
+          this.metaContent = '// 无法加载元信息';
+        }
+      }
+
+      this.iframeKey++;
+    },
+    switchTheme(themeId) {
+      this.currentTheme = themeId;
+      const link = document.querySelector('#token-css');
+      if (link) link.href = `tokens/${themeId}.css`;
+
+      // 通知已加载的 iframe
+      const iframe = this.$refs.previewFrame;
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({ type: 'theme-change', theme: themeId }, '*');
+      }
+
+      // follow 主题的组件：重载 iframe 以更新 URL 参数
+      if (this.selectedItem?.theme === 'follow') {
+        this.iframeKey++;
+      }
+    },
+    switchTab(tab) {
+      this.activeTab = tab;
+      this.$nextTick(() => this.highlightCode());
+    },
+    highlightCode() {
+      requestAnimationFrame(() => {
+        const blocks = document.querySelectorAll('#app pre code');
+        blocks.forEach(b => {
+          if (b.textContent && b.textContent.trim()) {
+            try { Prism.highlightElement(b); } catch (e) { /* ignore */ }
+          }
+        });
+      });
+    },
+    async copyCode() {
+      try {
+        const text = this.sourceCode || (await (await fetch(this.selectedItem.path)).text());
+        await navigator.clipboard.writeText(text);
+        this.showToast('代码已复制');
+      } catch (e) {
+        this.showToast('复制失败，请手动复制');
+      }
+    },
+    async copyMeta() {
+      try {
+        await navigator.clipboard.writeText(this.metaContent);
+        this.showToast('元信息已复制');
+      } catch (e) {
+        this.showToast('复制失败');
+      }
+    },
+    addToBasket() {
+      if (!this.selectedItem) return;
+      const exists = this.promptBasket.find(b => b.id === this.selectedItem.id);
+      if (exists) { this.showToast('已在提示词篮中'); return; }
+      this.promptBasket.push({
+        id: this.selectedItem.id,
+        label: this.selectedItem.label,
+        path: this.selectedItem.path,
+        metaPath: this.selectedItem.meta,
+        category: this.selectedItem.category,
+        addedAt: new Date().toISOString(),
+      });
+      localStorage.setItem('prompt-basket', JSON.stringify(this.promptBasket));
+      this.showToast('已加入提示词篮');
+    },
+    showToast(msg) {
+      const el = document.createElement('div');
+      el.textContent = msg;
+      Object.assign(el.style, {
+        position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+        background: 'rgba(0,0,0,0.82)', color: '#fff', padding: '8px 20px',
+        borderRadius: '999px', fontSize: '13px', fontWeight: '600', zIndex: '9999',
+        pointerEvents: 'none', transition: 'opacity .3s ease',
+      });
+      document.body.appendChild(el);
+      setTimeout(() => { el.style.opacity = '0'; }, 1400);
+      setTimeout(() => { el.remove(); }, 1800);
+    },
+    handleResize() {
+      this.isMobile = window.innerWidth < 768;
+    },
+  },
+  mounted() {
+    this.promptBasket = JSON.parse(localStorage.getItem('prompt-basket') || '[]');
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+}).mount('#app');
+</script>
+</body>
+</html>

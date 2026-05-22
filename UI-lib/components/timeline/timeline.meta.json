@@ -1,0 +1,15 @@
+{
+  "name": "timeline",
+  "label": "时间线",
+  "category": "基础组件",
+  "description": "展示按时间顺序排列的关键节点。支持水平横轴（适合 4-5 个节点）和垂直纵轴（适合任意数量节点）两种布局。每个节点包含圆形标记、标题和描述卡片。",
+  "props": {
+    "direction": { "type": "enum", "values": ["horizontal", "vertical"], "desc": "布局方向：horizontal=水平横轴（4列网格），vertical=垂直纵轴" },
+    "nodes":     { "type": "array", "desc": "节点数组，每项含 year/label（圆形标记文字）、color（圆形背景色）、title、desc" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<div class=\"timeline-h\">\n  <div class=\"node\">\n    <div class=\"dot\" style=\"background:#0f5a96;\">2014</div>\n    <div class=\"card\"><h3>节点标题</h3><p>描述</p></div>\n  </div>\n</div>",
+  "promptHint": "适用于政策演进时间线、项目里程碑、历史发展脉络、产品迭代记录等场景。每个节点的圆形颜色可按需自定义。"
+}

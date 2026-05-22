@@ -1,0 +1,18 @@
+{
+  "name": "data-table",
+  "label": "数据表格",
+  "category": "基础组件",
+  "description": "带主题色表头的数据表格组件，支持斑马纹、紧凑、全边框三种变体，可用于组合使用。",
+  "props": {
+    "striped":  { "type": "boolean", "desc": "是否启用斑马纹（隔行变色）" },
+    "compact":  { "type": "boolean", "desc": "是否使用紧凑模式（减小内边距和字号）" },
+    "bordered": { "type": "boolean", "desc": "是否显示全边框（单元格边框）" },
+    "columns":  { "type": "array", "desc": "列定义数组，每项含 label 字段" },
+    "rows":     { "type": "array", "desc": "行数据数组" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<table class=\"data-table\">\n  <thead><tr><th>列A</th><th>列B</th></tr></thead>\n  <tbody>\n    <tr><td>数据</td><td>数据</td></tr>\n  </tbody>\n</table>",
+  "promptHint": "适用于数据分析表、对比表、流程说明表、规格参数表等场景。表头颜色由 --table-th-bg 和 --table-th-text 变量控制，跟随主题。"
+}

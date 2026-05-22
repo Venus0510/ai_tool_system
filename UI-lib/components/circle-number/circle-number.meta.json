@@ -1,0 +1,16 @@
+{
+  "name": "circle-number",
+  "label": "圆形编号",
+  "category": "基础组件",
+  "description": "圆形数字/文字编号，用于目录模块编号、步骤指示、章节标记。支持四种尺寸（sm/md/lg/xl），可选阴影和实色反白。",
+  "props": {
+    "size":    { "type": "enum", "values": ["sm", "md", "lg", "xl"], "desc": "尺寸：sm=44px，md=66px，lg=110px，xl=140px" },
+    "variant": { "type": "enum", "values": ["default", "shadow", "accent"], "desc": "变体：default=浅底深字，shadow=带阴影，accent=实色反白" },
+    "text":    { "type": "string", "required": true, "desc": "编号文字，如 一/二/三 或 01/02/03" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<span class=\"circle-num circle-md\">一</span>",
+  "promptHint": "适用于演示文稿目录、报告模块编号、步骤圆形指示器等场景。使用 font-display 字体展示中文数字或阿拉伯数字。"
+}

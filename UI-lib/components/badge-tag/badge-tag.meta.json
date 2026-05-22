@@ -1,0 +1,16 @@
+{
+  "name": "badge-tag",
+  "label": "标签徽章",
+  "category": "基础组件",
+  "description": "圆角标签/徽章组件，支持填充、描边、实色、带点四种风格，小/默认/大三种尺寸",
+  "props": {
+    "style":  { "type": "enum", "values": ["fill", "outline", "accent", "dot"], "desc": "徽章风格：fill=浅底深字，outline=描边，accent=实色反白，dot=带状态点" },
+    "size":   { "type": "enum", "values": ["sm", "md", "lg"], "desc": "尺寸：sm=小号，md=默认，lg=大号" },
+    "label":  { "type": "string", "required": true, "desc": "标签文本" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<span class=\"badge badge-fill\">T+1 至 T+3</span>",
+  "promptHint": "适用于时间标签、分类标记、状态指示、模块标识等场景。可嵌入卡片、表格、列表中使用。"
+}

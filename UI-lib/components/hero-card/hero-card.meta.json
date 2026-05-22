@@ -1,0 +1,17 @@
+{
+  "name": "hero-card",
+  "label": "封面卡片",
+  "category": "基础组件",
+  "description": "用于封面页或重点区域的卡片组合。支持三种模式：浅色卡片叠加深色渐变背景、暗色区半透明卡片、统计数字卡片。",
+  "props": {
+    "mode":    { "type": "enum", "values": ["light-on-dark", "dark-section", "stat-grid"], "desc": "卡片模式：light-on-dark=浅色卡片+深色渐变背景，dark-section=暗色区+半透明卡片，stat-grid=统计数字网格" },
+    "heading": { "type": "string", "desc": "区域标题" },
+    "sub":     { "type": "string", "desc": "区域副标题/描述" },
+    "items":   { "type": "array", "desc": "卡片数据数组，每项含 title 和 desc（stat-grid 模式含 value 和 label）" }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": false,
+  "usage": "<section class=\"hero-section\">\n  <h2>报告标题</h2>\n  <p class=\"sub\">描述文本</p>\n  <div class=\"hero-cards\">\n    <div class=\"hero-card\"><h3>卡片标题</h3><p>描述</p></div>\n  </div>\n</section>",
+  "promptHint": "适用于报告封面、团队介绍、产品亮点展示、核心指标概览等场景。渐变背景由 --cover-bg 变量控制，跟随主题。"
+}
