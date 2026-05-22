@@ -18,8 +18,7 @@
     .app-shell { display: flex; flex-direction: column; height: 100%; background: var(--bg); }
     .topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--border-light); z-index: 10; flex-shrink: 0; }
     .main-area { display: flex; flex: 1; overflow: hidden; }
-    .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border-light); overflow-y: auto; transition: width .2s ease; display: flex; flex-direction: column; }
-    .sidebar.collapsed { width: 40px; }
+    .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border-light); overflow-y: auto; }
     .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
     .preview-area { flex: 1; position: relative; }
     .preview-area iframe { width: 100%; height: 100%; border: none; background: #fff; }
@@ -45,13 +44,7 @@
     .theme-btn { padding: 5px 14px; border-radius: 999px; border: 1.5px solid var(--border); cursor: pointer; font-size: 12px; font-weight: 600; background: var(--surface); color: var(--text-muted); transition: all .15s ease; }
     .theme-btn.active { background: var(--primary-500); color: #fff; border-color: var(--primary-500); }
 
-    /* sidebar toggle bar */
-    .sidebar-bar { display: flex; align-items: center; justify-content: flex-end; padding: 6px 10px; border-bottom: 1px solid var(--border-light); flex-shrink: 0; }
-    .sidebar-bar button { background: none; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; color: var(--text-muted); font-size: 12px; padding: 3px 7px; }
-    .sidebar-bar button:hover { color: var(--text); background: var(--surface-alt); }
-
     /* menu groups */
-    .menu-scroll { flex: 1; overflow-y: auto; }
     .menu-group { border-bottom: 1px solid var(--border-light); }
     .menu-group-header { display: flex; align-items: center; gap: 8px; padding: 10px 16px; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text); user-select: none; transition: background .1s; }
     .menu-group-header:hover { background: var(--surface-alt); }
@@ -64,21 +57,12 @@
     .menu-item.active { color: var(--primary-500); background: var(--primary-50); border-left-color: var(--primary-500); font-weight: 600; }
     .menu-item-empty { padding: 8px 16px 8px 40px; color: var(--text-light); font-size: 12px; }
 
-    .sidebar.collapsed .menu-scroll,
-    .sidebar.collapsed .sidebar-bar span { display: none; }
-    .sidebar.collapsed .sidebar-bar { justify-content: center; }
-    .sidebar.collapsed .menu-group-header { padding: 10px 12px; justify-content: center; }
-    .sidebar.collapsed .menu-group-header .arrow,
-    .sidebar.collapsed .menu-group-header .count,
-    .sidebar.collapsed .menu-group-header span:not(.arrow) { display: none; }
-
     .basket-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; border-radius: 999px; background: var(--primary-500); color: #fff; font-size: 10px; font-weight: 700; padding: 0 5px; }
     .overlay { display: none; position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.3); }
 
     @media (max-width: 768px) {
       .sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 50; width: 260px; transform: translateX(-100%); transition: transform .2s ease; }
       .sidebar.mobile-open { transform: translateX(0); }
-      .sidebar.collapsed { width: 260px; }
       .overlay.show { display: block; }
       .topbar { padding: 8px 12px; }
       .logo { font-size: 15px; }
@@ -100,6 +84,7 @@
         <span v-if="basketCount" class="basket-count">{{ basketCount }}</span>
       </div>
       <div class="theme-btns">
+        <span style="font-size:12px;color:var(--text-muted);font-weight:600;margin-right:2px;">切换主题</span>
         <button v-for="t in themes" :key="t.id" @click="switchTheme(t.id)"
                 class="theme-btn" :class="{ active: currentTheme === t.id }">{{ t.label }}</button>
       </div>
@@ -110,16 +95,9 @@
       <div class="overlay" :class="{ show: mobileMenuOpen }" @click="mobileMenuOpen = false"></div>
 
       <!-- ====== 左侧多级菜单 ====== -->
-      <aside class="sidebar" :class="{ collapsed: !sidebarOpen && !isMobile, 'mobile-open': mobileMenuOpen }">
-        <!-- 侧边栏整体折叠按钮 -->
-        <div class="sidebar-bar">
-          <button @click="sidebarOpen = !sidebarOpen" :title="sidebarOpen ? '折叠侧边栏' : '展开侧边栏'">
-            {{ sidebarOpen ? '◀' : '▶' }}
-          </button>
-        </div>
-
+      <aside class="sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
         <!-- 菜单树（滚动区） -->
-        <nav class="menu-scroll">
+        <nav class="menu-scroll" style="flex:1;overflow-y:auto;">
           <div v-for="group in menuTree" :key="group.id" class="menu-group">
             <!-- 一级菜单：可展开/收起 -->
             <div class="menu-group-header" @click="toggleGroup(group.id)">
@@ -211,9 +189,7 @@ const MANIFEST_MENU = [
   {
     id: 'token-preview', label: 'Token 预览', icon: 'palette', defaultOpen: false,
     children: [
-      { id: 'token-business', label: '商务蓝白', path: 'previews/token-preview.html', meta: null, theme: 'fixed', params: { token: 'business-bluewhite' } },
-      { id: 'token-rc',       label: 'RC 浅蓝',  path: 'previews/token-preview.html', meta: null, theme: 'fixed', params: { token: 'rc-lightblue' } },
-      { id: 'token-dark',     label: '暗黑科技', path: 'previews/token-preview.html', meta: null, theme: 'fixed', params: { token: 'dark-tech' } },
+      { id: 'token-palette', label: '三套色板对比', path: 'previews/token-preview.html', meta: null, theme: 'fixed' },
     ]
   },
   {
@@ -238,7 +214,6 @@ createApp({
         { id: 'rc-lightblue', label: 'RC 浅蓝' },
         { id: 'dark-tech', label: '暗黑科技' },
       ],
-      sidebarOpen: true,
       menuTree: MANIFEST_MENU,
       openGroups,
       selectedItem: null,
