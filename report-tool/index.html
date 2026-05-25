@@ -366,8 +366,7 @@
       <div class="title">欢迎使用报告工具</div>
       <div class="sub">点击左侧「新建项目」开始创建新报告，或「导入项目」加载已有项目配置。</div>
     </div>
-
-    <div style="overflow: auto;" v-if="projectHandle">
+    <template v-if="projectHandle">
       <!-- ===== 1 基本设置 ===== -->
       <section>
         <div class="section-header" @click="toggleSection('basic')">
@@ -613,7 +612,7 @@
           </p>
         </div>
       </section>
-    </div>
+    </template>
   </main>
 
   <!-- ========== 新建项目弹窗 ========== -->
