@@ -1,22 +1,25 @@
-# UI 组件库 · 设计规格文档
+# UI 组件库 & 报告工具 · 设计规格文档
 
-> 版本: v2.0 | 2026-05-22 | Claude Code 原生方案
-> v1.0（已废弃）基于 iframe + report 提示词工具双系统；v2.0 去掉 report 中转层，直接通过 CLAUDE.md 驱动 Claude Code 读取组件库生成页面。
+> 版本: v3.1 | 2026-05-25 | 配置驱动 + 分章生成 + 可视化选择
+> - v1.0（废弃）：iframe + report 提示词工具双系统
+> - v2.0（废弃）：去掉 report，纯 Claude Code 对话，缺乏项目管理和分步控制
+> - v3.0（当前）：report-tool 配置页 + config.json 驱动 + 分章可控生成
 
 ---
 
 ## 一、核心理念
 
-**组件库 = 乐高积木，CLAUDE.md = 说明书，用户需求 = 自然语言描述。**
+**工具页面管配置，Claude Code 管生成，config.json 是桥梁。**
 
-用户只需在项目目录下打开 Claude Code，用自然语言描述需求（"我要一个A4横版商务蓝白主题的货币基金分析报告"），Claude 自动遵循 CLAUDE.md 的约束，从 UI-lib 中选取骨架、主题和组件，组装生成页面。无需任何中间工具页面。
+用户不再需要记住组件名、路径、主题名——在工具页面用表单勾选即可。配置保存为 config.json，Claude 读取后按章节结构化生成，每章独立文件，最终组装。
 
 ```
-用户在项目根目录打开 Claude Code
-  → 自动读取 .claude/CLAUDE.md
-    → 触发规则：涉及 HTML/PPT/报告时，必须读 UI-lib/.claude.md
-      → UI-lib/.claude.md 定义完整的 选骨架→选主题→选组件→组装 流程
-        → Claude 自动读取对应文件，生成页面
+工具页面                     config.json                   Claude Code
+─────────                    ──────────                   ──────────
+新建项目                      版式/主题/模式                 读取 config.json
+选版式/主题/组件      ──→      章节定义 + 数据引用     ──→   分章生成 HTML
+定义章节 + 绑定数据             components 列表              逐章对话修改
+保存配置                                               最终组装输出
 ```
 
 ---
@@ -26,328 +29,386 @@
 ```
 AIProject/
 ├── .claude/
-│   ├── CLAUDE.md                    # 项目根指令（触发 UI-lib 约束）
-│   ├── settings.local.json          # 权限 + hooks 配置
-│   └── hooks/                       # 对话保存系统
-│       ├── save-conversation.cjs    # 保存对话到 chat_history/
-│       ├── session-tracker.cjs      # 会话状态追踪
-│       └── utils.cjs                # 工具函数
+│   ├── CLAUDE.md                         # 项目根指令
+│   ├── settings.local.json               # 权限 + hooks 配置
+│   └── hooks/                            # 对话保存系统
+│       ├── save-conversation.cjs
+│       ├── session-tracker.cjs
+│       └── utils.cjs
 │
-├── UI-lib/                          # 组件库核心
-│   ├── .claude.md                   # ★ 组件库约束文档（Claude Code 自动读取）
-│   ├── index.html                   # 组件预览页（开发用，人工浏览）
-│   ├── manifest.json                # 组件注册表（菜单树、路径、meta 引用）
-│   ├── tokens/                      # 3 套 Design Token CSS
-│   │   ├── business-bluewhite.css
-│   │   ├── rc-lightblue.css
-│   │   └── dark-tech.css
-│   ├── components/                  # 业务组件（每个目录含 .html + .meta.json）
-│   │   ├── stat-card/               # 数据卡片
-│   │   ├── timeline/                # 时间线
-│   │   ├── process-step/            # 流程步骤
-│   │   ├── circle-number/           # 圆形编号
-│   │   ├── badge-tag/               # 标签徽章
-│   │   ├── data-table/              # 数据表格
-│   │   └── hero-card/               # 封面卡片
-│   ├── charts/                      # 图表组件
-│   │   ├── bar-chart/               # 柱状图（ECharts）
-│   │   └── timeline-chart/          # 时间线图（ECharts）
-│   ├── skeletons/                   # 版式骨架（页面结构框架）
-│   │   ├── a4-landscape-skeleton.html
-│   │   ├── slide-deck-skeleton.html
-│   │   └── scroll-page-skeleton.html
-│   ├── templates/                   # 完整案例（骨架 + 组件 + 主题的组装成品）
-│   │   ├── combo-a4-bluewhite.html
-│   │   ├── combo-slide-rc.html
-│   │   ├── combo-scroll-dark.html
-│   │   └── pe-training-a4-bluewhite.html
-│   └── previews/
-│       └── token-preview.html       # Token 色板预览
+├── UI-lib/                               # 组件库（不变）
+│   ├── .claude.md                        # 组件库约束文档
+│   ├── index.html                        # 组件预览页（开发用，人工浏览）
+│   ├── manifest.json                     # 组件注册表（菜单树、路径、meta 引用）
+│   ├── tokens/                           # 3 套 Design Token CSS
+│   ├── components/                       # 7 个业务组件
+│   ├── charts/                           # 2 个图表组件
+│   ├── skeletons/                        # 3 个版式骨架
+│   ├── templates/                        # 4 个完整案例
+│   └── previews/                         # Token 色板预览
 │
-├── config.cjs                        # Hook 配置文件
-├── my-design.md                      # 本文件
-└── chat_history/                     # 对话历史（自动生成）
+├── report-tool/                          # ★ 报告工具（v3.0 新增）
+│   ├── index.html                        # 单页应用：项目列表 + 配置编辑器
+│   ├── assemble.cjs                      # 章节组装脚本
+│   └── projects/                         # 所有报告项目
+│       └── 货币基金分析报告/              # 项目文件夹（用户命名）
+│           ├── config.json               # ★ 项目配置（Claude 指令）
+│           ├── data/                     # 数据文件（任意格式）
+│           │   ├── 产品数据.csv
+│           │   ├── 收益归因分析.docx
+│           │   └── 竞品对比.pdf
+│           ├── chapter-01-cover.html     # 第1章：封面
+│           ├── chapter-02-overview.html  # 第2章：产品表现概览
+│           ├── chapter-03-attribution.html
+│           ├── chapter-04-comparison.html
+│           ├── chapter-05-team.html
+│           └── output/
+│               └── full-report.html      # 最终组装成品
+│
+├── config.cjs                            # Hook 配置
+├── my-design.md                          # 本文件
+└── chat_history/                         # 对话历史（自动生成）
 ```
 
 ---
 
-## 三、资源层级
+## 三、report-tool 工具页面
+
+### 3.1 index.html — 单页应用（项目列表 + 配置编辑器）
+
+index.html 和 editor.html 合并为一个页面。左侧项目列表，右侧配置区。选择项目后直接编辑。
 
 ```
-tokens/        → 主题 CSS 变量（颜色、字体、间距、圆角、阴影）
-components/    → 可复用的业务组件（自包含 HTML，独立可运行）
-charts/        → 图表组件（基于 ECharts 5）
-skeletons/     → 版式骨架（页面结构，含 @media print、@page 等打印控制）
-templates/     → 完整案例（few-shot 参考，展示组装方式）
+┌──────────────────────────────────────────────────────────────┐
+│  报告工具                                          [保存配置] │
+├──────────────┬───────────────────────────────────────────────┤
+│ 左侧面板     │ 右侧编辑区                                    │
+│ (280px)     │                                              │
+│             │  ┌─ ① 基本设置 ──────────────────────────┐   │
+│ [+ 新建项目] │  │                                        │   │
+│             │  │ 版式（点击选择）：                       │   │
+│ ─────────── │  │ ┌──────────┐ ┌──────────┐ ┌──────────┐│   │
+│ 项目列表    │  │ │ ████████ │ │ ████████ │ │ ████████ ││   │
+│             │  │ │ A4 横版  │ │Slide翻页 │ │ 自由滚动 ││   │
+│ ○ 货币基金  │  │ │ 297×210  │ │ 全屏演示 │ │ 响应式   ││   │
+│   3/5章完成 │  │ │   ✓ 已选 │ │          │ │          ││   │
+│             │  │ └──────────┘ └──────────┘ └──────────┘│   │
+│ ○ 培训材料  │  │                                        │   │
+│   5/5章完成 │  │ 主题（点击选择）：                       │   │
+│             │  │ ┌──────────┐ ┌──────────┐ ┌──────────┐│   │
+│ ○ 产品介绍  │  │ │ ████████ │ │ ████████ │ │ ████████ ││   │
+│   草稿      │  │ │ 商务蓝白 │ │ RC 浅蓝  │ │ 暗黑科技 ││   │
+│             │  │ │   ✓ 已选 │ │          │ │          ││   │
+│             │  │ └──────────┘ └──────────┘ └──────────┘│   │
+│             │  │                                        │   │
+│             │  │ 生成模式：                              │   │
+│             │  │ ○ 分章生成（推荐，长报告逐章处理）       │   │
+│             │  │ ○ 一次性生成（适合3-5页短报告）         │   │
+│             │  └────────────────────────────────────────┘   │
+│             │                                              │
+│             │  ┌─ ② 章节定义 ──── [+ 添加章节] ────────┐   │
+│             │  │                                        │   │
+│             │  │ ▸ 第1章 · 封面            status: ✓完成 │   │
+│             │  │   标题 [封面_________________________] │   │
+│             │  │   描述 [报告封面，含标题、日期、团队_] │   │
+│             │  │                                        │   │
+│             │  │   ┌─ 组件选择 ─────────────────────┐   │   │
+│             │  │   │ 来自组件库（点击缩略图勾选）：    │   │   │
+│             │  │   │ ┌──────┐ ┌──────┐ ┌──────┐    │   │   │
+│             │  │   │ │ 缩略 │ │ 缩略 │ │ 缩略 │    │   │   │
+│             │  │   │ │ 图A  │ │ 图B  │ │ 图C  │    │   │   │
+│             │  │   │ │hero- │ │stat- │ │badge │    │   │   │
+│             │  │   │ │card ✓│ │card  │ │-tag  │    │   │   │
+│             │  │   │ └──────┘ └──────┘ └──────┘    │   │   │
+│             │  │   │                                │   │   │
+│             │  │   │ 自定义展示需求（可选）：         │   │   │
+│             │  │   │ [如：左右两栏布局，左边3个数_]  │   │   │
+│             │  │   └────────────────────────────────┘   │   │
+│             │  │                                        │   │
+│             │  │   数据文件 [data/产品数据.csv_] [选择] │   │
+│             │  │  ──────────────────────────────────    │   │
+│             │  │                                        │   │
+│             │  │ ▸ 第2章 · 产品表现概览  status: ●草稿 │   │
+│             │  │   ...（折叠）                          │   │
+│             │  │                                        │   │
+│             │  │ ▸ 第3章 · 收益归因分析  status: ○待生成│   │
+│             │  │   ...（折叠）                          │   │
+│             │  └────────────────────────────────────────┘   │
+│             │                                              │
+│             │  ┌─ ③ 操作 ─────────────────────────────┐   │
+│             │  │                                        │   │
+│             │  │  ℹ️ 配置已自动保存。现在可以切换到      │   │
+│             │  │    Claude Code 对话，说"开始生成报告"    │   │
+│             │  │    即可按本配置逐章生成。                │   │
+│             │  │                                        │   │
+│             │  │  [组装全部章节]  [预览完整报告]         │   │
+│             │  └────────────────────────────────────────┘   │
+└──────────────┴──────────────────────────────────────────────┘
 ```
 
-### 3.1 tokens/ — 主题层
+### 3.2 功能清单
 
-每个主题 CSS 文件定义了一套 CSS 自定义属性：
+| 区域 | 功能 | 说明 |
+|------|------|------|
+| 左侧面板 | 项目列表 | 扫描 `report-tool/projects/` 下所有子目录，显示名称和进度 |
+| 左侧面板 | 新建项目 | 弹出输入框 → 创建子文件夹 + 用户确认保存位置 + 初始 config.json → 刷新列表 |
+| ① 基本设置 | 版式选择 | **平铺卡片单选**，每张卡显示缩略示意图 + 名称 + 尺寸说明，点击选中高亮边框 |
+| ① 基本设置 | 主题选择 | **平铺卡片单选**，每张卡显示配色色条预览 + 名称，点击选中高亮边框 |
+| ① 基本设置 | 生成模式 | 单选按钮：分章 / 一次性 |
+| ② 章节定义 | 章节管理 | 添加/删除/排序，手风琴折叠展开 |
+| ② 章节定义 | 组件选择 | **缩略图网格**，从 manifest.json 加载组件列表，用 iframe 或截图展示缩略图。点击勾选/取消。支持多选 |
+| ② 章节定义 | 自定义组件 | 文本区，用户自由描述不在组件库中的展示需求（如"左右两栏，左边放3个核心数字，右边放趋势图"），写入 config 的 `customLayout` 字段 |
+| ② 章节定义 | 数据绑定 | 选择 data/ 下的文件，或留空手动输入 |
+| ② 章节定义 | 标题/描述 | 文本输入，`desc` 作为 Claude 的生成指令 |
+| ③ 操作 | 保存提示 | 告知用户配置已自动保存，提示切换到 Claude Code 开始生成 |
+| ③ 操作 | 组装/预览 | 调用 assemble.cjs 合并所有 done 章节，或打开已有 output 预览 |
 
-- 色板：`--primary-50` ~ `--primary-900`，`--surface`，`--bg`，`--border` 等
-- 字体：`--font`，`--font-display`
-- 圆角：`--radius-card`，`--radius-tag`，`--radius-circle`
-- 阴影：`--shadow-card`
-- 语义色：`--accent-green`，`--accent-red`，`--accent-amber`
-- 组件专用变量：`--big-number`，`--process-border`，`--table-th-bg` 等
+### 3.3 设计细节
 
-主题切换通过替换 `<link id="token-css" href="...">` 的 href 实现。
+**版式/主题卡片** — 用 CSS 绘制简单的视觉示意（版式卡片画 mini 页面轮廓，主题卡片画 5-6 个色块代表配色），不依赖外部图片。选中态用 2px 主题色边框 + 浅色背景。
 
-### 3.2 components/ — 组件层
+**组件缩略图** — 两种实现方案：
+- 方案A（轻量）：用 CSS 画组件的极简线框图示意（如 stat-card 画一个矩形+大数字+标题线）
+- 方案B（准确）：用隐藏 iframe 加载组件 HTML，截图或用 `transform: scale()` 缩略展示
 
-每个组件是独立目录：
+推荐方案A，无需网络请求，加载快，足够区分不同组件。缩略图下方标注组件名和简短描述。
 
-```
-stat-card/
-├── stat-card.html        ← 完整组件（含 <style> 和 <script>）
-└── stat-card.meta.json   ← 元信息（props/slots/usage/promptHint）
-```
+**自定义展示需求** — 每个章节的组件选择区下方有一个文本输入框，placeholder 如"不选组件库的组件时，在此描述你想要的展示方式..."。写入 config.json 时存入 `chapters[].customLayout` 字段。Claude 读取时，如果 `customLayout` 非空，则优先按自定义描述生成，忽略 `components` 列表；如果 `customLayout` 为空，则按 `components` 列表组装。
 
-**组件必须遵守的约定：**
-- 单文件自包含，可双击直接在浏览器打开
-- 使用 CSS 变量引用颜色：`color: var(--primary-500)`
-- 通过 `<link id="token-css" rel="stylesheet" href="../../tokens/xxx.css">` 引用主题
-- 支持 URL 参数 `?theme=xxx` 切换主题（用于 index.html 预览）
-- 支持 postMessage 主题切换（用于 index.html 预览时的实时切换）
-
-### 3.3 meta.json 规范
-
-```json
-{
-  "name": "stat-card",
-  "label": "数据卡片",
-  "category": "基础组件",
-  "description": "单指标数据卡片，支持标题、数值、趋势箭头",
-  "props": {
-    "title":    { "type": "string", "required": true,  "desc": "卡片标题" },
-    "value":    { "type": "string|number", "required": true, "desc": "核心数值" },
-    "trend":    { "type": "enum", "values": ["up","down","flat"], "desc": "趋势方向" }
-  },
-  "slots": ["header", "footer"],
-  "echarts": false,
-  "usage": "<stat-card title='营收' value='1.2亿' trend='up'></stat-card>",
-  "promptHint": "适用于展示 KPI 指标、业绩数据、统计概览等场景"
-}
-```
-
-**字段说明：**
-
-| 字段 | 用途 |
-|------|------|
-| `name` / `label` | 组件标识和中文名 |
-| `description` | 一句话描述组件功能 |
-| `props` | 可配置参数 → AI 据此调整组件行为 |
-| `slots` | 可填充的内容区域 |
-| `echarts` | 是否需要 ECharts → AI 判断是否引入 CDN |
-| `usage` | 示例代码片段 → AI 了解组件用法 |
-| `promptHint` | 场景提示 → AI 判断何时使用该组件 |
-
-### 3.4 skeletons/ — 骨架层
-
-骨架定义了页面的结构框架和打印控制。每个骨架是一个不完整但结构清晰的 HTML 文件：
-
-- **A4 横版** — `@page { size: A4 landscape }`，固定页高 210mm，`page-break-after: always`
-- **Slide 翻页** — 全屏 slide，position absolute + visibility 切换，键盘翻页
-- **自由滚动** — max-width 居中布局，响应式，自由滚动
-
-骨架中的占位内容用明显的注释标记，方便 AI 定位和替换。
-
-### 3.5 templates/ — 案例层
-
-完整案例展示了骨架 + 组件 + 主题的正确组装方式，作为 AI 的 few-shot 参考：
-- AI 可以完整读取一个模板，理解如何将组件嵌入骨架
-- AI 生成新页面时，模仿模板的结构和组装方式
-- 每个模板对应一种 骨架×主题 的典型组合
-
----
-
-## 四、Claude Code 工作流程
-
-### 4.1 触发链路
-
-```
-1. 用户在项目目录打开 Claude Code
-2. Claude Code 自动读取 .claude/CLAUDE.md
-3. .claude/CLAUDE.md 中的规则触发：
-   "涉及 HTML/PPT/报告时，必须首先读取 UI-lib/.claude.md"
-4. Claude 读取 UI-lib/.claude.md，了解完整的组件库约束
-5. 根据用户需求，按"选骨架→选主题→选组件→组装"流程执行
-```
-
-### 4.2 AI 的执行步骤
-
-```
-用户："我要一个A4横版商务蓝白主题的基金分析报告"
-
-Claude 自动执行：
-  1. 读 manifest.json → 了解有哪些组件可用
-  2. 读 skeletons/a4-landscape-skeleton.html → 了解 A4 横版结构
-  3. 读 tokens/business-bluewhite.css → 了解主题变量
-  4. 根据"基金分析"需求，从 manifest 中筛选相关组件：
-     - stat-card（KPI 数据卡片）
-     - data-table（数据表格）
-     - process-step（分析流程）
-     - bar-chart（收益对比图）
-  5. 逐个读取选中组件的 meta.json（了解参数）和 HTML（了解结构）
-  6. 读 templates/combo-a4-bluewhite.html → 了解组装方式
-  7. 生成最终 HTML，保存到项目目录
-```
-
-### 4.3 迭代对话
-
-生成初版后，用户可以继续对话修改：
-- "把第三页改成暗色背景"
-- "数据卡片换成4列网格布局"
-- "加一个时间线图展示收益率变化"
-
-Claude 在已有对话上下文中，直接修改已生成的 HTML，无需重新开始。
-
----
-
-## 五、UI-lib/index.html 预览页
-
-### 5.1 定位
-
-**开发预览工具**，用于人工浏览组件效果、查看代码、切换主题。不是用户生成页面的必经之路。
-
-### 5.2 布局
-
-```
-┌──────────────────────────────────────────────────────┐
-│ 顶部栏：Logo | 主题切换 [商务蓝白] [RC浅蓝] [暗黑科技]    │
-├────────────────┬─────────────────────────────────────┤
-│ 左侧菜单（260px）│ 右侧内容区                            │
-│ 可折叠         │  ┌─ iframe 预览区 ────────────────┐  │
-│               │  │  组件 HTML 实时渲染              │  │
-│ ▸ 基础组件     │  │  带当前主题参数                  │  │
-│ ▸ 图表        │  └─────────────────────────────────┘  │
-│ ▸ 版式骨架     │  ┌─ 代码面板（可折叠）──────────────┐  │
-│ ▸ Token 预览  │  │ Tab: 完整代码 | 元信息 JSON        │  │
-│ ▸ 完整案例     │  │ [复制代码] [复制元信息]            │  │
-│               │  └─────────────────────────────────┘  │
-└───────────────┴──────────────────────────────────────┘
-```
-
-### 5.3 功能清单
-
-| 功能 | 实现方式 |
-|------|---------|
-| 左侧菜单 | Vue 响应式树形菜单，一级可展开/收起，二级点击切换 |
-| iframe 预览 | 选中菜单项 → `iframe.src = 路径?theme=当前主题` |
-| 主题切换 | 顶部按钮 → 更新 currentTheme → postMessage 通知 iframe + 重载 |
-| 复制代码 | `fetch(组件路径)` → `navigator.clipboard.writeText()` |
-| 复制元信息 | 读取内联 `_meta` → 复制 JSON |
-| 代码面板 | 可折叠，Prism.js 语法高亮 |
-
-### 5.4 技术栈
+### 3.4 技术栈
 
 ```
 Vue 3          → unpkg CDN
 Tailwind CSS   → cdn.tailwindcss.com
-Prism.js       → CDN（代码高亮）
-ECharts 5      → CDN（图表组件预览用）
-```
-
-### 5.5 主题切换协议
-
-每个组件 HTML 需包含 ~8 行 JS：
-
-```js
-// 1. URL 参数初始化
-const urlTheme = new URLSearchParams(location.search).get('theme');
-if (urlTheme) setTheme(urlTheme);
-
-// 2. 响应父窗口主题切换
-window.addEventListener('message', (e) => {
-  if (e.data?.type === 'theme-change') setTheme(e.data.theme);
-});
-
-function setTheme(theme) {
-  const link = document.querySelector('#token-css');
-  if (link) link.href = `../tokens/${theme}.css`;
-}
+纯前端 SPA     → 两个页面：index.html + editor.html
+数据存储        → config.json + localStorage（跨页面状态）
+组件列表        → fetch ../UI-lib/manifest.json
 ```
 
 ---
 
-## 六、manifest.json 注册表
+## 四、config.json 规范
+
+### 4.1 完整结构
 
 ```json
 {
-  "menu": [
+  "projectName": "货币基金分析报告",
+  "createdAt": "2026-05-25T10:00:00Z",
+  "updatedAt": "2026-05-25T14:30:00Z",
+  "layout": "a4-landscape",
+  "theme": "business-bluewhite",
+  "mode": "chapter",
+  "chapters": [
     {
-      "id": "basic-components",
-      "label": "基础组件",
-      "icon": "component",
-      "defaultOpen": true,
-      "children": [
-        {
-          "id": "stat-card",
-          "label": "数据卡片",
-          "path": "components/stat-card/stat-card.html",
-          "meta": "components/stat-card/stat-card.meta.json",
-          "theme": "follow"
-        }
-      ]
+      "id": "cover",
+      "order": 1,
+      "title": "封面",
+      "desc": "报告封面页，包含：标题'货币基金月度收益归因分析服务方案'、副标题简述服务目标、日期2026年5月、容诚团队名称",
+      "components": ["hero-card"],
+      "customLayout": null,
+      "dataFile": null,
+      "status": "done"
+    },
+    {
+      "id": "overview",
+      "order": 2,
+      "title": "产品表现概览",
+      "desc": "展示核心KPI指标：七日年化收益率2.15%（↑）、万份收益0.5892（→）、产品规模156.8亿（↑）。用数据卡片网格布局，突出趋势方向。",
+      "components": ["stat-card", "badge-tag"],
+      "dataFile": "data/产品数据.csv",
+      "status": "draft"
+    },
+    {
+      "id": "attribution",
+      "order": 3,
+      "title": "收益归因分析",
+      "desc": "五维度收益拆解：票息收益、杠杆套息、久期管理、交易骑乘、费用影响。用流程步骤展示归因方法论，数据表格展示各维度贡献度，柱状图对比各月表现。",
+      "components": ["process-step", "data-table", "bar-chart"],
+      "customLayout": null,
+      "dataFile": "data/收益归因分析.docx",
+      "status": "pending"
     }
   ]
 }
 ```
 
-| 字段 | 说明 |
-|------|------|
-| `id` | 唯一标识 |
-| `label` | 菜单显示名称 |
-| `path` | 组件 HTML 相对路径 |
-| `meta` | 元信息 JSON 路径（null = 无元信息） |
-| `theme` | `"follow"` = 跟随主题切换；`"fixed"` = 固定主题不受影响 |
-| `defaultOpen` | 一级菜单是否默认展开 |
+### 4.2 字段说明
 
-**manifest.json 的双重用途：**
-- **给 index.html 用** — 渲染左侧菜单树，驱动 iframe 预览
-- **给 AI 用** — 快速了解有哪些组件、路径在哪、分类结构
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `projectName` | string | 项目名称，即子文件夹名 |
+| `layout` | enum | 版式：`a4-landscape` / `slide-deck` / `scroll-page` |
+| `theme` | enum | 主题：`business-bluewhite` / `rc-lightblue` / `dark-tech` |
+| `mode` | enum | `chapter` = 分章生成，`full` = 一次性生成 |
+| `chapters[].id` | string | 章节唯一标识，用于文件名 |
+| `chapters[].title` | string | 章节中文标题 |
+| `chapters[].desc` | string | **关键字段**：章节内容描述，直接作为 Claude 的生成指令。用户写什么，Claude 就生成什么 |
+| `chapters[].components` | string[] | 该章使用的组件列表，从 manifest.json 的可选组件中勾选。如果 `customLayout` 非空，此字段可能为空数组 |
+| `chapters[].customLayout` | string | null 或自定义展示需求描述。用户不选组件库组件时，在此自由描述想要的布局和效果。非空时 Claude 优先按此描述生成，忽略 components |
+| `chapters[].dataFile` | string | null 或 data/ 下的文件路径。格式不限（csv/xlsx/docx/pdf/txt），Claude 自行读取 |
+| `chapters[].status` | enum | `pending` → `draft` → `done`，工具页面和 Claude 都可更新 |
+
+### 4.3 config.json 的双重身份
+
+1. **工具的存档** — 编辑器读写，保存用户配置，关闭后重新打开不丢失
+2. **Claude 的指令** — Claude 读取后，清楚知道每章要写什么、用什么组件、数据在哪
 
 ---
 
-## 七、与 v1.0 的变更对比
+## 五、Claude Code 工作流程
 
-| | v1.0（废弃） | v2.0（当前） |
+### 5.1 触发规则（需更新 .claude/CLAUDE.md）
+
+```
+当用户提到以下任一情况时，必须首先读取对应项目的 config.json：
+- "继续生成报告" / "开始生成第X章" / "生成下一章"
+- 指定了 report-tool/projects/ 下的某个项目名
+- "组装报告" / "合并章节" / "输出完整报告"
+
+读取 config.json 后，按以下流程执行。
+```
+
+### 5.2 分章生成流程（mode: chapter）
+
+```
+Claude 读取 config.json
+  → 找到第一个 status = "pending" 的章节
+    → 读 UI-lib manifest.json 了解组件路径
+    → 读骨架 HTML（根据 layout）
+    → 读主题 CSS（根据 theme）
+    → 读该章指定的 components 的 meta.json + HTML
+    → 如果有 dataFile，读 data/ 下的数据文件
+    → 根据章节 desc 生成 chapter-XX-xxx.html
+    → 更新 config.json 中该章 status 为 "draft"
+    → 告知用户：第X章已生成，可预览，输入"继续"生成下一章
+      ↓
+用户对话修改当前章节（改内容、调样式）
+  → 确认无误后，用户说"继续"或"下一章"
+    → Claude 更新当前章 status 为 "done"
+    → 继续处理下一个 pending 章节
+```
+
+### 5.3 一次性生成流程（mode: full）
+
+```
+Claude 读取 config.json
+  → 遍历所有章节，读取所有引用的组件和数据
+  → 分批生成（每轮 ≤ 800 行）
+    → 第1轮：封面 + 前2-3章
+    → 第2轮：后续章节
+    → 第3轮：收尾 + 页码 + 打印控制
+  → 输出完整 HTML
+```
+
+### 5.4 组装流程
+
+```
+用户："组装报告" / 点击工具页面的 [组装全部章节]
+
+方式一（推荐）：node report-tool/assemble.cjs 项目名
+  → 脚本读取 config.json → 按 order 合并所有 chapter HTML
+    → 提取每个 chapter 的 <body> 内容
+    → 统一页面编号、CSS 引用
+    → 输出 output/full-report.html
+
+方式二：Claude 读取所有 status=done 的章节 → 合并输出
+```
+
+### 5.5 数据文件处理
+
+数据文件格式不限制，Claude 直接读取原始文件：
+
+| 文件格式 | Claude 处理方式 |
+|---------|----------------|
+| `.csv` | 直接读取，解析行列数据 |
+| `.xlsx` | 需要用户先导出为 csv，或使用 Python 脚本转换（Claude 可执行） |
+| `.docx` | Claude 直接读取文本内容 |
+| `.pdf` | Claude 直接读取内容 |
+| `.txt` / `.md` | 直接读取 |
+| `.json` | 直接读取 |
+
+config.json 中 `dataFile` 字段存相对路径（相对于项目子文件夹），Claude 按路径读取。
+
+---
+
+## 六、UI-lib 组件库（保持不变）
+
+UI-lib 的结构和规范保持 v2.0 的设计不变。详见 UI-lib/.claude.md。
+
+唯一新增：editor.html 通过 `fetch('../UI-lib/manifest.json')` 读取组件列表，渲染为可勾选的复选框。
+
+---
+
+## 七、关键设计决策
+
+### 7.1 项目位置限制
+
+**项目必须创建在 `report-tool/projects/` 内。**
+
+原因：CLAUDE.md 只在 AIProject 目录树内生效。如果用户把项目保存到桌面或其他文件夹，Claude Code 在那个位置打开时没有 CLAUDE.md 指引，无法自动读取 UI-lib 和 config.json。
+
+用户可自由命名项目子文件夹，但不能超出 AIProject。
+
+### 7.2 config.json 而非 localStorage
+
+用文件而不是浏览器存储：
+- config.json 是真实文件，Claude 可以直接读写
+- 跨会话、跨设备（git 同步）不丢失
+- localStorage 只能存字符串，且 Claude 无法直接访问
+
+### 7.3 章节独立文件
+
+每章一个 HTML 文件的好处：
+- 单文件体积小（200-400行），Claude 读写高效
+- 修改某一章不影响其他章
+- 多轮对话不会超出上下文限制
+- status 字段追踪进度，随时知道完成情况
+
+### 7.4 两层确认，避免跑偏
+
+```
+第1层（工具页面）：用户选版式/主题/组件/章节 → 保存 config.json
+第2层（Claude 对话）：首轮只出框架 → 确认结构 → 逐步填充内容
+```
+
+工具页面保证"方向对"，Claude 对话保证"内容对"。
+
+---
+
+## 八、与 v2.0 的变更对比
+
+| | v2.0 | v3.0 |
 |---|---|---|
-| 用户操作 | 先到 report 页组装提示词 → 复制 → 粘贴到 Claude | 直接在 Claude Code 描述需求 |
-| 组件选择 | 在 UI-lib 页勾选 → localStorage 传递 → report 页读取 | AI 自动根据需求从 manifest 中筛选 |
-| 迭代方式 | 重新组装提示词 → 重新粘贴 | 继续对话，上下文保持 |
-| 文件结构 | UI-lib + report 双系统 | UI-lib 单一系统 |
-| 组件预览 | UI-lib/index.html（保留） | UI-lib/index.html（保留，仅作预览） |
-
-### 删除的内容
-
-- `report/` 整个目录（提示词工具页面 + 原始参考文件）
-- `UI-lib/index.html` 中的"提示词篮"相关功能（按钮、localStorage、basketCount）
-- `.claude/worktrees/` 临时 git 数据
-
-### 保留和强化的内容
-
-- **meta.json** — 价值更大，AI 通过它快速了解组件参数而无需通读 HTML
-- **templates/** — 价值更大，作为 few-shot 示例展示组装方式
-- **CLAUDE.md** — 成为唯一的"说明书"，质量至关重要
-- **UI-lib/index.html** — 开发预览工具，人工浏览组件效果
+| 项目管理 | 无，每次对话从零开始 | report-tool/projects/ 目录，持久化 |
+| 配置方式 | 用户口述需求，Claude 猜测 | index.html 表单（平铺卡片+缩略图），config.json 精确指令 |
+| 生成控制 | 全靠对话引导 | 分章模式，每章独立，进度可追踪 |
+| 数据引用 | 用户口述或用提示词描述 | data/ 文件夹，config 引用路径 |
+| 组装方式 | Claude 一次性生成 | 分章生成 + assemble.cjs 脚本合并 |
+| 跨会话支持 | 依赖对话历史，离开会话丢失 | config.json 持久化，下次对话直接继续 |
+| UI-lib | 不变 | 不变 |
 
 ---
 
-## 八、后续扩展方向
+## 九、实施计划
 
-1. **子目录 CLAUDE.md** — 在 `templates/`、`components/` 下放置更细粒度的约束文件
-2. **组件注释规范** — 在组件 HTML 顶部加结构化注释，标注可替换区域和变量
-3. **更多骨架** — A4 竖版、16:9 演示、双栏报告等
-4. **更多主题** — 政府公文、学术论文、科技蓝等
-5. **自动化索引** — 脚本扫描组件目录自动生成 manifest.json，减少手工维护
+| 阶段 | 内容 | 说明 |
+|------|------|------|
+| **P1** | 创建 `report-tool/` 和 `report-tool/projects/` 目录 | 基础结构 |
+| **P2** | 编写 `report-tool/index.html` | 单页应用：左侧项目列表 + 右侧配置编辑器 |
+| **P3** | 实现版式/主题平铺卡片选择 | CSS 绘制缩略示意图 + 单选高亮 |
+| **P4** | 实现组件缩略图选择 + 自定义描述 | CSS 线框图缩略 + 文本输入框，customLayout 写入 config |
+| **P5** | 编写 `report-tool/assemble.cjs` | Node 脚本，合并章节为完整 HTML |
+| **P6** | 更新 `.claude/CLAUDE.md` | 新增触发规则：发现 config.json → 按配置生成 |
+| **P7** | 更新 `UI-lib/.claude.md` | 新增分章生成流程、config.json 驱动规则、customLayout 优先规则 |
 
 ---
 
-## 九、变更记录
+## 十、变更记录
 
 | 日期 | 变更 |
 |------|------|
 | 2026-05-22 | v1.0 初始版本，iframe + report 双系统方案 |
-| 2026-05-22 | v2.0 去掉 report 工具，改为 Claude Code 原生方案，精简 UI-lib/index.html |
+| 2026-05-22 | v2.0 去掉 report 工具，改为 Claude Code 原生方案 |
+| 2026-05-25 | v3.0 新增 report-tool 配置驱动 + 分章生成 + 项目管理 |
+| 2026-05-25 | v3.1 合并 index.html/editor.html 为单页；版式/主题改为平铺卡片；组件选择改为缩略图+自定义描述；去掉复制提示词按钮 |
