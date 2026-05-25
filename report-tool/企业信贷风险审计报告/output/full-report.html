@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>企业信贷风险审计报告</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <link id="token-css" rel="stylesheet" href="../../UI-lib/tokens/business-bluewhite.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bw: {
+              primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',500:'#2563eb',700:'#1e3a8a',800:'#1e40af',900:'#0f172a' },
+              surface:'#ffffff',alt:'#f8fafc',bg:'#f3f6fb',
+              text:'#1f2937',muted:'#64748b',light:'#94a3b8',border:'#e5e7eb',
+            }
+          },
+          fontFamily: { bw: ['"Microsoft YaHei"','"PingFang SC"','Arial','sans-serif'] }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ====== A4 打印骨架 ====== */
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { margin: 0; box-shadow: none; }
+    }
+    @media screen {
+      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+    }
+
+    /* ====== 封面专属 ====== */
+    .risk-badge-high { background: var(--accent-red); }
+    .risk-badge-mid { background: var(--accent-amber); }
+    .risk-badge-low { background: var(--accent-green); }
+    .divider-line { width: 60px; height: 3px; border-radius: 2px; background: var(--primary-300); }
+
+    /* ====== stat-card 组件 (ch2) ====== */
+    .stat-card {
+      background: var(--surface); border-radius: var(--radius-card);
+      padding: 20px 22px; box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+    }
+    .stat-card .num { font-size: var(--big-number); color: var(--big-number-color); font-weight: 700; line-height: 1; margin-bottom: 6px; }
+    .stat-card h3 { font-size: 17px; color: var(--primary-700); font-weight: 700; margin: 0 0 6px; }
+    .stat-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+    /* ====== 图表容器 (ch2) ====== */
+    .chart-box {
+      background: var(--surface); border-radius: var(--radius-card);
+      padding: 18px 20px; box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+    }
+    .chart-box h3 { color: var(--text); font-size: 15px; margin: 0 0 12px; font-weight: 700; }
+
+    /* ====== card-box 通用卡片 (ch3) ====== */
+    .card-box {
+      background: var(--surface); border-radius: var(--radius-card);
+      padding: 18px 22px; box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+    }
+
+    /* ====== 数据表格 (ch2 大号 / ch3 小号) ====== */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table-sm { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .data-table thead th, .data-table-sm thead th {
+      background: var(--table-th-bg); color: var(--table-th-text);
+      padding: 8px 10px; text-align: left; font-weight: 700; white-space: nowrap;
+    }
+    .data-table tbody td { padding: 10px 14px; }
+    .data-table-sm tbody td { padding: 7px 10px; line-height: 1.4; }
+    .data-table tbody td, .data-table-sm tbody td {
+      color: var(--text); border-bottom: 1px solid var(--border-light);
+    }
+    .data-table tbody tr, .data-table-sm.striped tbody tr:nth-child(odd) td { background: var(--surface); }
+    .data-table-sm.striped tbody tr:nth-child(even) td { background: var(--surface-alt); }
+    .cell-warn { color: var(--accent-red) !important; font-weight: 700; }
+    .cell-ok { color: var(--accent-green) !important; }
+
+    /* ====== badge-tag (ch3) ====== */
+    .badge { display: inline-block; border-radius: var(--radius-tag); font-weight: 600; white-space: nowrap; }
+    .badge-sm { padding: 2px 9px; font-size: 11px; }
+    .badge-fill { background: var(--tag-bg); color: var(--tag-text); }
+    .badge-accent-green { background: var(--accent-green); color: #fff; }
+    .badge-accent-red { background: var(--accent-red); color: #fff; }
+    .badge-accent-amber { background: var(--accent-amber); color: #fff; }
+    .badge-outline-red { border: 1.5px solid var(--accent-red); color: var(--accent-red); background: transparent; }
+    .badge-outline-amber { border: 1.5px solid var(--accent-amber); color: var(--accent-amber); background: transparent; }
+
+    /* ====== stat-mini (ch3) ====== */
+    .stat-mini { text-align: center; }
+    .stat-mini .val { font-size: 28px; font-weight: 700; line-height: 1; }
+    .stat-mini .lbl { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ====== 页脚 ====== */
+    .page-footer {
+      position: absolute; bottom: 10mm; left: 22mm; right: 22mm;
+      display: flex; justify-content: space-between;
+      font-size: 12px; color: var(--text-light);
+    }
+    .page-footer-inverse {
+      position: absolute; bottom: 10mm; right: 22mm;
+      font-size: 12px; color: rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body class="bg-bw-bg font-bw">
+
+<div id="app">
+
+  <!-- ============================================================ -->
+  <!--  第1章 · 封面与摘要                                           -->
+  <!-- ============================================================ -->
+
+  <!-- 01 · 封面 -->
+  <section class="a4-page flex flex-col justify-center"
+           style="background: var(--cover-bg); color: var(--text-inverse);">
+    <div class="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-6 tracking-wider"
+         style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);">
+      内部 · 交付文档
+    </div>
+    <h1 class="text-5xl font-bold leading-tight mb-4" style="color: var(--text-inverse);">
+      企业信贷风险审计报告
+    </h1>
+    <div class="divider-line mb-5" style="background: var(--primary-300);"></div>
+    <div class="grid grid-cols-3 gap-6 mb-8 max-w-3xl">
+      <div>
+        <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">报告编号</div>
+        <div class="text-base font-semibold" style="color: rgba(255,255,255,0.9);">{{ ch1.meta.reportNo }}</div>
+      </div>
+      <div>
+        <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">审计期间</div>
+        <div class="text-base font-semibold" style="color: rgba(255,255,255,0.9);">{{ ch1.meta.auditPeriod }}</div>
+      </div>
+      <div>
+        <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">被审计主体</div>
+        <div class="text-base font-semibold" style="color: rgba(255,255,255,0.9);">{{ ch1.meta.entity }}</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <div v-for="card in ch1.coverCards" :key="card.title"
+           class="rounded-2xl p-5 shadow-lg"
+           style="background: var(--surface); color: var(--text);">
+        <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
+      </div>
+    </div>
+    <div class="page-footer-inverse">01</div>
+  </section>
+
+  <!-- 02 · 审计摘要 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-3.5" style="color: var(--text);">审计摘要</h2>
+    <p class="text-lg max-w-3xl mb-6" style="color: var(--text-muted);">
+      本报告对{{ ch1.meta.entity }}在{{ ch1.meta.auditPeriod }}期间的信贷风险状况进行全面审计，
+      涵盖核心财务指标、贷款用途与资金流向等关键维度，形成综合风险评估与授信建议。
+    </p>
+    <div class="grid grid-cols-2 gap-5 mb-5">
+      <div class="rounded-2xl p-6 shadow-lg" style="background: var(--surface);">
+        <h3 class="text-lg font-bold mb-4" style="color: var(--primary-700);">综合风险评级</h3>
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold"
+               :class="ch1.riskRating.class">{{ ch1.riskRating.level }}</div>
+          <div>
+            <div class="text-base font-bold" style="color: var(--text);">{{ ch1.riskRating.label }}</div>
+            <div class="text-sm" style="color: var(--text-muted);">{{ ch1.riskRating.desc }}</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div v-for="item in ch1.riskBreakdown" :key="item.label"
+               class="text-center p-3 rounded-xl" style="background: var(--surface-alt);">
+            <div class="text-2xl font-bold" :style="{ color: item.color }">{{ item.score }}</div>
+            <div class="text-xs mt-1" style="color: var(--text-muted);">{{ item.label }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-2xl p-6 shadow-lg" style="background: var(--surface);">
+        <h3 class="text-lg font-bold mb-4" style="color: var(--primary-700);">建议授信额度</h3>
+        <div class="text-4xl font-bold mb-2" style="color: var(--big-number-color);">{{ ch1.creditLimit.amount }}</div>
+        <div class="text-sm mb-4" style="color: var(--text-muted);">{{ ch1.creditLimit.note }}</div>
+        <div class="border-t pt-4" style="border-color: var(--border-light);">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <div class="text-xs" style="color: var(--text-light);">担保方式</div>
+              <div class="text-sm font-semibold mt-0.5" style="color: var(--text);">{{ ch1.creditLimit.guarantee }}</div>
+            </div>
+            <div>
+              <div class="text-xs" style="color: var(--text-light);">期限建议</div>
+              <div class="text-sm font-semibold mt-0.5" style="color: var(--text);">{{ ch1.creditLimit.tenor }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-2xl p-6 shadow-lg" style="background: var(--surface);">
+      <h3 class="text-lg font-bold mb-4" style="color: var(--primary-700);">关键审计发现</h3>
+      <div class="grid grid-cols-3 gap-4">
+        <div v-for="(finding, i) in ch1.keyFindings" :key="i" class="flex gap-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+               style="background: var(--primary-100); color: var(--primary-700);">{{ i + 1 }}</div>
+          <div>
+            <div class="text-sm font-bold mb-1" style="color: var(--text);">{{ finding.title }}</div>
+            <div class="text-xs leading-relaxed" style="color: var(--text-muted);">{{ finding.desc }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer"><span>审计摘要</span><span>02</span></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--  第2章 · 核心财务指标审计                                      -->
+  <!-- ============================================================ -->
+
+  <!-- 03 · 核心指标概览 + 趋势图 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">二、核心财务指标审计</h2>
+    <p class="text-base mb-5" style="color: var(--text-muted);">
+      基于被审计主体{{ ch2.meta.entity }}近三年（2023-2025）财务数据，围绕资产负债率、流动比率、利息保障倍数等核心指标进行趋势分析与风险评估。
+    </p>
+    <div class="grid grid-cols-3 gap-4 mb-5">
+      <div class="stat-card">
+        <div class="num">62.8<span style="font-size:18px;">%</span></div>
+        <h3>资产负债率（2025）</h3>
+        <p>近三年在58.2%-68.5%区间波动，2025年末为62.8%，高于行业均值58%，长期偿债承压。</p>
+      </div>
+      <div class="stat-card">
+        <div class="num">1.32<span style="font-size:18px;">x</span></div>
+        <h3>流动比率（2025）</h3>
+        <p>近三年从1.58x降至1.32x，流动性和短期偿债能力逐年减弱，已接近1.2x警示线。</p>
+      </div>
+      <div class="stat-card">
+        <div class="num">3.15<span style="font-size:18px;">x</span></div>
+        <h3>利息保障倍数（2025）</h3>
+        <p>近三年从4.80x降至3.15x，息税前利润对利息的覆盖能力明显下滑，需关注盈利持续性。</p>
+      </div>
+    </div>
+    <div class="chart-box">
+      <h3>核心财务指标 · 近三年趋势对比</h3>
+      <div id="trendChart" style="width:100%;height:280px;"></div>
+    </div>
+    <div class="page-footer"><span>核心财务指标审计</span><span>03</span></div>
+  </section>
+
+  <!-- 04 · 现金流与债务覆盖 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">现金流与债务覆盖能力</h2>
+    <p class="text-base mb-5" style="color: var(--text-muted);">
+      对比分析企业经营活动现金流、投资活动现金流与各类债务到期规模的匹配程度，红色标记异常偏离项。
+    </p>
+    <div class="chart-box mb-4">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>指标</th><th>2023年</th><th>2024年</th><th>2025年</th><th>行业基准</th><th>判定</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in ch2.debtTable" :key="row.label">
+            <td class="font-semibold">{{ row.label }}</td>
+            <td>{{ row.v2023 }}</td><td>{{ row.v2024 }}</td>
+            <td :class="row.warn ? 'cell-warn' : ''">{{ row.v2025 }}</td>
+            <td style="color: var(--text-muted);">{{ row.benchmark }}</td>
+            <td>
+              <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
+                    :style="row.warn ? 'background:#fef2f2;color:var(--accent-red);' : 'background:#f0fdf4;color:var(--accent-green);'">
+                {{ row.warn ? '异常' : '正常' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="stat-card" style="border-left: 4px solid var(--accent-red);">
+        <h3 style="color: var(--accent-red);">风险警示</h3>
+        <p>经营活动现金流净额连续两年下滑（2024年-12%，2025年-18%），对短期债务的覆盖倍数已降至<span style="color:var(--accent-red);font-weight:700;">1.2x</span>，低于1.5x安全线。投资活动持续大额净流出，自由现金流为负，依赖外部融资维持流动性。</p>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid var(--accent-amber);">
+        <h3 style="color: var(--accent-amber);">关注事项</h3>
+        <p>应收账款周转天数从45天延长至<span style="color:var(--accent-amber);font-weight:700;">68天</span>，回款效率下降明显。短期借款占比从32%升至<span style="color:var(--accent-amber);font-weight:700;">47%</span>，融资结构短期化趋势值得关注，建议增加中长期融资比例。</p>
+      </div>
+    </div>
+    <div class="page-footer"><span>现金流与债务覆盖能力</span><span>04</span></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!--  第3章 · 贷款用途与资金流向核对                                  -->
+  <!-- ============================================================ -->
+
+  <!-- 05 · 贷款用途核对总览 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">三、贷款用途与资金流向核对</h2>
+    <p class="text-sm mb-4" style="color: var(--text-muted);">
+      逐笔比对{{ ch3.meta.entity }}审计期间内贷款合同约定用途与实际资金去向，分析交易对手方关系，识别资金回流、短期拆借等违规行为
+    </p>
+    <div class="grid grid-cols-4 gap-4 mb-4">
+      <div class="card-box stat-mini">
+        <div class="val" style="color: var(--big-number-color);">{{ ch3.summary.totalLoans }}</div>
+        <div class="lbl">审计贷款笔数</div>
+      </div>
+      <div class="card-box stat-mini">
+        <div class="val" style="color: var(--accent-green);">{{ ch3.summary.compliant }}</div>
+        <div class="lbl">用途合规</div>
+      </div>
+      <div class="card-box stat-mini">
+        <div class="val" style="color: var(--accent-amber);">{{ ch3.summary.attention }}</div>
+        <div class="lbl">需关注</div>
+      </div>
+      <div class="card-box stat-mini">
+        <div class="val" style="color: var(--accent-red);">{{ ch3.summary.violation }}</div>
+        <div class="lbl">确认违规</div>
+      </div>
+    </div>
+    <div class="card-box" style="padding:12px 16px;">
+      <table class="data-table-sm striped">
+        <thead>
+          <tr>
+            <th>贷款编号</th><th>金额</th><th>合同约定用途</th><th>实际资金去向</th>
+            <th>交易对手方</th><th>对手方关系</th><th>偏差说明</th><th>合规状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(loan, i) in ch3.loanTable" :key="i">
+            <td class="font-semibold">{{ loan.id }}</td>
+            <td>{{ loan.amount }}</td>
+            <td>{{ loan.contractUse }}</td>
+            <td :style="loan.deviation ? 'color:var(--accent-red);' : ''">{{ loan.actualFlow }}</td>
+            <td>{{ loan.counterparty }}</td>
+            <td>{{ loan.relation }}</td>
+            <td :style="loan.deviation ? 'color:var(--accent-red);' : 'color:var(--text-muted);'">{{ loan.note }}</td>
+            <td><span class="badge badge-sm" :class="loan.badgeClass">{{ loan.statusLabel }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-footer"><span>贷款用途与资金流向核对</span><span>05</span></div>
+  </section>
+
+  <!-- 06 · 违规行为标注与资金链路 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-4" style="color: var(--text);">违规行为标注与资金链路追踪</h2>
+    <div class="grid grid-cols-2 gap-4 mb-5">
+      <div v-for="(v, i) in ch3.violations" :key="i"
+           class="rounded-xl p-5 shadow-lg" style="background: var(--surface); border-left: 4px solid var(--accent-red);">
+        <div class="flex items-center gap-2.5 mb-2.5">
+          <span class="badge badge-sm" :class="v.riskClass">{{ v.riskLevel }}风险</span>
+          <h3 class="text-base font-bold" style="color: var(--text);">{{ v.title }}</h3>
+        </div>
+        <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">{{ v.desc }}</p>
+        <div class="flex gap-5 text-xs" style="color: var(--text-light);">
+          <span>涉及金额 <b :style="{color: v.riskColor}">{{ v.amount }}</b></span>
+          <span>发生期间 {{ v.period }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-box">
+      <h3 style="color: var(--primary-700); font-size: 15px; font-weight: 700;">资金回流典型链路 · 交易路径还原</h3>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        <div v-for="(flow, i) in ch3.flowChains" :key="i"
+             class="rounded-xl p-4" style="background: var(--surface-alt); border: 1px solid var(--border-light);">
+          <div class="flex items-center gap-2.5 mb-3">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                 style="background: var(--primary-500); color: #fff;">{{ i + 1 }}</div>
+            <span class="text-sm font-bold" style="color: var(--text);">{{ flow.loanId }}</span>
+          </div>
+          <div class="text-xs leading-relaxed mb-3 space-y-1">
+            <div><span style="color: var(--text-muted);">源账户：</span><span style="color: var(--text);">{{ flow.source }}</span></div>
+            <div><span style="color: var(--text-muted);">中转方：</span><span style="color: var(--accent-red); font-weight: 700;">{{ flow.intermediary }}</span></div>
+            <div><span style="color: var(--text-muted);">最终去向：</span><span style="color: var(--accent-amber); font-weight: 700;">{{ flow.destination }}</span></div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span v-for="tag in flow.tags" :key="tag" class="badge badge-sm" :class="tag.class">{{ tag.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer"><span>违规行为标注与资金链路追踪</span><span>06</span></div>
+  </section>
+
+  <!-- 07 · 审计结论与整改建议 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-4" style="color: var(--text);">资金用途审计结论与整改建议</h2>
+    <div class="grid grid-cols-2 gap-5 mb-5">
+      <div class="card-box flex items-center gap-5">
+        <div class="text-5xl font-bold" style="color: var(--accent-green);">85<span class="text-xl">%</span></div>
+        <div>
+          <div class="text-base font-bold mb-1" style="color: var(--text);">用途匹配率</div>
+          <div class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ ch3.summary.compliant }}/{{ ch3.summary.totalLoans }} 笔贷款合同用途与实际去向基本一致</div>
+        </div>
+      </div>
+      <div class="card-box flex items-center gap-5">
+        <div class="text-5xl font-bold" style="color: var(--accent-red);">3<span class="text-xl">笔</span></div>
+        <div>
+          <div class="text-base font-bold mb-1" style="color: var(--text);">确认违规</div>
+          <div class="text-sm leading-relaxed" style="color: var(--text-muted);">涉及资金回流、关联方短期拆借及个人账户资金占用</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-box mb-5" style="padding:14px 18px;">
+      <h3 style="color: var(--primary-700); font-size: 15px; font-weight: 700;">违规行为汇总</h3>
+      <table class="data-table-sm mt-2" style="font-size:12px;">
+        <thead>
+          <tr>
+            <th>贷款编号</th><th>违规类型</th><th>涉及金额</th><th>资金去向</th><th>风险等级</th><th>整改要求</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(v, i) in ch3.violationSummary" :key="i">
+            <td class="font-semibold">{{ v.id }}</td>
+            <td><span class="badge badge-sm" :class="v.typeClass">{{ v.type }}</span></td>
+            <td class="font-bold" style="color: var(--accent-red);">{{ v.amount }}</td>
+            <td>{{ v.dest }}</td>
+            <td><span class="badge badge-sm" :class="v.riskClass">{{ v.risk }}</span></td>
+            <td style="color: var(--text-muted);">{{ v.action }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-box">
+      <h3 style="color: var(--primary-700); font-size: 15px; font-weight: 700;">整改建议</h3>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        <div v-for="(rec, i) in ch3.recommendations" :key="i" class="flex gap-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+               style="background: var(--primary-100); color: var(--primary-700);">{{ i + 1 }}</div>
+          <div>
+            <div class="text-sm font-bold mb-1" style="color: var(--text);">{{ rec.title }}</div>
+            <div class="text-xs leading-relaxed" style="color: var(--text-muted);">{{ rec.desc }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer"><span>资金用途审计结论与整改建议</span><span>07</span></div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        ch1: {
+          meta: {
+            reportNo: 'CR-2026-05001',
+            auditPeriod: '2023.01 — 2025.12',
+            entity: 'XX集团有限公司（样本池）',
+          },
+          coverCards: [
+            { title:'财务健康度审计', desc:'基于近三年资产负债率、流动比率、利息保障倍数等核心指标趋势，评估企业偿债能力与财务稳健性。' },
+            { title:'资金流向合规性', desc:'逐笔核对贷款合同约定用途与实际资金去向，识别资金回流、短期拆借等潜在违规行为。' },
+            { title:'综合授信建议', desc:'结合定量指标与定性判断，输出综合风险评级（高/中/低）及建议授信额度区间。' },
+          ],
+          riskRating: {
+            level:'中', class:'risk-badge-mid', label:'中等风险',
+            desc:'企业整体偿债能力尚可，部分财务指标存在波动，资金用途基本合规，建议审慎授信。',
+          },
+          riskBreakdown: [
+            { label:'财务风险', score:'B+', color:'var(--accent-amber)' },
+            { label:'合规风险', score:'A-', color:'var(--accent-green)' },
+            { label:'经营风险', score:'B', color:'var(--accent-amber)' },
+          ],
+          creditLimit: {
+            amount:'5,000 — 8,000', note:'万元，具体金额视担保条件浮动',
+            guarantee:'不动产抵押 + 第三方保证', tenor:'1年，可循环授信',
+          },
+          keyFindings: [
+            { title:'资产负债率偏高', desc:'近三年资产负债率在62%-68%区间波动，高于行业均值58%，需关注长期偿债压力。' },
+            { title:'现金流覆盖不足', desc:'经营活动现金流对短期债务的覆盖倍数仅为1.2倍，存在一定流动性风险。' },
+            { title:'资金用途基本合规', desc:'贷款资金流向与合同约定用途匹配度约85%，存在少量关联方资金拆借行为，已标注。' },
+          ],
+        },
+        ch2: {
+          meta: { entity:'XX集团有限公司' },
+          debtTable: [
+            { label:'经营活动现金流净额（万元）', v2023:'8,520', v2024:'7,498', v2025:'6,148', benchmark:'≥8,000', warn:true },
+            { label:'投资活动现金流净额（万元）', v2023:'-4,200', v2024:'-5,860', v2025:'-7,320', benchmark:'≥-5,000', warn:true },
+            { label:'短期债务/总债务', v2023:'32%', v2024:'39%', v2025:'47%', benchmark:'≤35%', warn:true },
+            { label:'经营现金流/短期债务', v2023:'1.85x', v2024:'1.52x', v2025:'1.20x', benchmark:'≥1.5x', warn:true },
+            { label:'EBITDA利息覆盖倍数', v2023:'4.80x', v2024:'3.90x', v2025:'3.15x', benchmark:'≥3.0x', warn:false },
+            { label:'自由现金流（万元）', v2023:'4,320', v2024:'1,638', v2025:'-1,172', benchmark:'≥0', warn:true },
+          ],
+        },
+        ch3: {
+          meta: { entity:'XX集团有限公司' },
+          summary: { totalLoans:'20', compliant:'15', attention:'2', violation:'3' },
+          loanTable: [
+            { id:'LK-2024-001', amount:'2,000万', contractUse:'设备采购（生产线升级）', actualFlow:'设备供应商付款', counterparty:'XX机械制造有限公司', relation:'非关联方', note:'金额一致，用途匹配', deviation:false, statusLabel:'合规', badgeClass:'badge-fill' },
+            { id:'LK-2024-002', amount:'1,500万', contractUse:'原材料采购（钢材）', actualFlow:'原材料采购付款', counterparty:'XX钢铁贸易有限公司', relation:'非关联方', note:'分3笔支付，与合同一致', deviation:false, statusLabel:'合规', badgeClass:'badge-fill' },
+            { id:'LK-2024-003', amount:'3,000万', contractUse:'补充流动资金', actualFlow:'转入关联企业账户', counterparty:'YY投资控股有限公司', relation:'同一实控人', note:'经2次中转后回流关联方', deviation:true, statusLabel:'违规', badgeClass:'badge-accent-red' },
+            { id:'LK-2024-005', amount:'800万', contractUse:'支付工程款', actualFlow:'部分转入个人账户', counterparty:'张某某（项目经理）', relation:'疑似关联自然人', note:'38%转入个人账户后转回', deviation:true, statusLabel:'违规', badgeClass:'badge-accent-red' },
+            { id:'LK-2025-001', amount:'2,500万', contractUse:'偿还银行贷款', actualFlow:'偿还银行贷款', counterparty:'ZZ银行分行', relation:'非关联方', note:'金额匹配，路径清晰', deviation:false, statusLabel:'合规', badgeClass:'badge-fill' },
+            { id:'LK-2025-002', amount:'1,200万', contractUse:'技术研发投入', actualFlow:'支付研发外包费', counterparty:'XX科技服务公司', relation:'非关联方', note:'合同与付款一致', deviation:false, statusLabel:'合规', badgeClass:'badge-fill' },
+            { id:'LK-2025-003', amount:'4,000万', contractUse:'并购项目定金', actualFlow:'短期拆借至兄弟公司', counterparty:'XX集团（兄弟公司）', relation:'同一母公司', note:'停留兄弟公司23天后转回', deviation:true, statusLabel:'违规', badgeClass:'badge-accent-red' },
+            { id:'LK-2025-004', amount:'600万', contractUse:'支付供应商尾款', actualFlow:'支付供应商尾款', counterparty:'XX建材有限公司', relation:'非关联方', note:'按期支付', deviation:false, statusLabel:'合规', badgeClass:'badge-fill' },
+            { id:'LK-2025-006', amount:'1,800万', contractUse:'采购存货', actualFlow:'部分转入投资理财', counterparty:'XX证券资管计划', relation:'非关联方', note:'约20%资金用于购买理财', deviation:true, statusLabel:'关注', badgeClass:'badge-accent-amber' },
+            { id:'LK-2025-007', amount:'1,000万', contractUse:'支付税费', actualFlow:'支付税费及行政罚款', counterparty:'税务局/环保局', relation:'非关联方', note:'含环保罚款120万', deviation:false, statusLabel:'关注', badgeClass:'badge-accent-amber' },
+          ],
+          violations: [
+            { title:'资金回流至关联方', desc:'贷款LK-2024-003（3,000万元）名义上补充流动资金，实际经YY投资控股中转后回流至同一实控人名下企业，存在信贷资金挪用风险。', amount:'3,000万元', period:'2024.Q3', riskLevel:'高', riskClass:'badge-accent-red', riskColor:'var(--accent-red)' },
+            { title:'贷款资金短期拆借', desc:'贷款LK-2025-003（4,000万元）合同约定并购定金，实际转入兄弟公司账户停留23天后转回，构成实质性短期资金拆借，违反贷款用途约定。', amount:'4,000万元', period:'2025.Q1', riskLevel:'高', riskClass:'badge-accent-red', riskColor:'var(--accent-red)' },
+            { title:'疑似个人资金占用', desc:'贷款LK-2024-005（800万元）中约38%（304万元）转入项目经理个人账户后再转回企业，疑似个人资金占用或利益输送。', amount:'800万元', period:'2024.Q4', riskLevel:'中', riskClass:'badge-accent-amber', riskColor:'var(--accent-amber)' },
+            { title:'部分资金挪作理财', desc:'贷款LK-2025-006（1,800万元）中约20%资金未用于采购存货，购买券商资管产品，偏离审批用途，风险相对可控。', amount:'1,800万元', period:'2025.Q2', riskLevel:'低', riskClass:'badge-outline-amber', riskColor:'var(--accent-amber)' },
+          ],
+          flowChains: [
+            { loanId:'LK-2024-003', source:'贷款发放账户', intermediary:'YY投资控股', destination:'关联企业账户', tags:[{label:'资金回流',class:'badge-accent-red'},{label:'关联交易',class:'badge-outline-red'}] },
+            { loanId:'LK-2025-003', source:'贷款发放账户', intermediary:'XX集团(兄弟公司)', destination:'滞留23天后转回', tags:[{label:'短期拆借',class:'badge-accent-red'},{label:'用途偏离',class:'badge-outline-red'}] },
+            { loanId:'LK-2024-005', source:'贷款发放账户', intermediary:'张某某个人账户', destination:'企业其他账户', tags:[{label:'个人占用',class:'badge-accent-amber'},{label:'可疑交易',class:'badge-outline-amber'}] },
+          ],
+          violationSummary: [
+            { id:'LK-2024-003', type:'资金回流', typeClass:'badge-accent-red', amount:'3,000万', dest:'YY投资控股→关联企业', risk:'高', riskClass:'badge-accent-red', action:'限期收回贷款，提供交易说明' },
+            { id:'LK-2025-003', type:'短期拆借', typeClass:'badge-accent-red', amount:'4,000万', dest:'兄弟公司→23天后转回', risk:'高', riskClass:'badge-accent-red', action:'补充并购证明，承诺不再拆借' },
+            { id:'LK-2024-005', type:'个人占用', typeClass:'badge-accent-amber', amount:'304万', dest:'项目经理个人账户', risk:'中', riskClass:'badge-accent-amber', action:'内部审计核查，追回资金' },
+            { id:'LK-2025-006', type:'用途偏离', typeClass:'badge-outline-amber', amount:'360万', dest:'券商资管产品', risk:'低', riskClass:'badge-outline-amber', action:'赎回理财，回归存货采购' },
+          ],
+          recommendations: [
+            { title:'限期整改', desc:'要求企业在30日内对违规贷款提供书面说明，收回被挪用的信贷资金。' },
+            { title:'加强贷后监控', desc:'按季度追踪贷款资金流向，建立受托支付台账，对大额支付实施穿透式核查。' },
+            { title:'纳入授信审批', desc:'将本次合规情况作为下轮授信审批的负面因素，酌情下调授信额度或提高利率。' },
+          ],
+        },
+      };
+    },
+    mounted() {
+      const style = getComputedStyle(document.documentElement);
+      const c = {
+        primary: style.getPropertyValue('--primary-500').trim() || '#2563eb',
+        accent: style.getPropertyValue('--accent-green').trim() || '#16a34a',
+        accentAmber: style.getPropertyValue('--accent-amber').trim() || '#d97706',
+        accentRed: style.getPropertyValue('--accent-red').trim() || '#dc2626',
+        textMuted: style.getPropertyValue('--text-muted').trim() || '#64748b',
+        border: style.getPropertyValue('--border').trim() || '#e5e7eb',
+      };
+      const chart = echarts.init(document.getElementById('trendChart'));
+      chart.setOption({
+        tooltip: { trigger:'axis', axisPointer:{ type:'shadow' } },
+        legend: { data:['资产负债率(%)','流动比率(x)','利息保障倍数(x)'], bottom:0, textStyle:{ color:c.textMuted, fontSize:11 } },
+        grid: { left:'3%', right:'4%', bottom:'14%', top:'8%', containLabel:true },
+        xAxis: { type:'category', data:['2023年','2024年','2025年'], axisLabel:{ color:c.textMuted, fontSize:12 } },
+        yAxis: { type:'value', axisLabel:{ color:c.textMuted, fontSize:11 }, splitLine:{ lineStyle:{ color:c.border } } },
+        series: [
+          { name:'资产负债率(%)', type:'bar', data:[58.2,64.3,62.8], itemStyle:{ color:c.primary, borderRadius:[6,6,0,0] }, barGap:'10%' },
+          { name:'流动比率(x)', type:'bar', data:[1.58,1.45,1.32], itemStyle:{ color:c.accentAmber, borderRadius:[6,6,0,0] } },
+          { name:'利息保障倍数(x)', type:'bar', data:[4.80,3.90,3.15], itemStyle:{ color:c.accent, borderRadius:[6,6,0,0] } },
+        ],
+      });
+      chart.setOption({
+        series: [
+          { markLine:{ silent:true, symbol:'none', lineStyle:{ type:'dashed', color:c.accentRed, width:1.5 }, label:{ fontSize:10, color:c.accentRed, formatter:'行业均值\n{c}' }, data:[{ yAxis:58, name:'行业均值' }] } },
+          {}, {},
+        ],
+      });
+      this._chart = chart;
+    },
+    beforeUnmount() {
+      if (this._chart) this._chart.dispose();
+    },
+  }).mount('#app');
+</script>
+
+</body>
+</html>

@@ -351,7 +351,8 @@
   <!-- ========== 右侧编辑区 ========== -->
   <main class="main-area">
     <div class="quick-nav">
-      <span class="nav-intro"><b>使用流程</b> &mdash; 左侧新建或导入项目，右侧配置版式、主题和章节，然后到 Claude Code 说「开始生成报告」即可。</span>
+      <span class="nav-intro" v-if="!projectHandle"><b>使用流程</b> &mdash; 左侧新建或导入项目，右侧配置版式、主题和章节，然后到 Claude Code 说「开始生成报告：项目名称」即可。</span>
+      <span class="nav-intro" v-else><b>使用流程</b> &mdash; 配置完成后，到 Claude Code 说「<b style="color:var(--accent);">开始生成报告：{{ config.projectName }}</b>」即可开始逐章生成。</span>
       <button class="btn-nav btn-nav-outline" onclick="window.open('../UI-lib/index.html','_blank')">浏览组件库</button>
       <a class="btn-nav btn-nav-ghost" href="guide.html" target="_blank">查看用户指引</a>
     </div>
@@ -608,7 +609,7 @@
             <span class="save-hint">每 5 分钟自动保存 &middot; 上次: {{ lastSavedText }}</span>
           </div>
           <p style="font-size:14px;color:var(--text-body);margin-top:18px;line-height:1.75;">
-            配置保存到项目目录的 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;">config.json</code>。切换到 <b style="color:var(--text);">Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b style="color:var(--text);">"开始生成报告"</b>或项目名，Claude 会自动读取配置并按章节逐章生成。
+            配置保存到项目目录的 <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;">config.json</code>。切换到 <b style="color:var(--text);">Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b style="color:var(--accent);">"开始生成报告：{{ config.projectName }}"</b>，Claude 会自动匹配项目并逐章生成。
           </p>
         </div>
       </section>
