@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用户操作指引 · 报告工具</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root { --accent: #2563eb; --accent-light: #eff6ff; --border: #e2e8f0; --muted: #94a3b8; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1 { font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 36px; }
+  .back-link { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); font-size: 13px; font-weight: 600; text-decoration: none; margin-bottom: 20px; }
+  .back-link:hover { text-decoration: underline; }
+
+  /* ===== 流程横图 ===== */
+  .flow-horizontal { display: flex; align-items: stretch; gap: 0; background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 36px; }
+  .flow-step { flex: 1; padding: 20px 16px; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .flow-step + .flow-step { border-left: 1px solid #f1f5f9; }
+  .flow-step .step-badge { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; }
+  .flow-step .step-label { font-size: 13px; font-weight: 700; color: #0f172a; }
+  .flow-step .step-time { font-size: 11px; color: var(--muted); }
+  .flow-step .step-detail { font-size: 11px; color: #64748b; line-height: 1.5; }
+  @media (max-width: 700px) {
+    .flow-horizontal { flex-direction: column; }
+    .flow-step + .flow-step { border-left: none; border-top: 1px solid #f1f5f9; }
+  }
+
+  /* ===== 步骤卡片 ===== */
+  .step-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; display: flex; gap: 16px; align-items: flex-start; }
+  .step-card .sc-num { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
+  .step-card .sc-body { flex: 1; }
+  .step-card .sc-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+  .step-card .sc-desc { font-size: 13px; color: #64748b; line-height: 1.6; }
+  .step-card .sc-desc b { color: #334155; }
+
+  /* ===== 配置速览 grid ===== */
+  .config-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+  .config-tile { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+  .config-tile .ct-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .config-tile .ct-items { font-size: 12px; color: #475569; line-height: 1.7; }
+  @media (max-width: 640px) { .config-grid { grid-template-columns: 1fr; } }
+
+  /* ===== 章节字段速查表 ===== */
+  .field-strip { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .field-chip { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .field-chip .fc-key { font-weight: 700; color: #0f172a; white-space: nowrap; }
+  .field-chip .fc-val { color: #64748b; }
+
+  /* ===== FAQ 卡片 ===== */
+  .faq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .faq-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; transition: box-shadow .15s, border-color .15s; }
+  .faq-card:hover { border-color: #93c5fd; box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+  .faq-card .faq-q { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+  .faq-card .faq-a { font-size: 12px; color: #64748b; line-height: 1.6; }
+  @media (max-width: 640px) { .faq-grid { grid-template-columns: 1fr; } }
+
+  /* ===== 提示条 ===== */
+  .info-bar { background: #f8fafc; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 13px; color: #475569; margin: 12px 0; }
+  .warn-bar { background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 13px; color: #92400e; margin: 12px 0; }
+
+  /* ===== 状态标签 ===== */
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .status-pending { background: #cbd5e1; }
+  .status-draft { background: #f59e0b; }
+  .status-done { background: #22c55e; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back-link">← 返回报告工具</a>
+
+  <h1>用户操作指引</h1>
+  <p class="subtitle">从零开始，完成一份报告的完整流程说明 · v3.3</p>
+
+  <!-- ====== 流程一览 ====== -->
+  <div class="flow-horizontal">
+    <div class="flow-step">
+      <div class="step-badge">1</div>
+      <div class="step-label">浏览组件库</div>
+      <div class="step-time">约 5 分钟</div>
+      <div class="step-detail">了解可用的<br>版式、主题、组件</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-badge">2</div>
+      <div class="step-label">配置项目</div>
+      <div class="step-time">约 10 分钟</div>
+      <div class="step-detail">选版式/主题/组件<br>定义章节结构</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-badge">3</div>
+      <div class="step-label">Claude 生成</div>
+      <div class="step-time">逐章交互</div>
+      <div class="step-detail">AI 逐章生成<br>用户确认修改</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-badge">4</div>
+      <div class="step-label">组装输出</div>
+      <div class="step-time">约 1 分钟</div>
+      <div class="step-detail">合并所有章节<br>输出完整报告</div>
+    </div>
+  </div>
+
+  <!-- ====== 准备工作 ====== -->
+  <div class="step-card">
+    <div class="sc-num">0</div>
+    <div class="sc-body">
+      <div class="sc-title">准备工作</div>
+      <div class="sc-desc">
+        <b>Chrome / Edge 浏览器</b>（Safari / Firefox 不支持文件系统访问）&nbsp;·&nbsp;
+        <b>Claude Code</b> 工作目录设为 AIProject 根目录&nbsp;·&nbsp;
+        提前准备数据文件（csv、docx、pdf 等）
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 1: 浏览组件库 ====== -->
+  <div class="step-card">
+    <div class="sc-num">1</div>
+    <div class="sc-body">
+      <div class="sc-title">浏览组件库（可选）</div>
+      <div class="sc-desc">
+        打开 <b>UI-lib/index.html</b>，预览所有可用资源。
+        如果已熟悉组件库，可跳过此步。
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 2: 打开工具 & 新建/导入 ====== -->
+  <div class="step-card">
+    <div class="sc-num">2</div>
+    <div class="sc-body">
+      <div class="sc-title">打开报告工具，新建或导入项目</div>
+      <div class="sc-desc">
+        用 Chrome / Edge 打开 <b>report-tool/index.html</b>。<br>
+        点击左侧 <b>「新建项目」</b>（输入名称，选择保存到 <b>report-tool/projects/</b>）
+        或 <b>「导入项目」</b>（选择已有项目文件夹）。
+      </div>
+      <div class="warn-bar">
+        若导入的项目不在 AIProject 目录树下，顶部会显示告警条，提示 Claude Code 可能无法读取组件库。
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 3: 配置项目（精简版） ====== -->
+  <div class="step-card">
+    <div class="sc-num">3</div>
+    <div class="sc-body">
+      <div class="sc-title">配置项目</div>
+      <div class="sc-desc">右侧编辑区分三个可折叠区块，按需填写即可。</div>
+
+      <div class="config-grid">
+        <!-- 基本设置 -->
+        <div class="config-tile">
+          <div class="ct-label">基本设置</div>
+          <div class="ct-items">
+            <b>版式</b>：A4 横版 / Slide 翻页 / 自由滚动<br>
+            <b>主题</b>：商务蓝白 / RC 浅蓝 / 暗黑科技<br>
+            <b>受众</b>：高管 / 客户 / 内部 / 项目<br>
+            <b>用途</b>：汇报 / 培训 / 交付 / 方案书<br>
+            <b>模式</b>：分章生成（推荐）/ 一次性
+          </div>
+        </div>
+        <!-- 章节定义 -->
+        <div class="config-tile">
+          <div class="ct-label">章节定义</div>
+          <div class="ct-items">
+            点击 <b>「+ 添加章节」</b> 创建章节，每个章节含：
+            <div class="field-strip" style="flex-direction:column;gap:4px;margin-top:6px;">
+              <div class="field-chip"><span class="fc-key">标题</span><span class="fc-val">章节名称</span></div>
+              <div class="field-chip"><span class="fc-key">描述</span><span class="fc-val">告诉 AI 要生成什么（核心字段）</span></div>
+              <div class="field-chip"><span class="fc-key">组件</span><span class="fc-val">从组件库勾选使用</span></div>
+              <div class="field-chip"><span class="fc-key">数据</span><span class="fc-val">绑定 data/ 下的文件</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- 状态 & 提示 -->
+        <div class="config-tile">
+          <div class="ct-label">关键提示</div>
+          <div class="ct-items">
+            章节有 3 种状态：<br>
+            <span class="status-dot status-pending"></span> <b>待生成</b> — 尚未开始<br>
+            <span class="status-dot status-draft"></span> <b>草稿</b> — 已生成，待确认<br>
+            <span class="status-dot status-done"></span> <b>完成</b> — 已确认，可组装
+          </div>
+          <div class="info-bar" style="margin-top:10px;font-size:12px;">
+            <b>内容大纲写出初步想法即可</b>，AI 会自动扩展为正式文案。不确定的数据可标记为 [待补充]。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 4: 保存配置 ====== -->
+  <div class="step-card">
+    <div class="sc-num">4</div>
+    <div class="sc-body">
+      <div class="sc-title">保存配置</div>
+      <div class="sc-desc">
+        每 <b>5 分钟自动保存</b>，也可点击左侧 <b>「保存配置」</b> 手动立即保存。
+        配置存储在项目目录的 <b>config.json</b> 中，关闭浏览器不丢失，下次导入即可继续。
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 5: Claude Code 生成 ====== -->
+  <div class="step-card">
+    <div class="sc-num">5</div>
+    <div class="sc-body">
+      <div class="sc-title">切换到 Claude Code 生成报告</div>
+      <div class="sc-desc">
+        在终端（工作目录为 AIProject 根目录）启动 Claude Code，说 <b>"开始生成报告"</b> 或项目名。<br>
+        Claude 自动：扫描 projects 目录 → 读取 config.json → 读组件/骨架/主题 → 找第一个 pending 章节开始生成。
+      </div>
+      <div class="warn-bar">
+        若 Claude 找不到项目，直接告知绝对路径：<b>"项目在 /Users/xxx/report-tool/projects/项目名/"</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 6: 逐章修改 ====== -->
+  <div class="step-card">
+    <div class="sc-num">6</div>
+    <div class="sc-body">
+      <div class="sc-title">逐章确认与修改</div>
+      <div class="sc-desc">
+        Claude 生成一章后将状态更新为 <b>"draft"</b> 并提示。你可以对生成内容提出修改，满意后说 <b>"继续"</b> 或 <b>"下一章"</b>，Claude 将当前章标为 <b>"done"</b> 并处理下一章。
+        随时可回到工具页面查看各章状态。
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Step 7: 组装 ====== -->
+  <div class="step-card">
+    <div class="sc-num">7</div>
+    <div class="sc-body">
+      <div class="sc-title">组装最终报告</div>
+      <div class="sc-desc">
+        所有章节 <b>done</b> 后：在工具页面点击 <b>[组装全部章节]</b>，或在 Claude Code 中说 <b>"组装报告"</b>。
+        输出到 <b>项目文件夹/output/full-report.html</b>，包含统一样式、页码、打印控制。
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 常见问题（卡片样式） ====== -->
+  <h2 style="font-size:20px;font-weight:700;color:#0f172a;margin-top:36px;margin-bottom:16px;">常见问题</h2>
+  <div class="faq-grid">
+    <div class="faq-card">
+      <div class="faq-q">必须先把数据文件放到 data/ 下吗？</div>
+      <div class="faq-a">建议提前放入，配置时绑定文件，Claude 生成时自动读取。也可以生成后再补充数据。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">可以在配置中途关闭页面吗？</div>
+      <div class="faq-a">可以。每 5 分钟自动保存 + 手动保存，config.json 持久化，下次导入项目继续。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">组件选择 vs 自定义布局，哪个生效？</div>
+      <div class="faq-a">自定义布局优先。customLayout 非空时按自定义描述生成，为空时按组件列表生成。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">分章生成和一次性生成可以切换吗？</div>
+      <div class="faq-a">可以随时切换。长报告推荐分章模式，便于逐章精调。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">Claude 找不到我的项目怎么办？</div>
+      <div class="faq-a">直接告诉 Claude 项目的绝对路径，Claude 会直接读取该路径下的 config.json。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">可以在多台电脑上协作吗？</div>
+      <div class="faq-a">可以。项目文件夹独立自包含，通过 git 同步或用 U 盘拷贝，导入项目即可。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">生成过程中能回工具页面改配置吗？</div>
+      <div class="faq-a">可以。建议等当前章完成后再改。修改后的配置在生成下一章时生效。</div>
+    </div>
+    <div class="faq-card">
+      <div class="faq-q">自定义布局模式下还需要选组件吗？</div>
+      <div class="faq-a">两者可同时使用。自定义布局为主，组件列表作为补充参考，帮助 AI 理解风格。</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

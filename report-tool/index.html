@@ -34,6 +34,16 @@
 
   .compat-warn { margin-top: auto; padding: 10px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; font-size: 12px; color: #991b1b; line-height: 1.5; }
 
+  /* ===== 顶部快捷导航 ===== */
+  .quick-nav { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #fff; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; flex-shrink: 0; }
+  .quick-nav .nav-intro { color: #64748b; flex: 1; }
+  .quick-nav .nav-intro b { color: #334155; }
+  .btn-nav { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all .15s; border: none; }
+  .btn-nav-outline { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn-nav-outline:hover { background: var(--accent-light); }
+  .btn-nav-ghost { background: transparent; color: #64748b; border: none; padding: 7px 10px; }
+  .btn-nav-ghost:hover { color: var(--accent); background: #f8fafc; }
+
   /* ===== 右侧编辑区 ===== */
   .main-area { flex: 1; overflow-y: auto; padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
   .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); text-align: center; gap: 10px; }
@@ -44,9 +54,23 @@
   .warn-bar { background: var(--warn-light); border: 1px solid #fcd34d; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #92400e; display: flex; align-items: center; gap: 8px; }
 
   /* ===== 配置区块 ===== */
-  section { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 20px 24px; }
-  section h2 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
-  .section-label { font-size: 12px; font-weight: 600; color: #64748b; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .04em; }
+  section { background: #fff; border-radius: 10px; border: 1px solid var(--border); }
+  /* 版式卡片内嵌预览容器 */
+  .card-preview-html { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; background: linear-gradient(135deg,#f8fafc,#e2e8f0); margin-bottom: 10px; height: 140px; overflow: hidden; }
+
+  /* 可折叠区块头 */
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; cursor: pointer; user-select: none; transition: background .15s; }
+  .section-header:hover { background: #fafafa; }
+  .section-header .sh-left { display: flex; align-items: center; gap: 10px; }
+  .section-header .sh-left .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .section-header h2 { font-size: 15px; font-weight: 700; color: #0f172a; }
+  .section-header .sh-desc { font-size: 12px; color: var(--muted); margin-left: 4px; }
+  .section-toggle { font-size: 14px; color: var(--muted); transition: transform .2s; }
+  .section-toggle.open { transform: rotate(180deg); }
+
+  .section-body { padding: 0 24px 20px 24px; border-top: 1px solid #f1f5f9; }
+  .section-label { font-size: 12px; font-weight: 600; color: #64748b; display: block; margin-bottom: 8px; margin-top: 18px; text-transform: uppercase; letter-spacing: .04em; }
+  .section-label:first-child { margin-top: 16px; }
   .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
   /* 版式卡片 */
@@ -66,9 +90,17 @@
   .card-meta { font-size: 11px; color: #64748b; margin-bottom: 6px; }
   .card-scene { font-size: 11px; color: var(--accent); background: var(--accent-light); display: inline-block; padding: 2px 8px; border-radius: 10px; }
 
-  /* 主题色条预览 */
-  .swatch-row { display: flex; gap: 4px; width: 80%; height: 70%; border-radius: 4px; overflow: hidden; }
-  .swatch-row .bar { flex: 1; border-radius: 1px; }
+  /* 受众/用途 字段 */
+  .inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-group label { font-size: 12px; font-weight: 700; color: #475569; }
+  .field-group .hint { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+  .field-group input, .field-group textarea, .field-group select { width: 100%; padding: 8px 10px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; transition: border-color .15s; background: #fff; }
+  .field-group input:focus, .field-group textarea:focus, .field-group select:focus { outline: none; border-color: var(--accent); }
+  .field-group textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+
+  /* 口语化大纲提示条 */
+  .outline-hint { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #0369a1; line-height: 1.6; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
 
   /* ===== 章节列表 ===== */
   .chapter-list { display: flex; flex-direction: column; gap: 8px; }
@@ -91,12 +123,6 @@
   .ch-actions button:hover { background: #e2e8f0; }
 
   .chapter-body { padding: 16px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 14px; }
-  .field-group { display: flex; flex-direction: column; gap: 4px; }
-  .field-group label { font-size: 12px; font-weight: 700; color: #475569; }
-  .field-group .hint { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
-  .field-group input, .field-group textarea, .field-group select { width: 100%; padding: 8px 10px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; transition: border-color .15s; }
-  .field-group input:focus, .field-group textarea:focus, .field-group select:focus { outline: none; border-color: var(--accent); }
-  .field-group textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
 
   /* ===== 组件缩略图 - CSS 迷你预览 ===== */
   .comp-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
@@ -134,12 +160,14 @@
   .mini-line::before { content: ''; position: absolute; bottom: 2px; left: 8%; width: 80%; height: 20px; background: linear-gradient(to top, rgba(37,99,235,.2) 0%, transparent 100%); clip-path: polygon(0% 100%, 15% 20%, 35% 60%, 55% 10%, 75% 40%, 100% 5%, 100% 100%); }
 
   /* ===== 操作区 ===== */
-  .op-bar { display: flex; align-items: center; gap: 10px; }
+  .op-bar { display: flex; align-items: center; gap: 10px; padding-top: 4px; }
   .btn-sm { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
   .btn-sm:disabled { opacity: .35; cursor: not-allowed; }
   .btn-sm.btn-primary:disabled { background: #94a3b8; }
   .btn-outline { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
   .btn-outline:hover { background: var(--accent-light); }
+  .btn-add-chapter { width: 100%; padding: 10px; border: 2px dashed #cbd5e1; border-radius: 8px; background: #fafafa; color: #64748b; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; margin-top: 14px; }
+  .btn-add-chapter:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
   .btn-tip { position: relative; display: inline-flex; align-items: center; }
   .btn-tip .tooltip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 4px; white-space: nowrap; font-weight: 400; }
   .btn-tip:disabled:hover .tooltip { display: block; }
@@ -202,6 +230,13 @@
 
   <!-- ========== 右侧编辑区 ========== -->
   <main class="main-area">
+    <!-- 快捷导航 -->
+    <div class="quick-nav">
+      <span class="nav-intro">💡 <b>使用流程：</b>左侧新建/导入项目 → 右侧配置版式、主题和章节 → 到 Claude Code 说"开始生成报告"</span>
+      <button class="btn-nav btn-nav-outline" onclick="window.open('../UI-lib/index.html','_blank')">🧩 浏览组件库</button>
+      <a class="btn-nav btn-nav-ghost" href="guide.html" target="_blank">📖 查看用户指引 →</a>
+    </div>
+
     <!-- 告警条 -->
     <div v-if="projectHandle && !inWorkspace" class="warn-bar">
       ⚠️ 该项目不在 AIProject 工作区内，Claude Code 可能无法读取 UI-lib 组件库和约束文档。建议用「新建项目」重新保存到 <code>report-tool/projects/</code> 下。
@@ -218,207 +253,235 @@
     <template v-if="projectHandle">
       <!-- ===== ① 基本设置 ===== -->
       <section>
-        <h2>① 基本设置</h2>
-
-        <span class="section-label">版式 — 决定报告的页面结构和输出格式</span>
-        <div class="card-grid">
-          <div class="select-card" :class="{ active: config.layout === 'a4-landscape' }" @click="config.layout = 'a4-landscape'">
-            <div class="card-preview"><div class="prev-a4"></div></div>
-            <div class="card-title">A4 横版</div>
-            <div class="card-meta">297×210mm · 适合打印/PDF</div>
-            <span class="card-scene">正式报告 · 方案书 · 培训材料</span>
+        <div class="section-header" @click="toggleSection('basic')">
+          <div class="sh-left">
+            <span class="step-num">①</span>
+            <h2>基本设置</h2>
+            <span class="sh-desc">— 版式 · 主题 · 受众 · 生成模式</span>
           </div>
-          <div class="select-card" :class="{ active: config.layout === 'slide-deck' }" @click="config.layout = 'slide-deck'">
-            <div class="card-preview"><div class="prev-slide"></div></div>
-            <div class="card-title">Slide 翻页</div>
-            <div class="card-meta">全屏 16:9 · 支持键盘翻页</div>
-            <span class="card-scene">PPT 演示 · 汇报 · 路演</span>
-          </div>
-          <div class="select-card" :class="{ active: config.layout === 'scroll-page' }" @click="config.layout = 'scroll-page'">
-            <div class="card-preview"><div class="prev-scroll"></div></div>
-            <div class="card-title">自由滚动</div>
-            <div class="card-meta">响应式 · 自适应宽度</div>
-            <span class="card-scene">网页 · 产品介绍 · 落地页</span>
-          </div>
+          <span class="section-toggle" :class="{ open: expandedSections.basic }">▼</span>
         </div>
+        <div v-show="expandedSections.basic" class="section-body">
 
-        <span class="section-label" style="margin-top:22px;">主题 — 决定报告的整体配色和视觉风格</span>
-        <div class="card-grid">
-          <div class="select-card" :class="{ active: config.theme === 'business-bluewhite' }" @click="config.theme = 'business-bluewhite'">
-            <div class="card-preview">
-              <div class="swatch-row">
-                <span class="bar" style="background:#0f172a;"></span>
-                <span class="bar" style="background:#1e40af;"></span>
-                <span class="bar" style="background:#f8fafc;"></span>
-                <span class="bar" style="background:#e2e8f0;"></span>
-                <span class="bar" style="background:#2563eb;"></span>
-              </div>
+          <span class="section-label">版式 — 决定报告的页面结构和输出格式</span>
+          <div class="card-grid">
+            <div v-for="lay in layoutDefs" :key="lay.id"
+                 class="select-card" :class="{ active: config.layout === lay.id }" @click="config.layout = lay.id">
+              <div class="card-preview-html" v-html="lay.previewHTML"></div>
+              <span class="card-scene" style="margin-bottom:4px;">{{ lay.categoryLabel }}</span>
+              <div class="card-title">{{ lay.name }}</div>
+              <div class="card-meta">{{ lay.description }}</div>
             </div>
-            <div class="card-title">商务蓝白</div>
-            <div class="card-meta">深蓝主色 · 白色背景 · 沉稳</div>
-            <span class="card-scene">企业报告 · 方案书 · 正式文档</span>
           </div>
-          <div class="select-card" :class="{ active: config.theme === 'rc-lightblue' }" @click="config.theme = 'rc-lightblue'">
-            <div class="card-preview">
-              <div class="swatch-row">
-                <span class="bar" style="background:#0c4a6e;"></span>
-                <span class="bar" style="background:#0284c7;"></span>
-                <span class="bar" style="background:#e0f2fe;"></span>
-                <span class="bar" style="background:#7dd3fc;"></span>
-                <span class="bar" style="background:#0369a1;"></span>
-              </div>
-            </div>
-            <div class="card-title">RC 浅蓝</div>
-            <div class="card-meta">蓝色系 · 清新明快 · 现代感</div>
-            <span class="card-scene">演示文稿 · 培训 · 汇报</span>
-          </div>
-          <div class="select-card" :class="{ active: config.theme === 'dark-tech' }" @click="config.theme = 'dark-tech'">
-            <div class="card-preview">
-              <div class="swatch-row">
-                <span class="bar" style="background:#0f0f23;"></span>
-                <span class="bar" style="background:#6366f1;"></span>
-                <span class="bar" style="background:#1e1e3a;"></span>
-                <span class="bar" style="background:#a78bfa;"></span>
-                <span class="bar" style="background:#22d3ee;"></span>
-              </div>
-            </div>
-            <div class="card-title">暗黑科技</div>
-            <div class="card-meta">深色背景 · 霓虹点缀 · 科技感</div>
-            <span class="card-scene">数据产品 · 技术方案 · 仪表盘</span>
-          </div>
-        </div>
 
-        <span class="section-label" style="margin-top:22px;">生成模式</span>
-        <div style="display:flex;gap:32px;align-items:center;">
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-            <input type="radio" v-model="config.mode" value="chapter" style="accent-color:var(--accent);width:16px;height:16px;">
-            <span><b>分章生成</b> <span style="color:var(--muted);font-size:12px;">（推荐）— 每章独立生成和修改，适合 3 章以上长报告，逐章精调</span></span>
-          </label>
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-            <input type="radio" v-model="config.mode" value="full" style="accent-color:var(--accent);width:16px;height:16px;">
-            <span><b>一次性生成</b> <span style="color:var(--muted);font-size:12px;">— 适合 3-5 页短报告，一次输出全部内容</span></span>
-          </label>
+          <span class="section-label">主题 — 决定报告的整体配色和视觉风格</span>
+          <div class="card-grid">
+            <div class="select-card" :class="{ active: config.theme === 'business-bluewhite' }" @click="config.theme = 'business-bluewhite'">
+            
+              <div class="card-title">商务蓝白</div>
+              <div class="card-meta">深蓝主色 · 白色背景</div>
+              <span class="card-scene">企业报告 · 方案书 · 正式文档</span>
+            </div>
+            <div class="select-card" :class="{ active: config.theme === 'rc-lightblue' }" @click="config.theme = 'rc-lightblue'">
+              
+              <div class="card-title">RC 浅蓝</div>
+              <div class="card-meta">蓝色系 · 清新明快</div>
+              <span class="card-scene">演示文稿 · 培训材料 · 汇报</span>
+            </div>
+            <div class="select-card" :class="{ active: config.theme === 'dark-tech' }" @click="config.theme = 'dark-tech'">
+              
+              <div class="card-title">暗黑科技</div>
+              <div class="card-meta">深色背景 · 霓虹点缀</div>
+              <span class="card-scene">数据产品 · 技术方案 · 仪表盘</span>
+            </div>
+          </div>
+
+          <!-- 受众 + 用途 -->
+          <div class="inline-fields">
+            <div class="field-group">
+              <label>👥 受众</label>
+              <select v-model="config.audience">
+                <option value="">请选择目标受众</option>
+                <option value="内部">内部培训</option>
+                <option value="项目">项目交付</option>ß
+                <option value="客户">客户展示</option>
+                <option value="高管">高管汇报</option>
+              </select>
+              <span class="hint">不同受众会影响报告的语气、专业深度和侧重点。</span>
+            </div>
+            <div class="field-group">
+              <label>📌 用途</label>
+              <select v-model="config.purpose">
+                <option value="">请选择报告用途</option>
+                <option value="交付文档">交付文档</option>
+                <option value="培训材料">培训材料</option>
+                <option value="汇报展示">汇报展示</option>
+              </select>
+              <span class="hint">不同用途会影响报告的结构组织、页面密度和信息呈现方式。</span>
+            </div>
+          </div>
+
+          <span class="section-label">生成模式</span>
+          <div style="display:flex;gap:32px;align-items:center;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" v-model="config.mode" value="chapter" style="accent-color:var(--accent);width:16px;height:16px;">
+              <span><b>分章生成</b> <span style="color:var(--muted);font-size:12px;">（推荐）— 每章独立生成和修改，适合 3 章以上长报告，逐章精调</span></span>
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" v-model="config.mode" value="full" style="accent-color:var(--accent);width:16px;height:16px;">
+              <span><b>一次性生成</b> <span style="color:var(--muted);font-size:12px;">— 适合 3-5 页短报告，一次输出全部内容</span></span>
+            </label>
+          </div>
         </div>
       </section>
 
       <!-- ===== ② 章节定义 ===== -->
       <section>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-          <h2 style="margin:0;padding:0;border:none;">② 章节定义</h2>
-          <button class="btn-sm btn-outline" @click="addChapter">+ 添加章节</button>
+        <div class="section-header" @click="toggleSection('chapters')">
+          <div class="sh-left">
+            <span class="step-num">②</span>
+            <h2>章节定义</h2>
+            <span class="sh-desc">— {{ config.chapters.length }} 个章节 · {{ doneCount }} 个已完成</span>
+          </div>
+          <span class="section-toggle" :class="{ open: expandedSections.chapters }">▼</span>
         </div>
+        <div v-show="expandedSections.chapters" class="section-body">
 
-        <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--muted);padding:28px;font-size:14px;background:#fafafa;border-radius:8px;">
-          暂无章节，点击「+ 添加章节」开始配置报告结构
-        </div>
+          <!-- 口语化大纲提示 -->
+          <div class="outline-hint">
+            <span style="font-size:16px;flex-shrink:0;">💡</span>
+            <span><b>内容大纲可以是口语化的初步想法</b>，不需要写出正式文案。AI 会自动将你口语化的大纲扩展为正式的报告内容。不确定的数据和细节可留空或标记为 [待补充]，AI 不会编造。越详细效果越好，但不必追求完美措辞。</span>
+          </div>
 
-        <div class="chapter-list">
-          <div v-for="(ch, idx) in config.chapters" :key="ch.id"
-               class="chapter-item"
-               :class="{ 'drag-over': dragOverIdx === idx, 'dragging': dragIdx === idx }"
-               :draggable="true"
-               @dragstart="onDragStart(idx, $event)"
-               @dragover.prevent="onDragOver(idx)"
-               @dragleave="onDragLeave"
-               @drop="onDrop(idx, $event)"
-               @dragend="onDragEnd">
-            <div class="chapter-header" @click="toggleChapter(ch.id)">
-              <div class="ch-left">
-                <span class="drag-handle" title="拖拽排序">⋮⋮</span>
-                <span class="order">第{{ idx + 1 }}章</span>
-                <span class="ch-title">{{ ch.title || '未命名' }}</span>
-                <span class="status-dot" :class="'st-' + ch.status" :title="statusLabel(ch.status)"></span>
-              </div>
-              <div class="ch-actions" @click.stop>
-                <button @click="moveChapter(idx, -1)" :disabled="idx===0" title="上移">▲</button>
-                <button @click="moveChapter(idx, 1)" :disabled="idx===config.chapters.length-1" title="下移">▼</button>
-                <button @click="removeChapter(idx)" style="color:#ef4444;" title="删除">✕</button>
-              </div>
-            </div>
-            <div v-show="ch._open" class="chapter-body">
-              <!-- 标题 -->
-              <div class="field-group">
-                <label>📝 章节标题</label>
-                <input v-model="ch.title" placeholder="如：封面、产品表现概览、收益归因分析">
-                <span class="hint">给章节起一个简洁的名字，会显示在报告目录和页面标题中。</span>
-              </div>
-              <!-- 描述 -->
-              <div class="field-group">
-                <label>📄 内容描述（Claude 生成指令）</label>
-                <textarea v-model="ch.desc" placeholder="详细描述这一章要展示的内容..." rows="3"></textarea>
-                <span class="hint">尽量详细地告诉 Claude：<b>主题是什么、包含哪些关键信息、大概几页、排版布局想要怎样</b>。写越具体，生成效果越好。例如：<br>"展示核心KPI：七日年化收益率2.15%（↑）、产品规模156.8亿（↑）。用3列数据卡片网格布局，每个卡片显示指标名+数值+环比趋势，约1页。"</span>
-              </div>
-              <!-- 状态 -->
-              <div class="field-group">
-                <label>📌 状态</label>
-                <select v-model="ch.status">
-                  <option value="pending">○ 待生成 — 尚未开始</option>
-                  <option value="draft">● 草稿 — 已生成，待确认</option>
-                  <option value="done">✓ 完成 — 已确认，可组装</option>
-                </select>
-              </div>
-              <!-- 组件选择 -->
-              <div class="field-group">
-                <label>🧩 组件库（点击缩略图勾选，可多选）</label>
-                <div class="comp-grid">
-                  <div v-for="comp in allComponents" :key="comp.id"
-                       class="comp-thumb"
-                       :class="{ selected: ch.components.includes(comp.id) }"
-                       @click="toggleComponent(ch, comp.id)"
-                       :title="comp.desc">
-                    <div class="mini">
-                      <template v-if="comp.id==='stat-card'"><div class="mini-stat"><span class="big"></span><div style="display:flex;flex-direction:column;gap:3px;"><span class="sm"></span><span class="sm"></span></div></div></template>
-                      <template v-else-if="comp.id==='timeline'"><div class="mini-timeline"><span class="dot"></span><span class="line"></span><span class="dot"></span><span class="line"></span><span class="dot"></span></div></template>
-                      <template v-else-if="comp.id==='process-step'"><div class="mini-process"><span class="step">1</span><span class="step">2</span><span class="step">3</span></div></template>
-                      <template v-else-if="comp.id==='circle-number'"><div class="mini-circle"><span class="c">1</span><span class="c">2</span><span class="c">3</span></div></template>
-                      <template v-else-if="comp.id==='badge-tag'"><div class="mini-badge"><span class="b b1">标签</span><span class="b b2">徽章</span></div></template>
-                      <template v-else-if="comp.id==='data-table'"><div class="mini-table"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></template>
-                      <template v-else-if="comp.id==='hero-card'"><div class="mini-hero"></div></template>
-                      <template v-else-if="comp.id==='bar-chart'"><div class="mini-bar"><span class="b" style="height:60%;"></span><span class="b" style="height:85%;"></span><span class="b" style="height:45%;"></span><span class="b" style="height:70%;"></span></div></template>
-                      <template v-else-if="comp.id==='timeline-chart'"><div class="mini-line"></div></template>
-                    </div>
-                    <div class="comp-name">{{ comp.label }}</div>
-                  </div>
+          <!-- 空状态 -->
+          <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--muted);padding:28px;font-size:14px;background:#fafafa;border-radius:8px;">
+            暂无章节，点击下方按钮开始配置报告结构
+          </div>
+
+          <!-- 章节列表 -->
+          <div class="chapter-list">
+            <div v-for="(ch, idx) in config.chapters" :key="ch.id"
+                 class="chapter-item"
+                 :class="{ 'drag-over': dragOverIdx === idx, 'dragging': dragIdx === idx }"
+                 :draggable="true"
+                 @dragstart="onDragStart(idx, $event)"
+                 @dragover.prevent="onDragOver(idx)"
+                 @dragleave="onDragLeave"
+                 @drop="onDrop(idx, $event)"
+                 @dragend="onDragEnd">
+              <div class="chapter-header" @click="toggleChapter(ch.id)">
+                <div class="ch-left">
+                  <span class="drag-handle" title="拖拽排序">⋮⋮</span>
+                  <span class="order">第{{ idx + 1 }}章</span>
+                  <span class="ch-title">{{ ch.title || '未命名' }}</span>
+                  <span class="status-dot" :class="'st-' + ch.status" :title="statusLabel(ch.status)"></span>
                 </div>
-                <span class="hint">选中组件的缩略图会高亮。Claude 生成时会读取对应组件的 HTML 模板来组装。如不满意组件库选项，可在下方自定义。</span>
+                <div class="ch-actions" @click.stop>
+                  <button @click="moveChapter(idx, -1)" :disabled="idx===0" title="上移">▲</button>
+                  <button @click="moveChapter(idx, 1)" :disabled="idx===config.chapters.length-1" title="下移">▼</button>
+                  <button @click="removeChapter(idx)" style="color:#ef4444;" title="删除">✕</button>
+                </div>
               </div>
-              <!-- 自定义布局 -->
-              <div class="field-group">
-                <label>🎨 自定义展示需求（可选，非空时优先于上面的组件选择）</label>
-                <textarea v-model="ch.customLayout" placeholder="不选组件库的组件时，在此自由描述你想要的布局方式。例如：左右两栏，左边放3个核心数字，右边放趋势图..."></textarea>
-                <span class="hint">如果填写了此字段，Claude 会优先按你的描述生成，忽略上方勾选的组件列表。</span>
-              </div>
-              <!-- 数据文件 -->
-              <div class="field-group">
-                <label>📊 数据来源</label>
-                <input v-model="ch.dataFile" placeholder="如：data/产品数据.csv （填写文件名及要用到的表/列/数据范围）">
-                <span class="hint">填写 <b>data/ 目录下的文件名</b>，并说明要用到文件的哪些数据。例如：<br>"data/产品数据.csv，使用'七日年化收益率'和'万份收益'两列近3个月的数据" 或 "data/收益归因分析.docx，提取五维度贡献度表格"</span>
+              <div v-show="ch._open" class="chapter-body">
+                <!-- 标题 -->
+                <div class="field-group">
+                  <label>📝 章节标题</label>
+                  <input v-model="ch.title" placeholder="如：封面、产品表现概览、收益归因分析">
+                  <span class="hint">给章节起一个简洁的名字，会显示在报告目录和页面标题中。</span>
+                </div>
+                <!-- 描述 -->
+                <div class="field-group">
+                  <label>📄 内容描述（Claude 生成指令）</label>
+                  <textarea v-model="ch.desc" placeholder="用口语描述这一章要展示什么即可，AI 会自动扩展为正式文案..." rows="3"></textarea>
+                  <span class="hint">尽量详细地告诉 Claude：<b>主题是什么、包含哪些关键信息、大概几页、排版布局想要怎样</b>。写越具体，生成效果越好。例如：<br>"展示核心KPI：七日年化收益率2.15%（↑）、产品规模156.8亿（↑）。用3列数据卡片网格布局，每个卡片显示指标名+数值+环比趋势，约1页。"</span>
+                </div>
+                <!-- 状态 -->
+                <div class="field-group">
+                  <label>📌 状态</label>
+                  <select v-model="ch.status">
+                    <option value="pending">○ 待生成 — 尚未开始</option>
+                    <option value="draft">● 草稿 — 已生成，待确认</option>
+                    <option value="done">✓ 完成 — 已确认，可组装</option>
+                  </select>
+                </div>
+                <!-- 组件选择 -->
+                <div class="field-group">
+                  <label>🧩 组件库（点击缩略图勾选，可多选）</label>
+                  <div class="comp-grid">
+                    <div v-for="comp in allComponents" :key="comp.id"
+                         class="comp-thumb"
+                         :class="{ selected: ch.components.includes(comp.id) }"
+                         @click="toggleComponent(ch, comp.id)"
+                         :title="comp.desc">
+                      <div class="mini">
+                        <template v-if="comp.id==='stat-card'"><div class="mini-stat"><span class="big"></span><div style="display:flex;flex-direction:column;gap:3px;"><span class="sm"></span><span class="sm"></span></div></div></template>
+                        <template v-else-if="comp.id==='timeline'"><div class="mini-timeline"><span class="dot"></span><span class="line"></span><span class="dot"></span><span class="line"></span><span class="dot"></span></div></template>
+                        <template v-else-if="comp.id==='process-step'"><div class="mini-process"><span class="step">1</span><span class="step">2</span><span class="step">3</span></div></template>
+                        <template v-else-if="comp.id==='circle-number'"><div class="mini-circle"><span class="c">1</span><span class="c">2</span><span class="c">3</span></div></template>
+                        <template v-else-if="comp.id==='badge-tag'"><div class="mini-badge"><span class="b b1">标签</span><span class="b b2">徽章</span></div></template>
+                        <template v-else-if="comp.id==='data-table'"><div class="mini-table"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></template>
+                        <template v-else-if="comp.id==='hero-card'"><div class="mini-hero"></div></template>
+                        <template v-else-if="comp.id==='bar-chart'"><div class="mini-bar"><span class="b" style="height:60%;"></span><span class="b" style="height:85%;"></span><span class="b" style="height:45%;"></span><span class="b" style="height:70%;"></span></div></template>
+                        <template v-else-if="comp.id==='timeline-chart'"><div class="mini-line"></div></template>
+                      </div>
+                      <div class="comp-name">{{ comp.label }}</div>
+                    </div>
+                  </div>
+                  <span class="hint">选中组件的缩略图会高亮。Claude 生成时会读取对应组件的 HTML 模板来组装。如不满意组件库选项，可在下方自定义。</span>
+                </div>
+                <!-- 自定义布局 -->
+                <div class="field-group">
+                  <label>🎨 自定义展示需求（可选，非空时优先于上面的组件选择）</label>
+                  <textarea v-model="ch.customLayout" placeholder="不选组件库的组件时，在此自由描述你想要的布局方式。例如：左右两栏，左边放3个核心数字，右边放趋势图..."></textarea>
+                  <span class="hint">如果填写了此字段，Claude 会优先按你的描述生成，忽略上方勾选的组件列表。</span>
+                </div>
+                <!-- 数据文件 -->
+                <div class="field-group">
+                  <label>📊 数据来源</label>
+                  <input v-model="ch.dataFile" placeholder="如：data/产品数据.csv （填写文件名及要用到的表/列/数据范围）">
+                  <span class="hint">填写 <b>data/ 目录下的文件名</b>，并说明要用到文件的哪些数据。例如：<br>"data/产品数据.csv，使用'七日年化收益率'和'万份收益'两列近3个月的数据" 或 "data/收益归因分析.docx，提取五维度贡献度表格"</span>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- 添加章节按钮 — 在内容下方 -->
+          <button class="btn-add-chapter" @click="addChapter">
+            ＋ 添加章节
+          </button>
+
         </div>
       </section>
 
       <!-- ===== ③ 操作 ===== -->
       <section>
-        <h2>③ 操作</h2>
-        <div class="op-bar">
-          <span class="btn-tip">
-            <button class="btn-sm btn-primary" @click="assembleReport"
-                    :disabled="config.chapters.length === 0">
-              组装全部章节
-            </button>
-            <span v-if="config.chapters.length === 0" class="tooltip">请先添加章节</span>
-            <span v-else-if="doneCount === 0" class="tooltip">没有已完成的章节</span>
-          </span>
-          <button class="btn-sm btn-outline" @click="previewReport">
-            预览完整报告
-          </button>
-          <span class="save-hint">⏱ 每5分钟自动保存一次 · 上次: {{ lastSavedText }}</span>
+        <div class="section-header" @click="toggleSection('actions')">
+          <div class="sh-left">
+            <span class="step-num">③</span>
+            <h2>操作</h2>
+            <span class="sh-desc">— 组装 · 预览 · 保存</span>
+          </div>
+          <span class="section-toggle" :class="{ open: expandedSections.actions }">▼</span>
         </div>
-        <p style="font-size:13px;color:#64748b;margin-top:12px;line-height:1.6;">
-          ℹ️ 配置保存到项目目录的 <code>config.json</code>。切换到 <b>Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b>"开始生成报告"</b>或项目名，Claude 会自动读取配置并按章节逐章生成。
-        </p>
+        <div v-show="expandedSections.actions" class="section-body">
+          <div class="op-bar">
+            <span class="btn-tip">
+              <button class="btn-sm btn-primary" @click="assembleReport"
+                      :disabled="config.chapters.length === 0">
+                组装全部章节
+              </button>
+              <span v-if="config.chapters.length === 0" class="tooltip">请先添加章节</span>
+              <span v-else-if="doneCount === 0" class="tooltip">没有已完成的章节</span>
+            </span>
+            <button class="btn-sm btn-outline" @click="previewReport">
+              预览完整报告
+            </button>
+            <span class="save-hint">⏱ 每5分钟自动保存一次 · 上次: {{ lastSavedText }}</span>
+          </div>
+          <p style="font-size:13px;color:#64748b;margin-top:12px;line-height:1.6;">
+            ℹ️ 配置保存到项目目录的 <code>config.json</code>。切换到 <b>Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b>"开始生成报告"</b>或项目名，Claude 会自动读取配置并按章节逐章生成。
+          </p>
+        </div>
       </section>
     </template>
   </main>
@@ -463,6 +526,13 @@ createApp({
     const dragOverIdx = ref(null);
     const nameInput = ref(null);
 
+    // 区块折叠状态（默认全部展开）
+    const expandedSections = ref({
+      basic: true,
+      chapters: true,
+      actions: true
+    });
+
     const config = ref({
       projectName: '',
       createdAt: '',
@@ -470,8 +540,111 @@ createApp({
       layout: 'a4-landscape',
       theme: 'business-bluewhite',
       mode: 'chapter',
+      audience: '',
+      purpose: '',
       chapters: []
     });
+
+    // 版式定义（previewHTML 来自参考项目，CSS 微缩模型）
+    const layoutDefs = [
+      {
+        id: 'a4-landscape',
+        name: 'A4 横版分页',
+        category: 'print',
+        categoryLabel: '打印 · 正式交付',
+        description: 'A4横向多页，打印友好。每页一张纸，像精装报告书，适合正式交付和归档。',
+        previewHTML: `<div class="bg-white border-2 border-gray-300 rounded-lg shadow-md overflow-hidden mx-auto" style="width:180px;height:120px;pointer-events:none;">
+          <div class="h-full flex flex-col p-2.5 gap-1.5" style="background:linear-gradient(135deg,#0f172a,#1e3a8a);color:white;">
+            <div class="text-[7px] font-bold leading-tight">报告标题</div>
+            <div class="text-[5px] opacity-80">服务方案</div>
+            <div class="flex-1 grid grid-cols-3 gap-1 mt-1">
+              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5">
+                <div class="h-1 w-4 bg-blue-200 rounded"></div>
+                <div class="h-2 bg-gray-200 rounded"></div>
+                <div class="h-1.5 bg-gray-100 rounded w-3/4"></div>
+              </div>
+              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5">
+                <div class="h-1 w-4 bg-blue-200 rounded"></div>
+                <div class="h-2 bg-gray-200 rounded"></div>
+                <div class="h-1.5 bg-gray-100 rounded w-3/4"></div>
+              </div>
+              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5">
+                <div class="h-1 w-4 bg-blue-200 rounded"></div>
+                <div class="h-2 bg-gray-200 rounded"></div>
+                <div class="h-1.5 bg-gray-100 rounded w-3/4"></div>
+              </div>
+            </div>
+            <div class="flex justify-between text-[5px] opacity-60 mt-auto">
+              <span>服务背景与客户需求</span><span>02</span>
+            </div>
+          </div>
+        </div>`
+      },
+      {
+        id: 'slide-deck',
+        name: 'PPT翻页演示',
+        category: 'slide',
+        categoryLabel: '演示 · 汇报培训',
+        description: '全屏Slide式演示，键盘/点击翻页。适合培训和汇报展示，像真实PPT。',
+        previewHTML: `<div class="bg-white border-2 border-gray-300 rounded-lg shadow-md overflow-hidden mx-auto" style="width:180px;height:120px;pointer-events:none;">
+          <div class="h-full flex flex-col p-3 relative" style="background:linear-gradient(180deg,#eef2f6,#ffffff);">
+            <div class="text-[7px] font-bold text-gray-800">演示标题</div>
+            <div class="flex-1 flex flex-col justify-center px-1">
+              <div class="h-1 w-12 bg-gray-300 rounded mb-1.5"></div>
+              <div class="h-1 w-full bg-gray-200 rounded mb-0.5"></div>
+              <div class="h-1 w-5/6 bg-gray-200 rounded mb-2"></div>
+              <div class="grid grid-cols-2 gap-1 mt-1">
+                <div class="bg-white rounded p-1 shadow-sm border border-gray-100">
+                  <div class="h-1 bg-gray-200 rounded w-2/3 mb-0.5"></div>
+                  <div class="h-0.5 bg-gray-100 rounded w-full"></div>
+                </div>
+                <div class="bg-white rounded p-1 shadow-sm border border-gray-100">
+                  <div class="h-1 bg-gray-200 rounded w-2/3 mb-0.5"></div>
+                  <div class="h-0.5 bg-gray-100 rounded w-full"></div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute bottom-2 right-2 flex items-center gap-1">
+              <span class="text-[5px] text-gray-400 bg-white/80 px-1 rounded-full">3/12</span>
+              <span class="h-1.5 w-1.5 bg-blue-600 rounded-full"></span>
+              <span class="h-1.5 w-1.5 bg-gray-300 rounded-full"></span>
+            </div>
+          </div>
+        </div>`
+      },
+      {
+        id: 'scroll-page',
+        name: '自由滚动网页',
+        category: 'web',
+        categoryLabel: '网页 · 在线浏览',
+        description: '响应式长页面，桌面多列/手机单列自适应。适合Landing Page和在线展示。',
+        previewHTML: `<div class="border-2 border-gray-300 rounded-lg shadow-md overflow-hidden mx-auto" style="width:180px;height:120px;pointer-events:none;">
+          <div class="h-full flex flex-col" style="background:linear-gradient(180deg,#08101f 0%,#0b1020 46%,#0f172a 100%);color:#f5f7fb;">
+            <div class="flex justify-between items-center px-2 py-1.5 border-b border-white/10" style="backdrop-filter:blur(18px);">
+              <div class="h-1.5 w-8 bg-white/30 rounded"></div>
+              <div class="flex gap-1.5">
+                <div class="h-1 w-4 bg-white/20 rounded"></div>
+                <div class="h-1 w-4 bg-white/20 rounded"></div>
+              </div>
+            </div>
+            <div class="flex-1 p-2 space-y-1.5">
+              <div class="h-2 bg-white/20 rounded w-2/3"></div>
+              <div class="h-1.5 bg-white/10 rounded w-full"></div>
+              <div class="flex gap-1 mt-1">
+                <div class="flex-1 bg-white/10 rounded p-1">
+                  <div class="h-1 bg-blue-400/40 rounded w-1/2 mb-0.5"></div>
+                  <div class="h-0.5 bg-white/10 rounded w-full"></div>
+                </div>
+                <div class="flex-1 bg-white/10 rounded p-1">
+                  <div class="h-1 bg-green-400/40 rounded w-1/2 mb-0.5"></div>
+                  <div class="h-0.5 bg-white/10 rounded w-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`
+      }
+    ];
 
     const allComponents = [
       { id: 'stat-card', label: '数据卡片', desc: '展示KPI数字，支持numbered/simple/accent-top变体' },
@@ -521,6 +694,8 @@ createApp({
         layout: 'a4-landscape',
         theme: 'business-bluewhite',
         mode: 'chapter',
+        audience: '',
+        purpose: '',
         chapters: [
           {
             id: generateId(),
@@ -568,6 +743,11 @@ createApp({
       return cfg;
     }
 
+    // --- 区块折叠 ---
+    function toggleSection(key) {
+      expandedSections.value[key] = !expandedSections.value[key];
+    }
+
     // --- 核心操作 ---
     async function createProject() {
       const name = newProjectName.value.trim();
@@ -610,8 +790,12 @@ createApp({
 
         projectHandle.value = handle;
         projectPath.value = handle.name;
-        config.value = { ...makeInitialConfig(cfg.projectName), ...cfg };
-        // chapters 已在 makeInitialConfig 中有默认值，展开后覆盖
+        const defaults = makeInitialConfig(cfg.projectName);
+        config.value = { ...defaults, ...cfg };
+        // audience / purpose 兼容旧配置
+        if (cfg.audience === undefined) config.value.audience = '';
+        if (cfg.purpose === undefined) config.value.purpose = '';
+        // chapters 覆盖
         if (cfg.chapters && cfg.chapters.length > 0) {
           config.value.chapters = cfg.chapters.map(ch => ({ ...ch, _open: ch._open ?? false }));
         }
@@ -752,9 +936,10 @@ createApp({
     return {
       apiAvailable, projectHandle, projectPath, inWorkspace,
       showNewProjectModal, newProjectName, lastSaved, lastSavedText,
-      config, allComponents, dataFiles, totalChapters, doneCount,
-      dragIdx, dragOverIdx, nameInput,
-      statusLabel, createProject, importProject, saveConfig,
+      config, layoutDefs, allComponents, dataFiles, totalChapters, doneCount,
+      dragIdx, dragOverIdx, nameInput, expandedSections,
+      statusLabel, toggleSection,
+      createProject, importProject, saveConfig,
       addChapter, removeChapter, moveChapter, toggleChapter, toggleComponent,
       onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
       assembleReport, previewReport

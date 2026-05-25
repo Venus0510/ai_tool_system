@@ -1,25 +1,13 @@
 {
   "projectName": "货币基金分析",
   "createdAt": "2026-05-25T05:39:56.100Z",
-  "updatedAt": "2026-05-25T06:08:37.428Z",
-  "layout": "a4-landscape",
+  "updatedAt": "2026-05-25T07:06:11.758Z",
+  "layout": "slide-deck",
   "theme": "business-bluewhite",
   "mode": "chapter",
+  "audience": "内部",
+  "purpose": "交付文档",
   "chapters": [
-    {
-      "id": "ch-mpkt16kc-donr",
-      "order": 2,
-      "title": "归因分析",
-      "desc": "叭叭叭叭叭",
-      "components": [
-        "stat-card",
-        "process-step"
-      ],
-      "customLayout": "点点滴滴",
-      "dataFile": "得到",
-      "status": "pending",
-      "_open": false
-    },
     {
       "id": "ch-mpkszm16-1lci",
       "order": 1,
@@ -31,7 +19,18 @@
       "customLayout": "接口舅舅哦饿",
       "dataFile": "用产品疏忽",
       "status": "pending",
-      "_open": false
+      "_open": true
+    },
+    {
+      "id": "ch-mpku7sba-nct7",
+      "order": 2,
+      "title": "男男女女",
+      "desc": "皇帝是弟弟",
+      "components": [],
+      "customLayout": null,
+      "dataFile": null,
+      "status": "pending",
+      "_open": true
     }
   ]
 }
