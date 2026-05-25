@@ -1,584 +1,766 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <title>报告工具 · 项目配置</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
-    [v-cloak] { display: none; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>报告工具 · 配置编辑器</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+  :root { --accent: #2563eb; --accent-light: #eff6ff; --warn: #f59e0b; --warn-light: #fffbeb; --muted: #94a3b8; --border: #e2e8f0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; }
+  #app { display: flex; height: 100vh; overflow: hidden; }
 
-    .app-shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 24px; background: #fff; border-bottom: 1px solid #e2e8f0; flex-shrink: 0; }
-    .topbar h1 { font-size: 17px; font-weight: 800; color: #0f172a; }
-    .app-body { display: flex; flex: 1; overflow: hidden; }
-    .sidebar { width: 280px; flex-shrink: 0; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-    .sidebar-header { padding: 20px; border-bottom: 1px solid #e2e8f0; }
-    .sidebar-header h1 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
-    .sidebar-header .sub { font-size: 12px; color: #94a3b8; }
-    .project-list { flex: 1; overflow-y: auto; padding: 12px; }
-    .project-item { padding: 12px 14px; border-radius: 10px; cursor: pointer; margin-bottom: 6px; border: 2px solid transparent; transition: all .12s ease; }
-    .project-item:hover { background: #f8fafc; border-color: #e2e8f0; }
-    .project-item.active { background: #eff6ff; border-color: #3b82f6; }
-    .project-item .name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-    .project-item .meta { font-size: 11px; color: #94a3b8; display: flex; gap: 12px; }
-    .new-btn { margin: 12px; padding: 10px; border-radius: 10px; border: 2px dashed #cbd5e1; cursor: pointer; text-align: center; font-size: 13px; font-weight: 600; color: #64748b; background: transparent; transition: all .12s; }
-    .new-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+  /* ===== 左侧面板 ===== */
+  .side-panel { width: 280px; min-width: 280px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; gap: 12px; overflow-y: auto; }
+  .side-panel h1 { font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em; margin-bottom: 2px; }
+  .side-subtitle { font-size: 11px; color: var(--muted); margin-top: -6px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-secondary { background: #fff; color: #334155; border: 1.5px solid #cbd5e1; }
+  .btn-secondary:hover { background: #f8fafc; border-color: #94a3b8; }
+  .btn-save { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; margin-top: auto; }
+  .btn-save:hover { background: #dcfce7; }
 
-    .main { flex: 1; overflow-y: auto; padding: 24px 32px; }
-    .section { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-    .section h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-    .section h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; color: #fff; font-size: 12px; font-weight: 800; flex-shrink: 0; }
-    .section-desc { font-size: 12px; color: #94a3b8; margin-bottom: 16px; }
+  .proj-info { background: #f8fafc; border-radius: 8px; padding: 14px; font-size: 13px; line-height: 1.6; }
+  .proj-info .name { font-weight: 700; font-size: 14px; color: #0f172a; }
+  .proj-info .path { color: #64748b; word-break: break-all; font-size: 11px; margin-top: 2px; }
+  .proj-info .row { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px; }
+  .proj-info .row .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-ok { background: #22c55e; }
+  .dot-warn { background: #f59e0b; }
 
-    /* Card selection */
-    .card-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .select-card { padding: 16px; border-radius: 12px; border: 2px solid #e2e8f0; cursor: pointer; transition: all .15s; text-align: center; }
-    .select-card:hover { border-color: #93c5fd; }
-    .select-card.selected { border-color: #3b82f6; background: #eff6ff; }
-    .select-card .label { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-    .select-card .hint { font-size: 11px; color: #94a3b8; }
-    .select-card.selected .label { color: #1d4ed8; }
+  .compat-warn { margin-top: auto; padding: 10px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; font-size: 12px; color: #991b1b; line-height: 1.5; }
 
-    /* Layout previews */
-    .preview-a4 { width: 80px; height: 56px; margin: 0 auto 10px; border-radius: 4px; background: #f8fafc; border: 1px solid #cbd5e1; position: relative; }
-    .preview-a4::after { content: ''; position: absolute; inset: 6px; border: 1px dashed #e2e8f0; border-radius: 2px; }
-    .preview-slide { width: 56px; height: 56px; margin: 0 auto 10px; border-radius: 4px; background: #f8fafc; border: 1px solid #cbd5e1; position: relative; }
-    .preview-slide::after { content: ''; position: absolute; inset: 6px; border: 1px dashed #e2e8f0; border-radius: 2px; }
-    .preview-scroll { width: 48px; height: 72px; margin: 0 auto 10px; border-radius: 4px; background: #f8fafc; border: 1px solid #cbd5e1; position: relative; }
-    .select-card.selected .preview-a4, .select-card.selected .preview-slide, .select-card.selected .preview-scroll { border-color: #93c5fd; }
+  /* ===== 右侧编辑区 ===== */
+  .main-area { flex: 1; overflow-y: auto; padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
+  .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); text-align: center; gap: 10px; }
+  .empty-state .icon { font-size: 52px; opacity: .3; }
+  .empty-state .title { font-size: 18px; font-weight: 600; color: #64748b; }
+  .empty-state .sub { font-size: 14px; max-width: 320px; line-height: 1.6; }
 
-    /* Theme color swatches */
-    .swatches { display: flex; gap: 3px; justify-content: center; margin-bottom: 10px; }
-    .swatch { width: 18px; height: 18px; border-radius: 4px; }
+  .warn-bar { background: var(--warn-light); border: 1px solid #fcd34d; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #92400e; display: flex; align-items: center; gap: 8px; }
 
-    /* Component thumbnails */
-    .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; margin-bottom: 12px; }
-    .comp-thumb { padding: 10px 8px; border-radius: 10px; border: 2px solid #e2e8f0; cursor: pointer; text-align: center; transition: all .12s; font-size: 11px; }
-    .comp-thumb:hover { border-color: #93c5fd; }
-    .comp-thumb.selected { border-color: #3b82f6; background: #eff6ff; }
-    .comp-thumb .icon { width: 48px; height: 36px; margin: 0 auto 6px; border-radius: 4px; background: #f8fafc; border: 1px solid #e2e8f0; position: relative; }
-    .comp-thumb.selected .icon { border-color: #93c5fd; }
+  /* ===== 配置区块 ===== */
+  section { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 20px 24px; }
+  section h2 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; }
+  .section-label { font-size: 12px; font-weight: 600; color: #64748b; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .04em; }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-    /* Chapter accordion + drag */
-    .chapter { border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; transition: opacity .15s; }
-    .chapter.dragging { opacity: 0.4; }
-    .chapter.drag-over { border-color: #3b82f6; border-style: dashed; background: #f8faff; }
-    .chapter-header { display: flex; align-items: center; gap: 8px; padding: 12px 12px 12px 8px; cursor: pointer; background: #f8fafc; user-select: none; }
-    .chapter-header:hover { background: #f1f5f9; }
-    .drag-handle { cursor: grab; color: #94a3b8; font-size: 14px; padding: 2px 4px; letter-spacing: 1px; line-height: 1; flex-shrink: 0; }
-    .drag-handle:active { cursor: grabbing; }
-    .chapter-header .arrow { font-size: 10px; transition: transform .15s; color: #94a3b8; }
-    .chapter-header .arrow.open { transform: rotate(90deg); }
-    .chapter-header .title { flex: 1; font-size: 14px; font-weight: 600; }
-    .chapter-body { padding: 0 16px 16px; display: none; }
-    .chapter-body.open { display: block; }
-    .chapter-header .status { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 600; }
-    .status-pending { background: #f1f5f9; color: #94a3b8; }
-    .status-draft { background: #fef3c7; color: #92400e; }
-    .status-done { background: #dcfce7; color: #166534; }
+  /* 版式卡片 */
+  .select-card { border: 2px solid var(--border); border-radius: 10px; padding: 18px 12px 14px; cursor: pointer; text-align: center; transition: all .15s; }
+  .select-card:hover { border-color: #93c5fd; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+  .select-card.active { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+  .card-preview { height: 70px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
+  /* A4 版式预览 - 横版纸张 */
+  .prev-a4 { width: 75%; height: 85%; border: 2px solid #64748b; border-radius: 2px; background: #fff; position: relative; }
+  .prev-a4::after { content: ''; position: absolute; top: 4px; left: 6px; right: 6px; height: 6px; background: var(--accent); border-radius: 1px; opacity: .5; }
+  /* Slide 预览 - 全屏矩形 */
+  .prev-slide { width: 82%; height: 72%; border: 2px solid #64748b; border-radius: 3px; background: #fff; position: relative; }
+  .prev-slide::after { content: ''; position: absolute; bottom: 6px; left: 8px; right: 8px; height: 50%; background: linear-gradient(to bottom, #e2e8f0 0%, #f1f5f9 40%, transparent 100%); }
+  /* 滚动预览 - 长页面 */
+  .prev-scroll { width: 70%; height: 92%; border: 2px solid #64748b; border-top: none; border-radius: 0 0 2px 2px; background: linear-gradient(to bottom, #fff 0%, #fff 30%, #e2e8f0 30%, #e2e8f0 34%, #fff 34%, #fff 55%, #e2e8f0 55%, #e2e8f0 59%, #fff 59%, #fff 78%, #e2e8f0 78%, #e2e8f0 82%, #fff 82%); }
+  .card-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .card-meta { font-size: 11px; color: #64748b; margin-bottom: 6px; }
+  .card-scene { font-size: 11px; color: var(--accent); background: var(--accent-light); display: inline-block; padding: 2px 8px; border-radius: 10px; }
 
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px; }
-    .form-group input, .form-group textarea { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 13px; font-family: inherit; resize: vertical; }
-    .form-group textarea { min-height: 56px; }
-    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+  /* 主题色条预览 */
+  .swatch-row { display: flex; gap: 4px; width: 80%; height: 70%; border-radius: 4px; overflow: hidden; }
+  .swatch-row .bar { flex: 1; border-radius: 1px; }
 
-    .btn { padding: 8px 16px; border-radius: 8px; border: 1px solid #d1d5db; cursor: pointer; font-size: 13px; font-weight: 600; background: #fff; color: #374151; display: inline-flex; align-items: center; gap: 6px; }
-    .btn:hover { background: #f9fafb; }
-    .btn.primary { background: #3b82f6; color: #fff; border-color: #3b82f6; }
-    .btn.primary:hover { background: #2563eb; }
-    .btn.danger { color: #dc2626; border-color: #fecaca; }
-    .btn.danger:hover { background: #fef2f2; }
-    .btn.sm { padding: 4px 10px; font-size: 11px; }
-    .btn.success { background: #16a34a; color: #fff; border-color: #16a34a; }
-    .btn.success:hover { background: #15803d; }
+  /* ===== 章节列表 ===== */
+  .chapter-list { display: flex; flex-direction: column; gap: 8px; }
+  .chapter-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: box-shadow .15s; }
+  .chapter-item.drag-over { box-shadow: 0 0 0 2px var(--accent); }
+  .chapter-item.dragging { opacity: .4; }
+  .chapter-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; background: #fafafa; user-select: none; }
+  .chapter-header:hover { background: #f1f5f9; }
+  .ch-left { display: flex; align-items: center; gap: 8px; }
+  .ch-left .drag-handle { color: #cbd5e1; font-size: 14px; cursor: grab; padding: 0 2px; }
+  .ch-left .drag-handle:active { cursor: grabbing; }
+  .ch-left .order { font-weight: 700; color: var(--accent); font-size: 13px; min-width: 40px; }
+  .ch-left .ch-title { font-weight: 600; font-size: 14px; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .st-pending { background: #cbd5e1; }
+  .st-draft { background: #f59e0b; }
+  .st-done { background: #22c55e; }
+  .ch-actions { display: flex; align-items: center; gap: 6px; }
+  .ch-actions button { border: none; background: none; cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; }
+  .ch-actions button:hover { background: #e2e8f0; }
 
-    .hint-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #0c4a6e; line-height: 1.6; margin-bottom: 14px; }
-    .hint-box.warn { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+  .chapter-body { padding: 16px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 14px; }
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-group label { font-size: 12px; font-weight: 700; color: #475569; }
+  .field-group .hint { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+  .field-group input, .field-group textarea, .field-group select { width: 100%; padding: 8px 10px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; transition: border-color .15s; }
+  .field-group input:focus, .field-group textarea:focus, .field-group select:focus { outline: none; border-color: var(--accent); }
+  .field-group textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
 
-    .file-input-wrap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .file-hint { font-size: 11px; color: #94a3b8; }
-    .save-status { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  /* ===== 组件缩略图 - CSS 迷你预览 ===== */
+  .comp-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .comp-thumb { border: 2px solid var(--border); border-radius: 8px; padding: 8px; cursor: pointer; text-align: center; transition: all .15s; position: relative; }
+  .comp-thumb:hover { border-color: #93c5fd; }
+  .comp-thumb.selected { border-color: var(--accent); background: var(--accent-light); }
+  .comp-thumb .mini { height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+  .comp-thumb .comp-name { font-size: 10px; font-weight: 600; color: #334155; line-height: 1.2; }
+  /* 各组件的迷你 CSS 预览 */
+  .mini-stat { display: flex; gap: 4px; }
+  .mini-stat span { background: #e2e8f0; border-radius: 3px; }
+  .mini-stat .big { width: 28px; height: 28px; background: var(--accent); }
+  .mini-stat .sm { width: 12px; height: 12px; }
+  .mini-timeline { display: flex; gap: 3px; align-items: center; }
+  .mini-timeline .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .mini-timeline .line { width: 14px; height: 2px; background: #cbd5e1; }
+  .mini-process { display: flex; gap: 6px; }
+  .mini-process .step { width: 16px; height: 16px; border: 2px solid var(--accent); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--accent); }
+  .mini-circle { display: flex; gap: 5px; }
+  .mini-circle .c { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--accent); }
+  .mini-badge { display: flex; gap: 4px; }
+  .mini-badge .b { padding: 2px 6px; border-radius: 8px; font-size: 7px; font-weight: 700; }
+  .mini-badge .b1 { background: #dbeafe; color: #1d4ed8; }
+  .mini-badge .b2 { background: #dcfce7; color: #166534; }
+  .mini-badge .b3 { background: #fef3c7; color: #92400e; }
+  .mini-table { display: grid; grid-template: repeat(3, 8px) / repeat(3, 1fr); gap: 1px; width: 100%; }
+  .mini-table div { background: #e2e8f0; border-radius: 1px; }
+  .mini-table div:first-child, .mini-table div:nth-child(4), .mini-table div:nth-child(7) { background: var(--accent); opacity: .3; }
+  .mini-hero { width: 100%; height: 100%; background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
+  .mini-hero::after { content: ''; width: 60%; height: 4px; background: rgba(255,255,255,.4); border-radius: 2px; }
+  .mini-bar { display: flex; gap: 3px; align-items: flex-end; height: 100%; }
+  .mini-bar .b { width: 8px; border-radius: 2px 2px 0 0; background: var(--accent); }
+  .mini-line { width: 100%; height: 100%; position: relative; }
+  .mini-line::after { content: ''; position: absolute; bottom: 8px; left: 0; right: 0; height: 2px; background: #cbd5e1; }
+  .mini-line::before { content: ''; position: absolute; bottom: 2px; left: 8%; width: 80%; height: 20px; background: linear-gradient(to top, rgba(37,99,235,.2) 0%, transparent 100%); clip-path: polygon(0% 100%, 15% 20%, 35% 60%, 55% 10%, 75% 40%, 100% 5%, 100% 100%); }
 
-    @media (max-width: 768px) {
-      .app-shell { flex-direction: column; }
-      .sidebar { width: 100%; height: auto; max-height: 200px; flex-shrink: 0; }
-      .main { padding: 16px; }
-      .card-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .comp-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-  </style>
+  /* ===== 操作区 ===== */
+  .op-bar { display: flex; align-items: center; gap: 10px; }
+  .btn-sm { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+  .btn-sm:disabled { opacity: .35; cursor: not-allowed; }
+  .btn-sm.btn-primary:disabled { background: #94a3b8; }
+  .btn-outline { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn-outline:hover { background: var(--accent-light); }
+  .btn-tip { position: relative; display: inline-flex; align-items: center; }
+  .btn-tip .tooltip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 4px; white-space: nowrap; font-weight: 400; }
+  .btn-tip:disabled:hover .tooltip { display: block; }
+  .save-hint { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  /* ===== 弹窗 ===== */
+  .modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .modal-box { background: #fff; border-radius: 12px; padding: 24px; width: 440px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+  .modal-box h3 { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
+  .modal-box .field { margin-bottom: 14px; }
+  .modal-box .field label { font-size: 12px; font-weight: 600; color: #64748b; display: block; margin-bottom: 4px; }
+  .modal-box .field input { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+  .modal-box .recommend { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #166534; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+  .btn-cancel { background: #f1f5f9; color: #475569; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
+  .btn-confirm { background: var(--accent); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
+  .btn-confirm:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* 拖拽状态 */
+  body.dragging * { cursor: grabbing !important; }
+</style>
 </head>
 <body>
-<div id="app" v-cloak>
-  <div class="app-shell">
-    <!-- ====== 顶部栏 ====== -->
-    <header class="topbar">
-      <h1>报告工具</h1>
-      <div style="font-size:12px;color:#94a3b8;">配置驱动 · Claude Code 生成</div>
-    </header>
-    <div class="app-body">
-    <!-- ====== 左侧：项目列表 ====== -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h1>项目列表</h1>
-        <div class="sub">配置驱动 · 分章生成</div>
+<div id="app">
+  <!-- ========== 左侧面板 ========== -->
+  <aside class="side-panel">
+    <h1>📋 报告工具</h1>
+    <p class="side-subtitle">配置编辑器 v3.3</p>
+
+    <button class="btn btn-primary" @click="showNewProjectModal = true">
+      <span style="font-size:16px;">＋</span> 新建项目
+    </button>
+    <button class="btn btn-secondary" @click="importProject">
+      <span style="font-size:15px;">📂</span> 导入项目
+    </button>
+
+    <!-- 项目信息 -->
+    <div v-if="projectHandle" class="proj-info">
+      <div class="name">{{ config.projectName }}</div>
+      <div class="path" :title="projectPath">{{ projectPath }}</div>
+      <div class="row">
+        <span class="dot" :class="inWorkspace ? 'dot-ok' : 'dot-warn'"></span>
+        <span v-if="inWorkspace" style="color:#16a34a;">✓ 在工作区内</span>
+        <span v-else style="color:#d97706;">⚠ 不在工作区内</span>
       </div>
-      <button class="new-btn" @click="createProject">＋ 新建项目</button>
-      <div class="project-list">
-        <div v-for="p in projects" :key="p.name"
-             class="project-item" :class="{ active: currentProject?.name === p.name }"
-             @click="openProject(p)">
-          <div class="name">{{ p.name }}</div>
-          <div class="meta">
-            <span>{{ layoutLabel(p.layout) }}</span>
-            <span>{{ doneCount(p) }}/{{ p.chapters?.length || 0 }}章完成</span>
-            <span style="color:#ef4444;cursor:pointer;margin-left:auto;" @click.stop="deleteProject(p)">删除</span>
+      <div class="row" style="color:#64748b;">
+        章节进度: {{ doneCount }}/{{ config.chapters.length }}
+        <span v-if="config.chapters.length === 0" style="color:var(--muted);">（待添加）</span>
+      </div>
+    </div>
+
+    <button v-if="projectHandle" class="btn btn-save" @click="saveConfig">
+      💾 保存配置
+    </button>
+
+    <div v-if="!apiAvailable" class="compat-warn">
+      ⚠️ 当前浏览器不支持文件系统访问<br>请使用 <b>Chrome</b> 或 <b>Edge</b> 打开此工具
+    </div>
+  </aside>
+
+  <!-- ========== 右侧编辑区 ========== -->
+  <main class="main-area">
+    <!-- 告警条 -->
+    <div v-if="projectHandle && !inWorkspace" class="warn-bar">
+      ⚠️ 该项目不在 AIProject 工作区内，Claude Code 可能无法读取 UI-lib 组件库和约束文档。建议用「新建项目」重新保存到 <code>report-tool/projects/</code> 下。
+    </div>
+
+    <!-- 空状态 -->
+    <div v-if="!projectHandle" class="empty-state">
+      <div class="icon">📋</div>
+      <div class="title">欢迎使用报告工具</div>
+      <div class="sub">点击左侧「新建项目」开始创建新报告，或「导入项目」加载已有项目配置</div>
+    </div>
+
+    <!-- 配置区 -->
+    <template v-if="projectHandle">
+      <!-- ===== ① 基本设置 ===== -->
+      <section>
+        <h2>① 基本设置</h2>
+
+        <span class="section-label">版式 — 决定报告的页面结构和输出格式</span>
+        <div class="card-grid">
+          <div class="select-card" :class="{ active: config.layout === 'a4-landscape' }" @click="config.layout = 'a4-landscape'">
+            <div class="card-preview"><div class="prev-a4"></div></div>
+            <div class="card-title">A4 横版</div>
+            <div class="card-meta">297×210mm · 适合打印/PDF</div>
+            <span class="card-scene">正式报告 · 方案书 · 培训材料</span>
+          </div>
+          <div class="select-card" :class="{ active: config.layout === 'slide-deck' }" @click="config.layout = 'slide-deck'">
+            <div class="card-preview"><div class="prev-slide"></div></div>
+            <div class="card-title">Slide 翻页</div>
+            <div class="card-meta">全屏 16:9 · 支持键盘翻页</div>
+            <span class="card-scene">PPT 演示 · 汇报 · 路演</span>
+          </div>
+          <div class="select-card" :class="{ active: config.layout === 'scroll-page' }" @click="config.layout = 'scroll-page'">
+            <div class="card-preview"><div class="prev-scroll"></div></div>
+            <div class="card-title">自由滚动</div>
+            <div class="card-meta">响应式 · 自适应宽度</div>
+            <span class="card-scene">网页 · 产品介绍 · 落地页</span>
           </div>
         </div>
-        <div v-if="!projects.length" style="text-align:center;padding:32px 16px;color:#94a3b8;font-size:13px;">
-          暂无项目，点击上方按钮新建
-        </div>
-      </div>
-      <div style="padding:12px;border-top:1px solid #e2e8f0;display:flex;gap:8px;">
-        <button class="btn sm" @click="exportAll" title="导出全部项目为JSON备份">导出全部</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" @change="importAll" />
-        <button class="btn sm" @click="document.getElementById('importFile').click()">导入</button>
-      </div>
-    </aside>
 
-    <!-- ====== 右侧：配置编辑 ====== -->
-    <main class="main">
-      <div v-if="!currentProject" style="display:flex;align-items:center;justify-content:center;height:100%;color:#94a3b8;font-size:15px;">
-        ← 选择或新建一个项目开始配置
-      </div>
-
-      <template v-if="currentProject">
-        <!-- ① 基本设置 -->
-        <section class="section">
-          <h2><span class="num">1</span>基本设置</h2>
-          <p class="section-desc">选择版式和主题，决定报告的输出格式和视觉风格。</p>
-
-          <div class="form-group"><label>版式 · 输出格式</label></div>
-          <div class="card-row">
-            <div v-for="l in layouts" :key="l.id" class="select-card" :class="{ selected: currentProject.layout === l.id }" @click="currentProject.layout = l.id">
-              <div :class="l.previewClass"></div>
-              <div class="label">{{ l.label }}</div>
-              <div class="hint">{{ l.hint }}</div>
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-top:16px;"><label>主题 · 视觉风格</label></div>
-          <div class="card-row">
-            <div v-for="t in themes" :key="t.id" class="select-card" :class="{ selected: currentProject.theme === t.id }" @click="currentProject.theme = t.id">
-              <div class="swatches">
-                <span v-for="c in t.colors" :key="c" class="swatch" :style="{ background: c }"></span>
+        <span class="section-label" style="margin-top:22px;">主题 — 决定报告的整体配色和视觉风格</span>
+        <div class="card-grid">
+          <div class="select-card" :class="{ active: config.theme === 'business-bluewhite' }" @click="config.theme = 'business-bluewhite'">
+            <div class="card-preview">
+              <div class="swatch-row">
+                <span class="bar" style="background:#0f172a;"></span>
+                <span class="bar" style="background:#1e40af;"></span>
+                <span class="bar" style="background:#f8fafc;"></span>
+                <span class="bar" style="background:#e2e8f0;"></span>
+                <span class="bar" style="background:#2563eb;"></span>
               </div>
-              <div class="label">{{ t.label }}</div>
-              <div class="hint">{{ t.hint }}</div>
             </div>
+            <div class="card-title">商务蓝白</div>
+            <div class="card-meta">深蓝主色 · 白色背景 · 沉稳</div>
+            <span class="card-scene">企业报告 · 方案书 · 正式文档</span>
           </div>
-
-          <div class="form-group" style="margin-top:16px;"><label>生成模式</label></div>
-          <div style="display:flex;gap:12px;">
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
-              <input type="radio" v-model="currentProject.mode" value="chapter" />
-              分章生成（推荐，长报告逐章处理，每章独立文件便于AI修改）
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;">
-              <input type="radio" v-model="currentProject.mode" value="full" />
-              一次性生成（适合3-5页短报告，单文件输出）
-            </label>
+          <div class="select-card" :class="{ active: config.theme === 'rc-lightblue' }" @click="config.theme = 'rc-lightblue'">
+            <div class="card-preview">
+              <div class="swatch-row">
+                <span class="bar" style="background:#0c4a6e;"></span>
+                <span class="bar" style="background:#0284c7;"></span>
+                <span class="bar" style="background:#e0f2fe;"></span>
+                <span class="bar" style="background:#7dd3fc;"></span>
+                <span class="bar" style="background:#0369a1;"></span>
+              </div>
+            </div>
+            <div class="card-title">RC 浅蓝</div>
+            <div class="card-meta">蓝色系 · 清新明快 · 现代感</div>
+            <span class="card-scene">演示文稿 · 培训 · 汇报</span>
           </div>
-        </section>
+          <div class="select-card" :class="{ active: config.theme === 'dark-tech' }" @click="config.theme = 'dark-tech'">
+            <div class="card-preview">
+              <div class="swatch-row">
+                <span class="bar" style="background:#0f0f23;"></span>
+                <span class="bar" style="background:#6366f1;"></span>
+                <span class="bar" style="background:#1e1e3a;"></span>
+                <span class="bar" style="background:#a78bfa;"></span>
+                <span class="bar" style="background:#22d3ee;"></span>
+              </div>
+            </div>
+            <div class="card-title">暗黑科技</div>
+            <div class="card-meta">深色背景 · 霓虹点缀 · 科技感</div>
+            <span class="card-scene">数据产品 · 技术方案 · 仪表盘</span>
+          </div>
+        </div>
 
-        <!-- ② 章节定义 -->
-        <section class="section">
-          <h2><span class="num">2</span>章节定义</h2>
-          <p class="section-desc">每章独立生成一个 HTML 文件，便于 AI 逐章处理和修改。拖拽 ⋮⋮ 图标可调整顺序。</p>
+        <span class="section-label" style="margin-top:22px;">生成模式</span>
+        <div style="display:flex;gap:32px;align-items:center;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+            <input type="radio" v-model="config.mode" value="chapter" style="accent-color:var(--accent);width:16px;height:16px;">
+            <span><b>分章生成</b> <span style="color:var(--muted);font-size:12px;">（推荐）— 每章独立生成和修改，适合 3 章以上长报告，逐章精调</span></span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+            <input type="radio" v-model="config.mode" value="full" style="accent-color:var(--accent);width:16px;height:16px;">
+            <span><b>一次性生成</b> <span style="color:var(--muted);font-size:12px;">— 适合 3-5 页短报告，一次输出全部内容</span></span>
+          </label>
+        </div>
+      </section>
 
-          <div v-for="(ch, idx) in currentProject.chapters" :key="ch.id"
-               class="chapter" :class="{ dragging: dragIdx === idx, 'drag-over': dragOverIdx === idx }"
-               draggable="true"
-               @dragstart="onDragStart($event, idx)"
-               @dragover.prevent="onDragOver($event, idx)"
-               @dragleave="onDragLeave(idx)"
-               @drop="onDrop($event, idx)"
+      <!-- ===== ② 章节定义 ===== -->
+      <section>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <h2 style="margin:0;padding:0;border:none;">② 章节定义</h2>
+          <button class="btn-sm btn-outline" @click="addChapter">+ 添加章节</button>
+        </div>
+
+        <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--muted);padding:28px;font-size:14px;background:#fafafa;border-radius:8px;">
+          暂无章节，点击「+ 添加章节」开始配置报告结构
+        </div>
+
+        <div class="chapter-list">
+          <div v-for="(ch, idx) in config.chapters" :key="ch.id"
+               class="chapter-item"
+               :class="{ 'drag-over': dragOverIdx === idx, 'dragging': dragIdx === idx }"
+               :draggable="true"
+               @dragstart="onDragStart(idx, $event)"
+               @dragover.prevent="onDragOver(idx)"
+               @dragleave="onDragLeave"
+               @drop="onDrop(idx, $event)"
                @dragend="onDragEnd">
-            <div class="chapter-header" @click="toggleChapter(ch)">
-              <span class="drag-handle" title="拖拽排序" @click.stop>⋮⋮</span>
-              <span class="arrow" :class="{ open: ch._open }">▶</span>
-              <span class="title">第{{ idx + 1 }}章 · {{ ch.title || '未命名' }}</span>
-              <span class="status" :class="'status-' + ch.status">{{ statusLabel(ch.status) }}</span>
-              <button class="btn danger sm" @click.stop="removeChapter(idx)">删除</button>
-            </div>
-            <div class="chapter-body" :class="{ open: ch._open }">
-              <div class="form-group">
-                <label>章节标题</label>
-                <input v-model="ch.title" placeholder="如：产品表现概览" />
+            <div class="chapter-header" @click="toggleChapter(ch.id)">
+              <div class="ch-left">
+                <span class="drag-handle" title="拖拽排序">⋮⋮</span>
+                <span class="order">第{{ idx + 1 }}章</span>
+                <span class="ch-title">{{ ch.title || '未命名' }}</span>
+                <span class="status-dot" :class="'st-' + ch.status" :title="statusLabel(ch.status)"></span>
               </div>
-              <div class="form-group">
-                <label>内容描述（Claude 生成指令）</label>
-                <textarea v-model="ch.desc" placeholder="描述这章要写什么，越详细越好。如：展示核心KPI指标：七日年化收益率2.15%、万份收益0.5892、产品规模156.8亿。用数据卡片网格布局，突出趋势方向。"></textarea>
-              </div>
-
-              <div class="form-group"><label>组件选择（点击缩略图勾选，可多选）</label></div>
-              <div v-if="ch.customLayout" class="hint-box warn" style="margin-bottom:10px;font-size:12px;">
-                <strong>自定义展示需求已填写，将优先采用。</strong>下方组件选择将被忽略，Claude 按自定义描述生成。
-              </div>
-              <div class="comp-grid" :style="{ opacity: ch.customLayout ? 0.45 : 1, pointerEvents: ch.customLayout ? 'none' : 'auto' }">
-                <div v-for="comp in availableComponents" :key="comp.id"
-                     class="comp-thumb" :class="{ selected: ch.components.includes(comp.id) }"
-                     @click="toggleComponent(ch, comp.id)">
-                  <div class="icon" v-html="comp.icon"></div>
-                  <div style="font-weight:600;">{{ comp.label }}</div>
-                  <div style="font-size:10px;color:#94a3b8;">{{ comp.hint }}</div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>自定义展示需求（可选，不选组件库组件时在此自由描述）</label>
-                <textarea v-model="ch.customLayout" placeholder="如：左右两栏布局，左边3个核心数字纵向排列，右边一个趋势折线图，底部放数据来源说明。支持任何你想要的展示方式，Claude会按此描述实现。"></textarea>
-              </div>
-
-              <div class="form-group">
-                <label>数据文件（可选，关联 data/ 下的数据源）</label>
-                <div class="file-input-wrap">
-                  <input v-model="ch.dataFile" placeholder="如：data/产品数据.csv" style="flex:1;" />
-                  <span class="file-hint">支持 csv / xlsx / docx / pdf / txt / md / json</span>
-                </div>
+              <div class="ch-actions" @click.stop>
+                <button @click="moveChapter(idx, -1)" :disabled="idx===0" title="上移">▲</button>
+                <button @click="moveChapter(idx, 1)" :disabled="idx===config.chapters.length-1" title="下移">▼</button>
+                <button @click="removeChapter(idx)" style="color:#ef4444;" title="删除">✕</button>
               </div>
             </div>
+            <div v-show="ch._open" class="chapter-body">
+              <!-- 标题 -->
+              <div class="field-group">
+                <label>📝 章节标题</label>
+                <input v-model="ch.title" placeholder="如：封面、产品表现概览、收益归因分析">
+                <span class="hint">给章节起一个简洁的名字，会显示在报告目录和页面标题中。</span>
+              </div>
+              <!-- 描述 -->
+              <div class="field-group">
+                <label>📄 内容描述（Claude 生成指令）</label>
+                <textarea v-model="ch.desc" placeholder="详细描述这一章要展示的内容..." rows="3"></textarea>
+                <span class="hint">尽量详细地告诉 Claude：<b>主题是什么、包含哪些关键信息、大概几页、排版布局想要怎样</b>。写越具体，生成效果越好。例如：<br>"展示核心KPI：七日年化收益率2.15%（↑）、产品规模156.8亿（↑）。用3列数据卡片网格布局，每个卡片显示指标名+数值+环比趋势，约1页。"</span>
+              </div>
+              <!-- 状态 -->
+              <div class="field-group">
+                <label>📌 状态</label>
+                <select v-model="ch.status">
+                  <option value="pending">○ 待生成 — 尚未开始</option>
+                  <option value="draft">● 草稿 — 已生成，待确认</option>
+                  <option value="done">✓ 完成 — 已确认，可组装</option>
+                </select>
+              </div>
+              <!-- 组件选择 -->
+              <div class="field-group">
+                <label>🧩 组件库（点击缩略图勾选，可多选）</label>
+                <div class="comp-grid">
+                  <div v-for="comp in allComponents" :key="comp.id"
+                       class="comp-thumb"
+                       :class="{ selected: ch.components.includes(comp.id) }"
+                       @click="toggleComponent(ch, comp.id)"
+                       :title="comp.desc">
+                    <div class="mini">
+                      <template v-if="comp.id==='stat-card'"><div class="mini-stat"><span class="big"></span><div style="display:flex;flex-direction:column;gap:3px;"><span class="sm"></span><span class="sm"></span></div></div></template>
+                      <template v-else-if="comp.id==='timeline'"><div class="mini-timeline"><span class="dot"></span><span class="line"></span><span class="dot"></span><span class="line"></span><span class="dot"></span></div></template>
+                      <template v-else-if="comp.id==='process-step'"><div class="mini-process"><span class="step">1</span><span class="step">2</span><span class="step">3</span></div></template>
+                      <template v-else-if="comp.id==='circle-number'"><div class="mini-circle"><span class="c">1</span><span class="c">2</span><span class="c">3</span></div></template>
+                      <template v-else-if="comp.id==='badge-tag'"><div class="mini-badge"><span class="b b1">标签</span><span class="b b2">徽章</span></div></template>
+                      <template v-else-if="comp.id==='data-table'"><div class="mini-table"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></template>
+                      <template v-else-if="comp.id==='hero-card'"><div class="mini-hero"></div></template>
+                      <template v-else-if="comp.id==='bar-chart'"><div class="mini-bar"><span class="b" style="height:60%;"></span><span class="b" style="height:85%;"></span><span class="b" style="height:45%;"></span><span class="b" style="height:70%;"></span></div></template>
+                      <template v-else-if="comp.id==='timeline-chart'"><div class="mini-line"></div></template>
+                    </div>
+                    <div class="comp-name">{{ comp.label }}</div>
+                  </div>
+                </div>
+                <span class="hint">选中组件的缩略图会高亮。Claude 生成时会读取对应组件的 HTML 模板来组装。如不满意组件库选项，可在下方自定义。</span>
+              </div>
+              <!-- 自定义布局 -->
+              <div class="field-group">
+                <label>🎨 自定义展示需求（可选，非空时优先于上面的组件选择）</label>
+                <textarea v-model="ch.customLayout" placeholder="不选组件库的组件时，在此自由描述你想要的布局方式。例如：左右两栏，左边放3个核心数字，右边放趋势图..."></textarea>
+                <span class="hint">如果填写了此字段，Claude 会优先按你的描述生成，忽略上方勾选的组件列表。</span>
+              </div>
+              <!-- 数据文件 -->
+              <div class="field-group">
+                <label>📊 数据来源</label>
+                <input v-model="ch.dataFile" placeholder="如：data/产品数据.csv （填写文件名及要用到的表/列/数据范围）">
+                <span class="hint">填写 <b>data/ 目录下的文件名</b>，并说明要用到文件的哪些数据。例如：<br>"data/产品数据.csv，使用'七日年化收益率'和'万份收益'两列近3个月的数据" 或 "data/收益归因分析.docx，提取五维度贡献度表格"</span>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <button class="btn" @click="addChapter" style="margin-top:8px;">＋ 添加章节</button>
-        </section>
+      <!-- ===== ③ 操作 ===== -->
+      <section>
+        <h2>③ 操作</h2>
+        <div class="op-bar">
+          <span class="btn-tip">
+            <button class="btn-sm btn-primary" @click="assembleReport"
+                    :disabled="config.chapters.length === 0">
+              组装全部章节
+            </button>
+            <span v-if="config.chapters.length === 0" class="tooltip">请先添加章节</span>
+            <span v-else-if="doneCount === 0" class="tooltip">没有已完成的章节</span>
+          </span>
+          <button class="btn-sm btn-outline" @click="previewReport">
+            预览完整报告
+          </button>
+          <span class="save-hint">⏱ 每5分钟自动保存一次 · 上次: {{ lastSavedText }}</span>
+        </div>
+        <p style="font-size:13px;color:#64748b;margin-top:12px;line-height:1.6;">
+          ℹ️ 配置保存到项目目录的 <code>config.json</code>。切换到 <b>Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b>"开始生成报告"</b>或项目名，Claude 会自动读取配置并按章节逐章生成。
+        </p>
+      </section>
+    </template>
+  </main>
 
-        <!-- ③ 操作 -->
-        <section class="section">
-          <h2><span class="num">3</span>操作</h2>
-
-          <div class="hint-box">
-            <strong>配置已自动保存到浏览器。</strong>修改任何配置都会自动存入 localStorage。<br />
-            点击下方<strong>"导出配置"</strong>下载 config.json，放入 report-tool/projects/项目名/ 目录。<br />
-            然后切换到 <strong>Claude Code</strong> 对话窗口，说<strong>"开始生成报告"</strong>即可按配置逐章生成。
-          </div>
-
-          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-            <button class="btn primary" @click="exportConfig">导出配置 (config.json)</button>
-            <button class="btn" @click="copyConfig">复制配置到剪贴板</button>
-            <span v-if="saveMsg" class="save-status" style="color:#16a34a;">
-              ✓ {{ saveMsg }}
-            </span>
-          </div>
-        </section>
-      </template>
-    </main>
-    </div><!-- .app-body -->
-  </div><!-- .app-shell -->
+  <!-- ========== 新建项目弹窗 ========== -->
+  <div v-if="showNewProjectModal" class="modal-mask" @click.self="showNewProjectModal = false">
+    <div class="modal-box">
+      <h3>🆕 新建项目</h3>
+      <div class="field">
+        <label>项目名称</label>
+        <input v-model="newProjectName" placeholder="如：货币基金分析报告" @keyup.enter="createProject" ref="nameInput">
+      </div>
+      <div class="recommend">
+        <span>💡</span>
+        <span>推荐保存到 <code style="background:#dcfce7;padding:1px 4px;border-radius:3px;">report-tool/projects/</code> 目录下，确保 Claude Code 能自动发现并读取组件库和约束文档。</span>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" @click="showNewProjectModal = false">取消</button>
+        <button class="btn-confirm" @click="createProject" :disabled="!newProjectName.trim()">
+          选择保存位置并创建
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-const { createApp } = Vue;
-createApp({
-  data() {
-    return {
-      projects: [],
-      currentProject: null,
-      dragIdx: -1,
-      dragOverIdx: -1,
-      saveMsg: '',
-      saveOk: false,
-      layouts: [
-        { id: 'a4-landscape', label: 'A4 横版', hint: '适合打印、PDF导出，固定页宽297×210mm，每页独立排版', previewClass: 'preview-a4' },
-        { id: 'slide-deck', label: 'Slide 翻页', hint: '全屏演示模式，支持键盘左右翻页，适合汇报、演讲场景', previewClass: 'preview-slide' },
-        { id: 'scroll-page', label: '网页版', hint: '自适应布局，兼容PC端、平板、手机端浏览，适合在线分享', previewClass: 'preview-scroll' },
-      ],
-      themes: [
-        { id: 'business-bluewhite', label: '商务蓝白', hint: '正式专业，适合金融、咨询、企业报告', colors: ['#0f172a','#2563eb','#dbeafe','#f8fafc','#e5e7eb'] },
-        { id: 'rc-lightblue', label: 'RC 浅蓝', hint: '清爽现代，适合科技、互联网、产品介绍', colors: ['#0f5a96','#0891b2','#e0f2fe','#f0f9ff','#cbd5e1'] },
-        { id: 'dark-tech', label: '暗黑科技', hint: '酷炫科技感，适合SaaS产品、技术方案、数据产品', colors: ['#0f172a','#1e293b','#6ea8ff','#9ee8c8','#334155'] },
-      ],
-      availableComponents: [],
-      componentIcons: {
-        'stat-card':        { hint: 'KPI指标', icon: '<div style="margin:6px 8px;height:3px;background:#cbd5e1;border-radius:2px;"></div><div style="margin:4px 8px 0;font-size:14px;font-weight:700;color:#3b82f6;">1.2亿</div>' },
-        'timeline':         { hint: '里程碑', icon: '<div style="display:flex;align-items:center;justify-content:center;height:100%;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:#3b82f6;"></span><span style="width:16px;height:1px;background:#cbd5e1;"></span><span style="width:7px;height:7px;border-radius:50%;background:#3b82f6;"></span><span style="width:16px;height:1px;background:#cbd5e1;"></span><span style="width:7px;height:7px;border-radius:50%;background:#94a3b8;"></span></div>' },
-        'process-step':     { hint: '递进流程', icon: '<div style="margin:4px 6px;padding:3px 5px;border-left:3px solid #3b82f6;text-align:left;font-size:8px;color:#64748b;">1. 步骤</div><div style="margin:4px 6px;padding:3px 5px;border-left:3px solid #93c5fd;text-align:left;font-size:8px;color:#94a3b8;">2. 步骤</div>' },
-        'circle-number':    { hint: '序号标记', icon: '<div style="display:flex;align-items:center;justify-content:center;height:100%;gap:4px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#dbeafe;color:#3b82f6;font-size:9px;font-weight:700;">1</span><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#dbeafe;color:#3b82f6;font-size:9px;font-weight:700;">2</span><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e2e8f0;color:#94a3b8;font-size:9px;">3</span></div>' },
-        'badge-tag':        { hint: '分类标记', icon: '<div style="display:flex;align-items:center;justify-content:center;height:100%;gap:3px;"><span style="padding:2px 6px;border-radius:999px;background:#dbeafe;color:#3b82f6;font-size:8px;font-weight:600;">T+1</span><span style="padding:2px 6px;border-radius:999px;background:#dcfce7;color:#16a34a;font-size:8px;font-weight:600;">↑</span></div>' },
-        'data-table':       { hint: '结构化数据', icon: '<div style="margin:4px 6px;"><div style="display:flex;gap:0;"><span style="flex:1;height:4px;background:#dbeafe;"></span><span style="flex:1;height:4px;background:#dbeafe;"></span></div><div style="display:flex;gap:0;margin-top:3px;"><span style="flex:1;height:2px;background:#f1f5f9;"></span><span style="flex:1;height:2px;background:#f1f5f9;"></span></div><div style="display:flex;gap:0;margin-top:2px;"><span style="flex:1;height:2px;background:#f1f5f9;"></span><span style="flex:1;height:2px;background:#f1f5f9;"></span></div></div>' },
-        'hero-card':        { hint: '封面/重点区', icon: '<div style="margin:2px 6px;height:18px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:3px;"></div><div style="margin:3px 8px;height:2px;background:#cbd5e1;border-radius:1px;"></div>' },
-        'bar-chart':        { hint: '需ECharts', icon: '<div style="display:flex;align-items:flex-end;justify-content:center;height:100%;gap:3px;padding-bottom:4px;"><span style="width:6px;height:18px;background:#3b82f6;border-radius:1px;"></span><span style="width:6px;height:24px;background:#60a5fa;border-radius:1px;"></span><span style="width:6px;height:12px;background:#93c5fd;border-radius:1px;"></span><span style="width:6px;height:20px;background:#3b82f6;border-radius:1px;"></span></div>' },
-        'timeline-chart':   { hint: '需ECharts', icon: '<div style="position:relative;height:100%;"><svg viewBox="0 0 48 36" style="width:100%;height:100%;"><polyline points="4,28 16,20 24,14 36,8 44,16" fill="none" stroke="#3b82f6" stroke-width="2"/><circle cx="16" cy="20" r="2" fill="#3b82f6"/><circle cx="24" cy="14" r="2" fill="#3b82f6"/><circle cx="36" cy="8" r="2" fill="#3b82f6"/></svg></div>' },
-      },
-    };
-  },
-  methods: {
-    /* === 项目管理（localStorage） === */
-    loadProjects() {
-      try {
-        const raw = localStorage.getItem('report-tool-projects');
-        this.projects = raw ? JSON.parse(raw) : [];
-      } catch {
-        this.projects = [];
-      }
-      this.projects.forEach(p => {
-        p.chapters = p.chapters || [];
-        p.chapters.forEach(ch => { ch._open = ch._open ?? true; });
-      });
-    },
-    saveToStorage() {
-      const clean = this.projects.map(p => {
-        const { _dirHandle, ...rest } = p;
-        return { ...rest, chapters: p.chapters.map(({ _open, ...c }) => ({ ...c })) };
-      });
-      localStorage.setItem('report-tool-projects', JSON.stringify(clean));
-      this.saveMsg = '已保存 ' + new Date().toLocaleTimeString('zh-CN', { hour12: false });
-      this.saveOk = true;
-    },
-    /* === 从 manifest.json 加载组件列表 === */
-    async loadManifest() {
-      try {
-        const res = await fetch('../UI-lib/manifest.json');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const manifest = await res.json();
-        const compCategories = ['basic-components', 'charts'];
-        const items = [];
-        for (const cat of (manifest.menu || [])) {
-          if (!compCategories.includes(cat.id)) continue;
-          for (const child of (cat.children || [])) {
-            const iconInfo = this.componentIcons[child.id] || { hint: '', icon: '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#94a3b8;">' + child.label + '</div>' };
-            items.push({
-              id: child.id,
-              label: child.label,
-              hint: iconInfo.hint,
-              icon: iconInfo.icon,
-            });
-          }
-        }
-        if (items.length > 0) this.availableComponents = items;
-      } catch (e) {
-        // manifest 加载失败时回退到硬编码列表
-        console.warn('加载 manifest.json 失败，使用内置组件列表', e);
-        this.availableComponents = this.availableComponents.length > 0 ? this.availableComponents : [
-          { id: 'stat-card', label: '数据卡片', hint: 'KPI指标', icon: this.componentIcons['stat-card'].icon },
-          { id: 'timeline', label: '时间线', hint: '里程碑', icon: this.componentIcons['timeline'].icon },
-          { id: 'process-step', label: '流程步骤', hint: '递进流程', icon: this.componentIcons['process-step'].icon },
-          { id: 'circle-number', label: '圆形编号', hint: '序号标记', icon: this.componentIcons['circle-number'].icon },
-          { id: 'badge-tag', label: '标签徽章', hint: '分类标记', icon: this.componentIcons['badge-tag'].icon },
-          { id: 'data-table', label: '数据表格', hint: '结构化数据', icon: this.componentIcons['data-table'].icon },
-          { id: 'hero-card', label: '封面卡片', hint: '封面/重点区', icon: this.componentIcons['hero-card'].icon },
-          { id: 'bar-chart', label: '柱状图', hint: '需ECharts', icon: this.componentIcons['bar-chart'].icon },
-          { id: 'timeline-chart', label: '时间线图', hint: '需ECharts', icon: this.componentIcons['timeline-chart'].icon },
-        ];
-      }
-    },
-    createProject() {
-      const name = prompt('请输入项目名称（将作为文件夹名）：');
-      if (!name || !name.trim()) return;
-      if (this.projects.find(p => p.name === name.trim())) {
-        alert('项目名已存在，请换一个。');
-        return;
-      }
+const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
 
-      const project = {
-        name: name.trim(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+createApp({
+  setup() {
+    // --- 状态 ---
+    const apiAvailable = ref(false);
+    const projectHandle = ref(null);
+    const projectPath = ref('');
+    const inWorkspace = ref(true);
+    const showNewProjectModal = ref(false);
+    const newProjectName = ref('');
+    const lastSaved = ref(null);
+    const dataFiles = ref([]);
+    const dragIdx = ref(null);
+    const dragOverIdx = ref(null);
+    const nameInput = ref(null);
+
+    const config = ref({
+      projectName: '',
+      createdAt: '',
+      updatedAt: '',
+      layout: 'a4-landscape',
+      theme: 'business-bluewhite',
+      mode: 'chapter',
+      chapters: []
+    });
+
+    const allComponents = [
+      { id: 'stat-card', label: '数据卡片', desc: '展示KPI数字，支持numbered/simple/accent-top变体' },
+      { id: 'timeline', label: '时间线', desc: '水平和垂直两种布局，展示事件序列' },
+      { id: 'process-step', label: '流程步骤', desc: '左侧/右侧色条，展示方法流程' },
+      { id: 'circle-number', label: '圆形编号', desc: '四种尺寸三种变体，用于序号标注' },
+      { id: 'badge-tag', label: '标签徽章', desc: 'fill/outline/accent/dot四种风格' },
+      { id: 'data-table', label: '数据表格', desc: '斑马纹/紧凑/全边框，展示结构化数据' },
+      { id: 'hero-card', label: '封面卡片', desc: 'light-on-dark/dark-section/stat-grid' },
+      { id: 'bar-chart', label: '柱状图', desc: 'ECharts柱状图，适合对比数据' },
+      { id: 'timeline-chart', label: '时间线图', desc: 'ECharts时间序列，展示趋势变化' },
+    ];
+
+    // --- 计算属性 ---
+    const totalChapters = computed(() => config.value.chapters.length);
+    const doneCount = computed(() => config.value.chapters.filter(c => c.status === 'done').length);
+    const lastSavedText = computed(() => {
+      if (!lastSaved.value) return '尚未保存';
+      const t = lastSaved.value;
+      return `${t.getHours().toString().padStart(2,'0')}:${t.getMinutes().toString().padStart(2,'0')}:${t.getSeconds().toString().padStart(2,'0')}`;
+    });
+
+    // --- 工具方法 ---
+    function statusLabel(s) {
+      return { pending: '待生成', draft: '草稿', done: '完成' }[s] || s;
+    }
+    function generateId() {
+      return 'ch-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+    }
+    function nowISO() {
+      return new Date().toISOString();
+    }
+
+    // 通过 URL 检测工具是否在 AIProject 内
+    function detectWorkspace() {
+      const href = window.location.href;
+      return href.includes('AIProject') || href.includes('aiproject');
+    }
+
+    // 初始配置（含默认2个章节）
+    function makeInitialConfig(name) {
+      const now = nowISO();
+      return {
+        projectName: name,
+        createdAt: now,
+        updatedAt: now,
         layout: 'a4-landscape',
         theme: 'business-bluewhite',
         mode: 'chapter',
         chapters: [
-          { id: 'cover', order: 1, title: '封面', desc: '报告封面页，包含标题、副标题、日期', components: ['hero-card'], customLayout: null, dataFile: null, status: 'pending' },
-          { id: 'chapter-2', order: 2, title: '', desc: '', components: [], customLayout: null, dataFile: null, status: 'pending' },
-        ],
+          {
+            id: generateId(),
+            order: 1,
+            title: '封面',
+            desc: '报告封面页。包含：报告标题、副标题（简述报告目标）、日期、团队/机构名称。设计风格简洁大气，突出标题。',
+            components: ['hero-card'],
+            customLayout: null,
+            dataFile: null,
+            status: 'pending',
+            _open: true
+          },
+          {
+            id: generateId(),
+            order: 2,
+            title: '内容概览',
+            desc: '报告核心内容概览。展示关键数据和主要结论，用数据卡片网格布局呈现核心KPI，附简要文字说明。约1-2页。',
+            components: ['stat-card'],
+            customLayout: null,
+            dataFile: null,
+            status: 'pending',
+            _open: false
+          }
+        ]
       };
+    }
 
-      this.projects.unshift(project);
-      this.saveToStorage();
-      this.currentProject = project;
-    },
-    openProject(p) {
-      this.currentProject = p;
-      this.saveMsg = '';
-      p.chapters.forEach(ch => { ch._open = ch._open ?? true; });
-    },
-    deleteProject(p) {
-      if (!confirm(`确定删除项目"${p.name}"？此操作不可恢复。`)) return;
-      this.projects = this.projects.filter(x => x !== p);
-      if (this.currentProject === p) this.currentProject = null;
-      this.saveToStorage();
-    },
+    // --- 文件操作 ---
+    async function writeConfigToHandle(handle, cfg) {
+      const fileHandle = await handle.getFileHandle('config.json', { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(JSON.stringify(cfg, null, 2));
+      await writable.close();
+    }
 
-    /* === 章节管理 === */
-    addChapter() {
-      if (!this.currentProject) return;
-      const idx = this.currentProject.chapters.length + 1;
-      this.currentProject.chapters.push({
-        id: 'chapter-' + Date.now(),
-        order: idx,
+    async function readConfigFromHandle(handle) {
+      const fileHandle = await handle.getFileHandle('config.json');
+      const file = await fileHandle.getFile();
+      const text = await file.text();
+      const cfg = JSON.parse(text);
+      // 兼容旧配置：给章节加 _open 字段
+      if (cfg.chapters) {
+        cfg.chapters.forEach(ch => { if (ch._open === undefined) ch._open = false; });
+      }
+      return cfg;
+    }
+
+    // --- 核心操作 ---
+    async function createProject() {
+      const name = newProjectName.value.trim();
+      if (!name) return;
+      showNewProjectModal.value = false;
+      newProjectName.value = '';
+
+      try {
+        const parentHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+        const projHandle = await parentHandle.getDirectoryHandle(name, { create: true });
+        // 创建必要子目录
+        await projHandle.getDirectoryHandle('data', { create: true });
+        await projHandle.getDirectoryHandle('output', { create: true });
+
+        const initialConfig = makeInitialConfig(name);
+        await writeConfigToHandle(projHandle, initialConfig);
+
+        projectHandle.value = projHandle;
+        projectPath.value = projHandle.name;
+        config.value = initialConfig;
+        inWorkspace.value = detectWorkspace();
+        lastSaved.value = new Date();
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          alert('创建项目失败: ' + e.message);
+        }
+      }
+    }
+
+    async function importProject() {
+      try {
+        const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+        let cfg;
+        try {
+          cfg = await readConfigFromHandle(handle);
+        } catch {
+          alert('所选文件夹中没有找到 config.json，请确认这是一个有效的报告项目。');
+          return;
+        }
+
+        projectHandle.value = handle;
+        projectPath.value = handle.name;
+        config.value = { ...makeInitialConfig(cfg.projectName), ...cfg };
+        // chapters 已在 makeInitialConfig 中有默认值，展开后覆盖
+        if (cfg.chapters && cfg.chapters.length > 0) {
+          config.value.chapters = cfg.chapters.map(ch => ({ ...ch, _open: ch._open ?? false }));
+        }
+        inWorkspace.value = detectWorkspace();
+        lastSaved.value = new Date();
+      } catch (e) {
+        if (e.name !== 'AbortError') {
+          alert('导入项目失败: ' + e.message);
+        }
+      }
+    }
+
+    async function saveConfig() {
+      if (!projectHandle.value) return;
+      try {
+        config.value.updatedAt = nowISO();
+        await writeConfigToHandle(projectHandle.value, config.value);
+        lastSaved.value = new Date();
+      } catch (e) {
+        alert('保存失败: ' + e.message);
+      }
+    }
+
+    // --- 章节操作 ---
+    function addChapter() {
+      const ch = {
+        id: generateId(),
+        order: config.value.chapters.length + 1,
         title: '',
         desc: '',
         components: [],
         customLayout: null,
         dataFile: null,
         status: 'pending',
-        _open: true,
-      });
-      this.saveToStorage();
-    },
-    removeChapter(idx) {
-      this.currentProject.chapters.splice(idx, 1);
-      this.currentProject.chapters.forEach((ch, i) => ch.order = i + 1);
-      this.saveToStorage();
-    },
-    toggleChapter(ch) {
-      ch._open = !ch._open;
-    },
-    toggleComponent(ch, compId) {
+        _open: true
+      };
+      config.value.chapters.push(ch);
+    }
+
+    function removeChapter(idx) {
+      if (confirm('确定删除"' + (config.value.chapters[idx].title || '未命名') + '"吗？')) {
+        config.value.chapters.splice(idx, 1);
+      }
+    }
+
+    function moveChapter(idx, delta) {
+      const arr = config.value.chapters;
+      const newIdx = idx + delta;
+      if (newIdx < 0 || newIdx >= arr.length) return;
+      [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+    }
+
+    function toggleChapter(id) {
+      const ch = config.value.chapters.find(c => c.id === id);
+      if (ch) ch._open = !ch._open;
+    }
+
+    function toggleComponent(ch, compId) {
       const idx = ch.components.indexOf(compId);
       if (idx >= 0) ch.components.splice(idx, 1);
       else ch.components.push(compId);
-    },
+    }
 
-    /* === 拖拽排序 === */
-    onDragStart(e, idx) {
-      this.dragIdx = idx;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(idx));
-    },
-    onDragOver(e, idx) {
-      if (this.dragIdx === -1 || this.dragIdx === idx) return;
-      this.dragOverIdx = idx;
-      e.dataTransfer.dropEffect = 'move';
-    },
-    onDragLeave(idx) {
-      if (this.dragOverIdx === idx) this.dragOverIdx = -1;
-    },
-    onDrop(e, idx) {
-      this.dragOverIdx = -1;
-      const fromIdx = this.dragIdx;
-      if (fromIdx === -1 || fromIdx === idx) return;
-      const chapters = this.currentProject.chapters;
-      const [moved] = chapters.splice(fromIdx, 1);
-      chapters.splice(idx, 0, moved);
-      chapters.forEach((ch, i) => ch.order = i + 1);
-      this.saveToStorage();
-    },
-    onDragEnd() {
-      this.dragIdx = -1;
-      this.dragOverIdx = -1;
-    },
-
-    /* === 导出 / 复制配置 === */
-    exportConfig() {
-      const p = this.currentProject;
-      if (!p) return;
-      const clean = {
-        projectName: p.name,
-        createdAt: p.createdAt,
-        updatedAt: new Date().toISOString(),
-        layout: p.layout,
-        theme: p.theme,
-        mode: p.mode,
-        chapters: p.chapters.map(({ _open, ...c }) => ({ ...c })),
-      };
-      const blob = new Blob([JSON.stringify(clean, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'config.json';
-      a.click();
-      URL.revokeObjectURL(url);
-      this.saveMsg = 'config.json 已下载';
-      this.saveOk = true;
-    },
-    async copyConfig() {
-      const p = this.currentProject;
-      if (!p) return;
-      const clean = {
-        projectName: p.name,
-        createdAt: p.createdAt,
-        updatedAt: new Date().toISOString(),
-        layout: p.layout,
-        theme: p.theme,
-        mode: p.mode,
-        chapters: p.chapters.map(({ _open, ...c }) => ({ ...c })),
-      };
-      try {
-        await navigator.clipboard.writeText(JSON.stringify(clean, null, 2));
-        this.saveMsg = '配置已复制到剪贴板';
-        this.saveOk = true;
-      } catch {
-        this.saveMsg = '复制失败，请手动导出';
-        this.saveOk = false;
+    // --- 拖拽排序 ---
+    function onDragStart(idx, event) {
+      dragIdx.value = idx;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', idx.toString());
+      document.body.classList.add('dragging');
+    }
+    function onDragOver(idx) {
+      if (dragIdx.value !== null && dragIdx.value !== idx) {
+        dragOverIdx.value = idx;
       }
-    },
+    }
+    function onDragLeave() {
+      dragOverIdx.value = null;
+    }
+    function onDrop(idx, event) {
+      event.preventDefault();
+      const from = dragIdx.value;
+      dragOverIdx.value = null;
+      if (from === null || from === idx) return;
+      const arr = config.value.chapters;
+      const [item] = arr.splice(from, 1);
+      arr.splice(idx, 0, item);
+      dragIdx.value = null;
+      document.body.classList.remove('dragging');
+    }
+    function onDragEnd() {
+      dragIdx.value = null;
+      dragOverIdx.value = null;
+      document.body.classList.remove('dragging');
+    }
 
-    /* === 导入导出 === */
-    exportAll() {
-      const clean = this.projects.map(p => {
-        const { _dirHandle, ...rest } = p;
-        return { ...rest, chapters: p.chapters.map(({ _open, ...c }) => ({ ...c })) };
-      });
-      const blob = new Blob([JSON.stringify(clean, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'report-tool-projects-backup.json'; a.click();
-      URL.revokeObjectURL(url);
-    },
-    importAll(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const data = JSON.parse(reader.result);
-          const arr = Array.isArray(data) ? data : [data];
-          arr.forEach(proj => {
-            proj.chapters = proj.chapters || [];
-            proj.layout = proj.layout || 'a4-landscape';
-            proj.theme = proj.theme || 'business-bluewhite';
-            proj.mode = proj.mode || 'chapter';
-            if (!proj.createdAt) proj.createdAt = new Date().toISOString();
-            proj.updatedAt = new Date().toISOString();
-            const existing = this.projects.findIndex(p => p.name === proj.name);
-            if (existing >= 0) this.projects[existing] = proj;
-            else this.projects.unshift(proj);
-          });
-          this.saveToStorage();
-          alert(`成功导入 ${arr.length} 个项目。`);
-        } catch (err) {
-          alert('导入失败：文件格式不正确。');
+    // --- 组装与预览 ---
+    function assembleReport() {
+      if (config.value.chapters.length === 0) return;
+      alert('请在 Claude Code 中说"组装报告"，或执行:\nnode report-tool/assemble.cjs ' + projectPath.value);
+    }
+
+    function previewReport() {
+      alert('请先组装报告，然后在项目文件夹的 output/ 目录下查看 full-report.html');
+    }
+
+    // --- 自动保存 ---
+    let autoSaveTimer = null;
+    function startAutoSave() {
+      autoSaveTimer = setInterval(async () => {
+        if (projectHandle.value) {
+          try {
+            config.value.updatedAt = nowISO();
+            await writeConfigToHandle(projectHandle.value, config.value);
+            lastSaved.value = new Date();
+          } catch { /* 静默失败 */ }
         }
-      };
-      reader.readAsText(file);
-      e.target.value = '';
-    },
+      }, 5 * 60 * 1000);
+    }
 
-    /* === 工具 === */
-    layoutLabel(l) {
-      const map = { 'a4-landscape': 'A4横版', 'slide-deck': 'Slide翻页', 'scroll-page': '网页版' };
-      return map[l] || l;
-    },
-    doneCount(p) {
-      return (p.chapters || []).filter(c => c.status === 'done').length;
-    },
-    statusLabel(s) {
-      return { pending: '待生成', draft: '草稿', done: '已完成' }[s] || s;
-    },
-  },
-  mounted() {
-    this.loadProjects();
-    this.loadManifest();
-  },
+    // --- 初始化 ---
+    onMounted(() => {
+      apiAvailable.value = typeof window.showDirectoryPicker === 'function';
+      startAutoSave();
+    });
+
+    onUnmounted(() => {
+      if (autoSaveTimer) clearInterval(autoSaveTimer);
+    });
+
+    // 弹窗打开时自动聚焦输入框
+    watch(showNewProjectModal, async (val) => {
+      if (val) {
+        await nextTick();
+        if (nameInput.value) nameInput.value.focus();
+      }
+    });
+
+    return {
+      apiAvailable, projectHandle, projectPath, inWorkspace,
+      showNewProjectModal, newProjectName, lastSaved, lastSavedText,
+      config, allComponents, dataFiles, totalChapters, doneCount,
+      dragIdx, dragOverIdx, nameInput,
+      statusLabel, createProject, importProject, saveConfig,
+      addChapter, removeChapter, moveChapter, toggleChapter, toggleComponent,
+      onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
+      assembleReport, previewReport
+    };
+  }
 }).mount('#app');
-
 </script>
-
 </body>
 </html>
