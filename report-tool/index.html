@@ -7,358 +7,497 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <style>
-  :root { --accent: #2563eb; --accent-light: #eff6ff; --warn: #f59e0b; --warn-light: #fffbeb; --muted: #94a3b8; --border: #e2e8f0; }
+  :root {
+    --accent: #2563eb; --accent-hover: #1d4ed8; --accent-light: #eff6ff; --accent-ring: rgba(37,99,235,.15);
+    --green: #16a34a; --green-light: #f0fdf4;
+    --amber: #d97706; --amber-light: #fffbeb;
+    --red: #dc2626; --red-light: #fef2f2;
+    --purple: #7c3aed; --purple-light: #f5f3ff;
+    --teal: #0d9488; --teal-light: #f0fdfa;
+    --text: #1d1d1f; --text-body: #6e6e73; --text-tertiary: #aeaeb2;
+    --bg: #f5f5f7; --card: #ffffff;
+    --border: #e5e5ea; --border-light: #f0f0f3;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.08);
+    --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text-body); -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
   #app { display: flex; height: 100vh; overflow: hidden; }
 
   /* ===== 左侧面板 ===== */
-  .side-panel { width: 280px; min-width: 280px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 16px; gap: 12px; overflow-y: auto; }
-  .side-panel h1 { font-size: 16px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em; margin-bottom: 2px; }
-  .side-subtitle { font-size: 11px; color: var(--muted); margin-top: -6px; }
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .side-panel {
+    width: 280px; min-width: 280px; background: rgba(255,255,255,.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    padding: 28px 20px; gap: 16px; overflow-y: auto;
+  }
+  .side-panel .brand { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.03em; }
+  .side-subtitle { font-size: 13px; color: var(--text-tertiary); margin-top: -10px; font-weight: 500; }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; padding: 12px 18px; border: none; border-radius: var(--radius);
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s ease;
+    font-family: inherit; letter-spacing: -0.01em;
+  }
   .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #1d4ed8; }
-  .btn-secondary { background: #fff; color: #334155; border: 1.5px solid #cbd5e1; }
-  .btn-secondary:hover { background: #f8fafc; border-color: #94a3b8; }
-  .btn-save { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; margin-top: auto; }
-  .btn-save:hover { background: #dcfce7; }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: #fafafa; border-color: #d0d0d5; }
+  .btn-save {
+    background: var(--green); color: #fff; margin-top: auto; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(22,163,74,.25);
+  }
+  .btn-save:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(22,163,74,.35); }
 
-  .proj-info { background: #f8fafc; border-radius: 8px; padding: 14px; font-size: 13px; line-height: 1.6; }
-  .proj-info .name { font-weight: 700; font-size: 14px; color: #0f172a; }
-  .proj-info .path { color: #64748b; word-break: break-all; font-size: 11px; margin-top: 2px; }
-  .proj-info .row { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 6px; }
+  .proj-info {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-lg);
+    padding: 18px; font-size: 13px; line-height: 1.7; border: 1px solid var(--border-light);
+  }
+  .proj-info .name { font-weight: 700; font-size: 15px; color: var(--text); }
+  .proj-info .path { color: var(--text-tertiary); word-break: break-all; font-size: 12px; margin-top: 3px; line-height: 1.4; }
+  .proj-info .row { display: flex; align-items: center; gap: 7px; font-size: 13px; margin-top: 8px; }
   .proj-info .row .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .dot-ok { background: #22c55e; }
-  .dot-warn { background: #f59e0b; }
+  .dot-ok { background: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,.15); }
+  .dot-warn { background: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,.15); }
 
-  .compat-warn { margin-top: auto; padding: 10px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; font-size: 12px; color: #991b1b; line-height: 1.5; }
+  .compat-warn {
+    margin-top: auto; padding: 14px 16px; background: var(--amber-light);
+    border: 1px solid #fde68a; border-radius: var(--radius); font-size: 13px;
+    color: #92400e; line-height: 1.6;
+  }
 
-  /* ===== 顶部快捷导航 ===== */
-  .quick-nav { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #fff; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; flex-shrink: 0; }
-  .quick-nav .nav-intro { color: #64748b; flex: 1; }
-  .quick-nav .nav-intro b { color: #334155; }
-  .btn-nav { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; transition: all .15s; border: none; }
-  .btn-nav-outline { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
+  /* ===== 快捷导航 ===== */
+  .quick-nav {
+    display: flex; align-items: center; gap: 14px; padding: 14px 20px;
+    background: rgba(255,255,255,.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--radius-lg); border: 1px solid var(--border-light);
+    font-size: 13px; flex-shrink: 0; position: sticky; top: 0; z-index: 10;
+  }
+  .quick-nav .nav-intro { color: var(--text-body); flex: 1; line-height: 1.5; }
+  .quick-nav .nav-intro b { color: var(--text); }
+  .btn-nav {
+    display: inline-flex; align-items: center; gap: 5px; padding: 8px 16px;
+    border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+    text-decoration: none; white-space: nowrap; transition: all .2s; border: none;
+    font-family: inherit; letter-spacing: -0.01em;
+  }
+  .btn-nav-outline { background: var(--card); color: var(--accent); border: 1px solid var(--accent); }
   .btn-nav-outline:hover { background: var(--accent-light); }
-  .btn-nav-ghost { background: transparent; color: #64748b; border: none; padding: 7px 10px; }
-  .btn-nav-ghost:hover { color: var(--accent); background: #f8fafc; }
+  .btn-nav-ghost { background: transparent; color: var(--text-body); padding: 8px 12px; }
+  .btn-nav-ghost:hover { color: var(--accent); background: rgba(37,99,235,.06); }
 
   /* ===== 右侧编辑区 ===== */
-  .main-area { flex: 1; overflow-y: auto; padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
-  .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); text-align: center; gap: 10px; }
-  .empty-state .icon { font-size: 52px; opacity: .3; }
-  .empty-state .title { font-size: 18px; font-weight: 600; color: #64748b; }
-  .empty-state .sub { font-size: 14px; max-width: 320px; line-height: 1.6; }
+  .main-area { flex: 1; overflow-y: auto; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 24px; }
+  .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-tertiary); text-align: center; gap: 16px; }
+  .empty-state .title { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.03em; }
+  .empty-state .sub { font-size: 15px; max-width: 380px; line-height: 1.7; }
 
-  .warn-bar { background: var(--warn-light); border: 1px solid #fcd34d; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #92400e; display: flex; align-items: center; gap: 8px; }
+  .warn-bar {
+    background: var(--amber-light); border: 1px solid #fde68a; border-radius: var(--radius);
+    padding: 14px 18px; font-size: 13px; color: #92400e; display: flex;
+    align-items: flex-start; gap: 10px; line-height: 1.6;
+  }
+  .warn-bar code { background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
 
   /* ===== 配置区块 ===== */
-  section { background: #fff; border-radius: 10px; border: 1px solid var(--border); }
-  /* 版式卡片内嵌预览容器 */
-  .card-preview-html { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; background: linear-gradient(135deg,#f8fafc,#e2e8f0); margin-bottom: 10px; height: 140px; overflow: hidden; }
+  section {
+    background: var(--card); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border-light);
+    transition: box-shadow .25s;
+  }
+  section:hover { box-shadow: var(--shadow-md); }
+  .card-preview-html {
+    display: flex; align-items: center; justify-content: center; padding: 10px;
+    border-radius: var(--radius); background: #f9fafb; margin-bottom: 12px;
+    height: 140px; overflow: hidden;
+  }
 
-  /* 可折叠区块头 */
-  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; cursor: pointer; user-select: none; transition: background .15s; }
-  .section-header:hover { background: #fafafa; }
-  .section-header .sh-left { display: flex; align-items: center; gap: 10px; }
-  .section-header .sh-left .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
-  .section-header h2 { font-size: 15px; font-weight: 700; color: #0f172a; }
-  .section-header .sh-desc { font-size: 12px; color: var(--muted); margin-left: 4px; }
-  .section-toggle { font-size: 14px; color: var(--muted); transition: transform .2s; }
-  .section-toggle.open { transform: rotate(180deg); }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 28px; cursor: pointer; user-select: none;
+    transition: background .2s; border-radius: var(--radius-xl);
+  }
+  .section-header:hover { background: #fafbfc; }
+  .section-header .sh-left { display: flex; align-items: center; gap: 14px; }
+  .section-header .sh-left .step-num {
+    width: 36px; height: 36px; border-radius: var(--radius);
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(37,99,235,.25);
+  }
+  .section-header h2 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+  .section-header .sh-desc { font-size: 13px; color: var(--text-tertiary); font-weight: 500; }
+  .section-toggle {
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; color: var(--text-tertiary);
+    transition: all .25s; background: #f5f5f7;
+  }
+  .section-toggle.open { transform: rotate(180deg); background: #e8e8ed; color: var(--accent); }
 
-  .section-body { padding: 0 24px 20px 24px; border-top: 1px solid #f1f5f9; }
-  .section-label { font-size: 12px; font-weight: 600; color: #64748b; display: block; margin-bottom: 8px; margin-top: 18px; text-transform: uppercase; letter-spacing: .04em; }
-  .section-label:first-child { margin-top: 16px; }
-  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .section-body { padding: 0 28px 28px 28px; border-top: 1px solid var(--border-light); }
+  .section-label {
+    font-size: 14px; font-weight: 700; color: var(--text); display: block;
+    margin-bottom: 14px; margin-top: 26px; letter-spacing: -0.01em;
+  }
+  .section-label:first-child { margin-top: 24px; }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
-  /* 版式卡片 */
-  .select-card { border: 2px solid var(--border); border-radius: 10px; padding: 18px 12px 14px; cursor: pointer; text-align: center; transition: all .15s; }
-  .select-card:hover { border-color: #93c5fd; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,.04); }
-  .select-card.active { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
-  .card-preview { height: 70px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
-  /* A4 版式预览 - 横版纸张 */
-  .prev-a4 { width: 75%; height: 85%; border: 2px solid #64748b; border-radius: 2px; background: #fff; position: relative; }
-  .prev-a4::after { content: ''; position: absolute; top: 4px; left: 6px; right: 6px; height: 6px; background: var(--accent); border-radius: 1px; opacity: .5; }
-  /* Slide 预览 - 全屏矩形 */
-  .prev-slide { width: 82%; height: 72%; border: 2px solid #64748b; border-radius: 3px; background: #fff; position: relative; }
-  .prev-slide::after { content: ''; position: absolute; bottom: 6px; left: 8px; right: 8px; height: 50%; background: linear-gradient(to bottom, #e2e8f0 0%, #f1f5f9 40%, transparent 100%); }
-  /* 滚动预览 - 长页面 */
-  .prev-scroll { width: 70%; height: 92%; border: 2px solid #64748b; border-top: none; border-radius: 0 0 2px 2px; background: linear-gradient(to bottom, #fff 0%, #fff 30%, #e2e8f0 30%, #e2e8f0 34%, #fff 34%, #fff 55%, #e2e8f0 55%, #e2e8f0 59%, #fff 59%, #fff 78%, #e2e8f0 78%, #e2e8f0 82%, #fff 82%); }
-  .card-title { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-  .card-meta { font-size: 11px; color: #64748b; margin-bottom: 6px; }
-  .card-scene { font-size: 11px; color: var(--accent); background: var(--accent-light); display: inline-block; padding: 2px 8px; border-radius: 10px; }
+  .select-card {
+    border: 2px solid transparent; border-radius: var(--radius-lg); padding: 20px 14px 16px;
+    cursor: pointer; text-align: center; transition: all .25s ease;
+    background: #fafbfc; position: relative;
+  }
+  .select-card:hover { background: #fff; border-color: #d4d4d9; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .select-card.active {
+    border-color: var(--accent); background: var(--accent-light);
+    box-shadow: 0 0 0 4px var(--accent-ring);
+  }
+  .card-preview { height: 72px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.01em; }
+  .card-meta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; line-height: 1.5; }
+  .card-scene {
+    font-size: 11px; color: var(--accent); background: var(--accent-light);
+    display: inline-block; padding: 4px 12px; border-radius: 12px; font-weight: 600;
+  }
 
-  /* 受众/用途 字段 */
-  .inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
-  .field-group { display: flex; flex-direction: column; gap: 4px; }
-  .field-group label { font-size: 12px; font-weight: 700; color: #475569; }
-  .field-group .hint { font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
-  .field-group input, .field-group textarea, .field-group select { width: 100%; padding: 8px 10px; border: 1.5px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-family: inherit; transition: border-color .15s; background: #fff; }
-  .field-group input:focus, .field-group textarea:focus, .field-group select:focus { outline: none; border-color: var(--accent); }
-  .field-group textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+  .inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 26px; }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-group label { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+  .field-group .hint { font-size: 13px; color: var(--text-tertiary); line-height: 1.65; margin-top: 3px; }
+  .field-group input, .field-group textarea, .field-group select {
+    width: 100%; padding: 11px 14px; border: 1.5px solid #d4d4d9; border-radius: var(--radius);
+    font-size: 14px; font-family: inherit; transition: all .2s; background: #fafbfc;
+    color: var(--text); letter-spacing: -0.01em;
+  }
+  .field-group input:hover, .field-group textarea:hover, .field-group select:hover { border-color: #bbb; }
+  .field-group input:focus, .field-group textarea:focus, .field-group select:focus {
+    outline: none; border-color: var(--accent); background: #fff;
+    box-shadow: 0 0 0 4px var(--accent-ring);
+  }
+  .field-group textarea { resize: vertical; min-height: 72px; line-height: 1.65; }
 
-  /* 口语化大纲提示条 */
-  .outline-hint { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #0369a1; line-height: 1.6; display: flex; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+  .outline-hint {
+    background: linear-gradient(135deg, #f8fafc, #f0f4ff); border: 1px solid #dbeafe;
+    border-radius: var(--radius-lg); padding: 18px 20px; font-size: 14px;
+    color: #1e40af; line-height: 1.75; display: flex; align-items: flex-start;
+    gap: 12px; margin-bottom: 20px;
+  }
+  .outline-hint b { color: #1e3a8a; }
+  .outline-hint .tip-badge {
+    flex-shrink: 0; font-weight: 800; font-size: 13px;
+    background: var(--accent); color: #fff; padding: 3px 10px;
+    border-radius: 6px; letter-spacing: 0.02em;
+  }
 
   /* ===== 章节列表 ===== */
-  .chapter-list { display: flex; flex-direction: column; gap: 8px; }
-  .chapter-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: box-shadow .15s; }
-  .chapter-item.drag-over { box-shadow: 0 0 0 2px var(--accent); }
-  .chapter-item.dragging { opacity: .4; }
-  .chapter-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; background: #fafafa; user-select: none; }
-  .chapter-header:hover { background: #f1f5f9; }
-  .ch-left { display: flex; align-items: center; gap: 8px; }
-  .ch-left .drag-handle { color: #cbd5e1; font-size: 14px; cursor: grab; padding: 0 2px; }
+  .chapter-list { display: flex; flex-direction: column; gap: 10px; }
+  .chapter-item {
+    border: 1px solid var(--border-light); border-radius: var(--radius-lg);
+    overflow: hidden; transition: all .2s; background: #fafbfc;
+  }
+  .chapter-item:hover { border-color: #d0d0d5; }
+  .chapter-item.drag-over { box-shadow: 0 0 0 3px var(--accent-ring); border-color: var(--accent); }
+  .chapter-item.dragging { opacity: .35; transform: scale(.98); }
+  .chapter-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; cursor: pointer; user-select: none;
+    transition: background .15s;
+  }
+  .chapter-header:hover { background: #f3f4f6; }
+  .ch-left { display: flex; align-items: center; gap: 10px; }
+  .ch-left .drag-handle { color: #c4c4ca; font-size: 16px; cursor: grab; padding: 2px 4px; font-weight: 700; }
   .ch-left .drag-handle:active { cursor: grabbing; }
-  .ch-left .order { font-weight: 700; color: var(--accent); font-size: 13px; min-width: 40px; }
-  .ch-left .ch-title { font-weight: 600; font-size: 14px; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-  .st-pending { background: #cbd5e1; }
-  .st-draft { background: #f59e0b; }
-  .st-done { background: #22c55e; }
-  .ch-actions { display: flex; align-items: center; gap: 6px; }
-  .ch-actions button { border: none; background: none; cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; }
-  .ch-actions button:hover { background: #e2e8f0; }
+  .ch-left .order {
+    font-weight: 700; color: var(--accent); font-size: 13px; min-width: 44px;
+    background: var(--accent-light); padding: 4px 10px; border-radius: 6px; text-align: center;
+  }
+  .ch-left .ch-title { font-weight: 600; font-size: 14px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+  .status-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .st-pending { background: #c4c4ca; }
+  .st-draft { background: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,.2); }
+  .st-done { background: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,.2); }
+  .ch-actions { display: flex; align-items: center; gap: 4px; }
+  .ch-actions button {
+    border: none; background: none; cursor: pointer; font-size: 14px;
+    padding: 4px 8px; border-radius: 6px; color: var(--text-body); transition: all .15s;
+  }
+  .ch-actions button:hover { background: #e8e8ed; color: var(--text); }
+  .ch-actions button.danger { color: var(--red); }
+  .ch-actions button.danger:hover { background: var(--red-light); }
 
-  .chapter-body { padding: 16px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 14px; }
+  .chapter-body { padding: 20px; border-top: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 18px; background: #fff; }
 
-  /* ===== 组件缩略图 - CSS 迷你预览 ===== */
-  .comp-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .comp-thumb { border: 2px solid var(--border); border-radius: 8px; padding: 8px; cursor: pointer; text-align: center; transition: all .15s; position: relative; }
-  .comp-thumb:hover { border-color: #93c5fd; }
-  .comp-thumb.selected { border-color: var(--accent); background: var(--accent-light); }
-  .comp-thumb .mini { height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
-  .comp-thumb .comp-name { font-size: 10px; font-weight: 600; color: #334155; line-height: 1.2; }
-  /* 各组件的迷你 CSS 预览 */
-  .mini-stat { display: flex; gap: 4px; }
-  .mini-stat span { background: #e2e8f0; border-radius: 3px; }
-  .mini-stat .big { width: 28px; height: 28px; background: var(--accent); }
-  .mini-stat .sm { width: 12px; height: 12px; }
-  .mini-timeline { display: flex; gap: 3px; align-items: center; }
-  .mini-timeline .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
-  .mini-timeline .line { width: 14px; height: 2px; background: #cbd5e1; }
-  .mini-process { display: flex; gap: 6px; }
-  .mini-process .step { width: 16px; height: 16px; border: 2px solid var(--accent); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--accent); }
-  .mini-circle { display: flex; gap: 5px; }
-  .mini-circle .c { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--accent); }
-  .mini-badge { display: flex; gap: 4px; }
-  .mini-badge .b { padding: 2px 6px; border-radius: 8px; font-size: 7px; font-weight: 700; }
-  .mini-badge .b1 { background: #dbeafe; color: #1d4ed8; }
+  /* ===== 组件缩略图 ===== */
+  .comp-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .comp-thumb {
+    border: 2px solid transparent; border-radius: var(--radius); padding: 10px 6px;
+    cursor: pointer; text-align: center; transition: all .2s ease; position: relative;
+    background: #fafbfc;
+  }
+  .comp-thumb:hover { border-color: #d4d4d9; background: #fff; transform: translateY(-1px); }
+  .comp-thumb.selected { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px var(--accent-ring); }
+  .comp-thumb .mini { height: 40px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+  .comp-thumb .comp-name { font-size: 11px; font-weight: 600; color: var(--text-body); line-height: 1.3; }
+
+  .mini-stat { display: flex; gap: 5px; }
+  .mini-stat span { background: #dde2ed; border-radius: 4px; }
+  .mini-stat .big { width: 32px; height: 32px; background: var(--accent); border-radius: 6px; }
+  .mini-stat .sm { width: 14px; height: 14px; }
+  .mini-timeline { display: flex; gap: 4px; align-items: center; }
+  .mini-timeline .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .mini-timeline .line { width: 16px; height: 2px; background: #ccd4e0; }
+  .mini-process { display: flex; gap: 8px; }
+  .mini-process .step { width: 18px; height: 18px; border: 2px solid var(--accent); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--accent); font-weight: 700; }
+  .mini-circle { display: flex; gap: 6px; }
+  .mini-circle .c { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: var(--accent); }
+  .mini-badge { display: flex; gap: 5px; }
+  .mini-badge .b { padding: 3px 8px; border-radius: 10px; font-size: 8px; font-weight: 700; }
+  .mini-badge .b1 { background: #dbeafe; color: #1e40af; }
   .mini-badge .b2 { background: #dcfce7; color: #166534; }
   .mini-badge .b3 { background: #fef3c7; color: #92400e; }
-  .mini-table { display: grid; grid-template: repeat(3, 8px) / repeat(3, 1fr); gap: 1px; width: 100%; }
-  .mini-table div { background: #e2e8f0; border-radius: 1px; }
-  .mini-table div:first-child, .mini-table div:nth-child(4), .mini-table div:nth-child(7) { background: var(--accent); opacity: .3; }
-  .mini-hero { width: 100%; height: 100%; background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); border-radius: 3px; display: flex; align-items: center; justify-content: center; }
-  .mini-hero::after { content: ''; width: 60%; height: 4px; background: rgba(255,255,255,.4); border-radius: 2px; }
-  .mini-bar { display: flex; gap: 3px; align-items: flex-end; height: 100%; }
-  .mini-bar .b { width: 8px; border-radius: 2px 2px 0 0; background: var(--accent); }
+  .mini-table { display: grid; grid-template: repeat(3, 9px) / repeat(3, 1fr); gap: 2px; width: 100%; }
+  .mini-table div { background: #dde2ed; border-radius: 2px; }
+  .mini-table div:first-child, .mini-table div:nth-child(4), .mini-table div:nth-child(7) { background: var(--accent); opacity: .25; }
+  .mini-hero { width: 100%; height: 100%; background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+  .mini-hero::after { content: ''; width: 60%; height: 5px; background: rgba(255,255,255,.45); border-radius: 3px; }
+  .mini-bar { display: flex; gap: 4px; align-items: flex-end; height: 100%; }
+  .mini-bar .b { width: 10px; border-radius: 3px 3px 0 0; background: var(--accent); }
   .mini-line { width: 100%; height: 100%; position: relative; }
-  .mini-line::after { content: ''; position: absolute; bottom: 8px; left: 0; right: 0; height: 2px; background: #cbd5e1; }
-  .mini-line::before { content: ''; position: absolute; bottom: 2px; left: 8%; width: 80%; height: 20px; background: linear-gradient(to top, rgba(37,99,235,.2) 0%, transparent 100%); clip-path: polygon(0% 100%, 15% 20%, 35% 60%, 55% 10%, 75% 40%, 100% 5%, 100% 100%); }
+  .mini-line::after { content: ''; position: absolute; bottom: 10px; left: 0; right: 0; height: 2px; background: #ccd4e0; border-radius: 1px; }
+  .mini-line::before { content: ''; position: absolute; bottom: 4px; left: 8%; width: 80%; height: 24px; background: linear-gradient(to top, rgba(37,99,235,.25) 0%, transparent 100%); clip-path: polygon(0% 100%, 15% 20%, 35% 60%, 55% 10%, 75% 40%, 100% 5%, 100% 100%); }
 
   /* ===== 操作区 ===== */
-  .op-bar { display: flex; align-items: center; gap: 10px; padding-top: 4px; }
-  .btn-sm { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+  .op-bar { display: flex; align-items: center; gap: 12px; padding-top: 6px; }
+  .btn-sm { padding: 11px 22px; border-radius: 22px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; font-family: inherit; letter-spacing: -0.01em; }
   .btn-sm:disabled { opacity: .35; cursor: not-allowed; }
-  .btn-sm.btn-primary:disabled { background: #94a3b8; }
-  .btn-outline { background: #fff; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn-sm.btn-primary:disabled { background: #a0b8d8; transform: none; box-shadow: none; }
+  .btn-sm.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,.3); }
+  .btn-sm.btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,.4); }
+  .btn-outline { background: var(--card); color: var(--accent); border: 1.5px solid var(--accent); }
   .btn-outline:hover { background: var(--accent-light); }
-  .btn-add-chapter { width: 100%; padding: 10px; border: 2px dashed #cbd5e1; border-radius: 8px; background: #fafafa; color: #64748b; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; margin-top: 14px; }
+  .btn-add-chapter {
+    width: 100%; padding: 16px; border: 2px dashed #d0d0d9; border-radius: var(--radius-lg);
+    background: #fafbfc; color: var(--text-body); font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all .2s; margin-top: 20px; font-family: inherit;
+  }
   .btn-add-chapter:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
   .btn-tip { position: relative; display: inline-flex; align-items: center; }
-  .btn-tip .tooltip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #1e293b; color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 4px; white-space: nowrap; font-weight: 400; }
+  .btn-tip .tooltip { display: none; position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #1d1d1f; color: #fff; font-size: 12px; padding: 6px 14px; border-radius: 8px; white-space: nowrap; font-weight: 500; }
   .btn-tip:disabled:hover .tooltip { display: block; }
-  .save-hint { font-size: 11px; color: var(--muted); margin-left: auto; }
+  .save-hint { font-size: 13px; color: var(--text-tertiary); margin-left: auto; font-weight: 500; }
 
   /* ===== 弹窗 ===== */
-  .modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; z-index: 100; }
-  .modal-box { background: #fff; border-radius: 12px; padding: 24px; width: 440px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
-  .modal-box h3 { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
-  .modal-box .field { margin-bottom: 14px; }
-  .modal-box .field label { font-size: 12px; font-weight: 600; color: #64748b; display: block; margin-bottom: 4px; }
-  .modal-box .field input { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
-  .modal-box .recommend { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #166534; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; line-height: 1.5; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
-  .btn-cancel { background: #f1f5f9; color: #475569; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
-  .btn-confirm { background: var(--accent); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
-  .btn-confirm:disabled { opacity: .4; cursor: not-allowed; }
+  .modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .modal-box { background: var(--card); border-radius: var(--radius-xl); padding: 32px; width: 460px; max-width: 92vw; box-shadow: var(--shadow-lg); }
+  .modal-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 20px; color: var(--text); letter-spacing: -0.03em; }
+  .modal-box .field { margin-bottom: 18px; }
+  .modal-box .field label { font-size: 14px; font-weight: 650; color: var(--text); display: block; margin-bottom: 6px; }
+  .modal-box .field input { width: 100%; padding: 12px 16px; border: 1.5px solid #d4d4d9; border-radius: var(--radius); font-size: 15px; color: var(--text); font-family: inherit; transition: all .2s; background: #fafbfc; }
+  .modal-box .field input:focus { outline: none; border-color: var(--accent); background: #fff; box-shadow: 0 0 0 4px var(--accent-ring); }
+  .modal-box .recommend { background: var(--accent-light); border: 1px solid #dbeafe; border-radius: var(--radius); padding: 14px 18px; font-size: 13px; color: #1e40af; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+  .btn-cancel { background: #f3f4f6; color: var(--text-body); border: none; padding: 11px 24px; border-radius: 22px; cursor: pointer; font-weight: 600; font-size: 14px; font-family: inherit; transition: all .2s; }
+  .btn-cancel:hover { background: #e5e7eb; }
+  .btn-confirm { background: var(--accent); color: #fff; border: none; padding: 11px 24px; border-radius: 22px; cursor: pointer; font-weight: 600; font-size: 14px; font-family: inherit; transition: all .2s; }
+  .btn-confirm:hover:not(:disabled) { background: var(--accent-hover); }
+  .btn-confirm:disabled { opacity: .35; cursor: not-allowed; }
 
-  /* 拖拽状态 */
   body.dragging * { cursor: grabbing !important; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d0d0d5; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #b0b0b5; }
 </style>
 </head>
 <body>
 <div id="app">
   <!-- ========== 左侧面板 ========== -->
   <aside class="side-panel">
-    <h1>📋 报告工具</h1>
+    <div class="brand">报告工具</div>
     <p class="side-subtitle">配置编辑器 v3.3</p>
 
-    <button class="btn btn-primary" @click="showNewProjectModal = true">
-      <span style="font-size:16px;">＋</span> 新建项目
-    </button>
-    <button class="btn btn-secondary" @click="importProject">
-      <span style="font-size:15px;">📂</span> 导入项目
-    </button>
+    <button class="btn btn-primary" @click="showNewProjectModal = true">新建项目</button>
+    <button class="btn btn-secondary" @click="importProject">导入项目</button>
 
-    <!-- 项目信息 -->
     <div v-if="projectHandle" class="proj-info">
       <div class="name">{{ config.projectName }}</div>
       <div class="path" :title="projectPath">{{ projectPath }}</div>
       <div class="row">
         <span class="dot" :class="inWorkspace ? 'dot-ok' : 'dot-warn'"></span>
-        <span v-if="inWorkspace" style="color:#16a34a;">✓ 在工作区内</span>
-        <span v-else style="color:#d97706;">⚠ 不在工作区内</span>
+        <span v-if="inWorkspace" style="color:#16a34a;font-weight:600;">在工作区内</span>
+        <span v-else style="color:#d97706;font-weight:600;">不在工作区内</span>
       </div>
-      <div class="row" style="color:#64748b;">
-        章节进度: {{ doneCount }}/{{ config.chapters.length }}
-        <span v-if="config.chapters.length === 0" style="color:var(--muted);">（待添加）</span>
+      <div class="row" style="color:var(--text-body);">
+        章节进度: <b style="color:var(--text);">{{ doneCount }}</b> / {{ config.chapters.length }}
+        <span v-if="config.chapters.length === 0" style="color:var(--text-tertiary);">（待添加）</span>
       </div>
     </div>
 
-    <button v-if="projectHandle" class="btn btn-save" @click="saveConfig">
-      💾 保存配置
-    </button>
+    <button v-if="projectHandle" class="btn btn-save" @click="saveConfig">保存配置</button>
 
     <div v-if="!apiAvailable" class="compat-warn">
-      ⚠️ 当前浏览器不支持文件系统访问<br>请使用 <b>Chrome</b> 或 <b>Edge</b> 打开此工具
+      当前浏览器不支持文件系统访问，请使用 <b>Chrome</b> 或 <b>Edge</b> 打开此工具。
     </div>
   </aside>
 
   <!-- ========== 右侧编辑区 ========== -->
   <main class="main-area">
-    <!-- 快捷导航 -->
     <div class="quick-nav">
-      <span class="nav-intro">💡 <b>使用流程：</b>左侧新建/导入项目 → 右侧配置版式、主题和章节 → 到 Claude Code 说"开始生成报告"</span>
-      <button class="btn-nav btn-nav-outline" onclick="window.open('../UI-lib/index.html','_blank')">🧩 浏览组件库</button>
-      <a class="btn-nav btn-nav-ghost" href="guide.html" target="_blank">📖 查看用户指引 →</a>
+      <span class="nav-intro"><b>使用流程</b> &mdash; 左侧新建或导入项目，右侧配置版式、主题和章节，然后到 Claude Code 说「开始生成报告」即可。</span>
+      <button class="btn-nav btn-nav-outline" onclick="window.open('../UI-lib/index.html','_blank')">浏览组件库</button>
+      <a class="btn-nav btn-nav-ghost" href="guide.html" target="_blank">查看用户指引</a>
     </div>
 
-    <!-- 告警条 -->
     <div v-if="projectHandle && !inWorkspace" class="warn-bar">
-      ⚠️ 该项目不在 AIProject 工作区内，Claude Code 可能无法读取 UI-lib 组件库和约束文档。建议用「新建项目」重新保存到 <code>report-tool/projects/</code> 下。
+      <span style="flex-shrink:0;font-size:16px;">!</span>
+      <span>该项目不在 AIProject 工作区内，Claude Code 可能无法读取 UI-lib 组件库和约束文档。建议用「新建项目」重新保存到 <code>report-tool/projects/</code> 下。</span>
     </div>
 
-    <!-- 空状态 -->
     <div v-if="!projectHandle" class="empty-state">
-      <div class="icon">📋</div>
       <div class="title">欢迎使用报告工具</div>
-      <div class="sub">点击左侧「新建项目」开始创建新报告，或「导入项目」加载已有项目配置</div>
+      <div class="sub">点击左侧「新建项目」开始创建新报告，或「导入项目」加载已有项目配置。</div>
     </div>
 
-    <!-- 配置区 -->
     <template v-if="projectHandle">
-      <!-- ===== ① 基本设置 ===== -->
+      <!-- ===== 1 基本设置 ===== -->
       <section>
         <div class="section-header" @click="toggleSection('basic')">
           <div class="sh-left">
-            <span class="step-num">①</span>
+            <span class="step-num">1</span>
             <h2>基本设置</h2>
-            <span class="sh-desc">— 版式 · 主题 · 受众 · 生成模式</span>
+            <span class="sh-desc">版式 · 主题 · 受众 · 生成模式</span>
           </div>
-          <span class="section-toggle" :class="{ open: expandedSections.basic }">▼</span>
+          <span class="section-toggle" :class="{ open: expandedSections.basic }">&#9660;</span>
         </div>
         <div v-show="expandedSections.basic" class="section-body">
 
-          <span class="section-label">版式 — 决定报告的页面结构和输出格式</span>
+          <span class="section-label">选择版式</span>
           <div class="card-grid">
             <div v-for="lay in layoutDefs" :key="lay.id"
                  class="select-card" :class="{ active: config.layout === lay.id }" @click="config.layout = lay.id">
               <div class="card-preview-html" v-html="lay.previewHTML"></div>
-              <span class="card-scene" style="margin-bottom:4px;">{{ lay.categoryLabel }}</span>
+              <div class="card-scene" style="margin-bottom:8px;">{{ lay.categoryLabel }}</div>
               <div class="card-title">{{ lay.name }}</div>
               <div class="card-meta">{{ lay.description }}</div>
             </div>
           </div>
 
-          <span class="section-label">主题 — 决定报告的整体配色和视觉风格</span>
+          <span class="section-label">选择主题</span>
           <div class="card-grid">
             <div class="select-card" :class="{ active: config.theme === 'business-bluewhite' }" @click="config.theme = 'business-bluewhite'">
-            
+              <div class="card-preview">
+                <div style="display:flex;gap:3px;width:85%;height:75%;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+                  <span style="flex:1;background:#1e3a5f;"></span>
+                  <span style="flex:1;background:#2563eb;"></span>
+                  <span style="flex:1;background:#f8fafc;"></span>
+                  <span style="flex:1;background:#e2e8f0;"></span>
+                  <span style="flex:1;background:#3b82f6;"></span>
+                </div>
+              </div>
               <div class="card-title">商务蓝白</div>
-              <div class="card-meta">深蓝主色 · 白色背景</div>
+              <div class="card-meta">深蓝主色 · 白色背景 · 沉稳专业</div>
               <span class="card-scene">企业报告 · 方案书 · 正式文档</span>
             </div>
             <div class="select-card" :class="{ active: config.theme === 'rc-lightblue' }" @click="config.theme = 'rc-lightblue'">
-              
+              <div class="card-preview">
+                <div style="display:flex;gap:3px;width:85%;height:75%;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+                  <span style="flex:1;background:#0c3a5c;"></span>
+                  <span style="flex:1;background:#0284c7;"></span>
+                  <span style="flex:1;background:#e0f2fe;"></span>
+                  <span style="flex:1;background:#7dd3fc;"></span>
+                  <span style="flex:1;background:#0369a1;"></span>
+                </div>
+              </div>
               <div class="card-title">RC 浅蓝</div>
-              <div class="card-meta">蓝色系 · 清新明快</div>
+              <div class="card-meta">蓝色系 · 清新明快 · 现代感</div>
               <span class="card-scene">演示文稿 · 培训材料 · 汇报</span>
             </div>
             <div class="select-card" :class="{ active: config.theme === 'dark-tech' }" @click="config.theme = 'dark-tech'">
-              
+              <div class="card-preview">
+                <div style="display:flex;gap:3px;width:85%;height:75%;border-radius:6px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+                  <span style="flex:1;background:#0f0f23;"></span>
+                  <span style="flex:1;background:#6366f1;"></span>
+                  <span style="flex:1;background:#1e1e3a;"></span>
+                  <span style="flex:1;background:#a78bfa;"></span>
+                  <span style="flex:1;background:#22d3ee;"></span>
+                </div>
+              </div>
               <div class="card-title">暗黑科技</div>
-              <div class="card-meta">深色背景 · 霓虹点缀</div>
+              <div class="card-meta">深色背景 · 霓虹点缀 · 科技感</div>
               <span class="card-scene">数据产品 · 技术方案 · 仪表盘</span>
             </div>
           </div>
 
-          <!-- 受众 + 用途 -->
           <div class="inline-fields">
             <div class="field-group">
-              <label>👥 受众</label>
+              <label>受众</label>
               <select v-model="config.audience">
                 <option value="">请选择目标受众</option>
-                <option value="内部">内部培训</option>
-                <option value="项目">项目交付</option>ß
-                <option value="客户">客户展示</option>
-                <option value="高管">高管汇报</option>
+                <option value="高管">高管汇报 — 战略决策层，关注结论和趋势</option>
+                <option value="客户">客户展示 — 外部合作方，关注价值和信任感</option>
+                <option value="内部">内部团队 — 关注细节和可操作性</option>
+                <option value="项目">项目交付 — 正式交付物，需完整严谨</option>
               </select>
-              <span class="hint">不同受众会影响报告的语气、专业深度和侧重点。</span>
+              <span class="hint">不同受众影响报告的语气、专业深度和侧重点。</span>
             </div>
             <div class="field-group">
-              <label>📌 用途</label>
+              <label>用途</label>
               <select v-model="config.purpose">
                 <option value="">请选择报告用途</option>
-                <option value="交付文档">交付文档</option>
-                <option value="培训材料">培训材料</option>
-                <option value="汇报展示">汇报展示</option>
+                <option value="汇报展示">汇报展示 — PPT 风格，突出要点</option>
+                <option value="培训材料">培训材料 — 循序渐进，图文并茂</option>
+                <option value="交付文档">交付文档 — 正式完整，适合打印归档</option>
+                <option value="方案建议书">方案建议书 — 说服力强，突出方案优势</option>
               </select>
-              <span class="hint">不同用途会影响报告的结构组织、页面密度和信息呈现方式。</span>
+              <span class="hint">不同用途影响报告的结构组织和信息呈现方式。</span>
             </div>
           </div>
 
           <span class="section-label">生成模式</span>
-          <div style="display:flex;gap:32px;align-items:center;">
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-              <input type="radio" v-model="config.mode" value="chapter" style="accent-color:var(--accent);width:16px;height:16px;">
-              <span><b>分章生成</b> <span style="color:var(--muted);font-size:12px;">（推荐）— 每章独立生成和修改，适合 3 章以上长报告，逐章精调</span></span>
+          <div style="display:flex;gap:40px;align-items:center;">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:15px;color:var(--text-body);">
+              <input type="radio" v-model="config.mode" value="chapter" style="accent-color:var(--accent);width:18px;height:18px;">
+              <span><b style="color:var(--text);">分章生成</b> <span style="color:var(--text-tertiary);font-size:13px;">（推荐）— 每章独立生成和修改，适合 3 章以上长报告</span></span>
             </label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-              <input type="radio" v-model="config.mode" value="full" style="accent-color:var(--accent);width:16px;height:16px;">
-              <span><b>一次性生成</b> <span style="color:var(--muted);font-size:12px;">— 适合 3-5 页短报告，一次输出全部内容</span></span>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:15px;color:var(--text-body);">
+              <input type="radio" v-model="config.mode" value="full" style="accent-color:var(--accent);width:18px;height:18px;">
+              <span><b style="color:var(--text);">一次性生成</b> <span style="color:var(--text-tertiary);font-size:13px;">— 适合 3-5 页短报告，一次输出全部内容</span></span>
             </label>
           </div>
         </div>
       </section>
 
-      <!-- ===== ② 章节定义 ===== -->
+      <!-- ===== 2 章节定义 ===== -->
       <section>
         <div class="section-header" @click="toggleSection('chapters')">
           <div class="sh-left">
-            <span class="step-num">②</span>
+            <span class="step-num">2</span>
             <h2>章节定义</h2>
-            <span class="sh-desc">— {{ config.chapters.length }} 个章节 · {{ doneCount }} 个已完成</span>
+            <span class="sh-desc">{{ config.chapters.length }} 个章节 · {{ doneCount }} 个已完成</span>
           </div>
-          <span class="section-toggle" :class="{ open: expandedSections.chapters }">▼</span>
+          <span class="section-toggle" :class="{ open: expandedSections.chapters }">&#9660;</span>
         </div>
         <div v-show="expandedSections.chapters" class="section-body">
 
-          <!-- 口语化大纲提示 -->
           <div class="outline-hint">
-            <span style="font-size:16px;flex-shrink:0;">💡</span>
-            <span><b>内容大纲可以是口语化的初步想法</b>，不需要写出正式文案。AI 会自动将你口语化的大纲扩展为正式的报告内容。不确定的数据和细节可留空或标记为 [待补充]，AI 不会编造。越详细效果越好，但不必追求完美措辞。</span>
+            <span class="tip-badge">TIP</span>
+            <span><b>内容大纲写成口语化的初步想法即可</b>，不需要追求正式文案。AI 会自动将你口语化的大纲扩展为正式的报告内容。不确定的数据和细节可以留空或标记为「待补充」，AI 不会编造。越详细效果越好，但不必追求完美措辞。</span>
           </div>
 
-          <!-- 空状态 -->
-          <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--muted);padding:28px;font-size:14px;background:#fafafa;border-radius:8px;">
+          <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--text-tertiary);padding:40px;font-size:15px;background:#fafbfc;border-radius:var(--radius-lg);">
             暂无章节，点击下方按钮开始配置报告结构
           </div>
 
-          <!-- 章节列表 -->
           <div class="chapter-list">
             <div v-for="(ch, idx) in config.chapters" :key="ch.id"
                  class="chapter-item"
@@ -371,42 +510,39 @@
                  @dragend="onDragEnd">
               <div class="chapter-header" @click="toggleChapter(ch.id)">
                 <div class="ch-left">
-                  <span class="drag-handle" title="拖拽排序">⋮⋮</span>
+                  <span class="drag-handle" title="拖拽排序">&vellip;</span>
                   <span class="order">第{{ idx + 1 }}章</span>
                   <span class="ch-title">{{ ch.title || '未命名' }}</span>
                   <span class="status-dot" :class="'st-' + ch.status" :title="statusLabel(ch.status)"></span>
+                  <span style="font-size:12px;color:var(--text-tertiary);font-weight:500;">{{ statusLabel(ch.status) }}</span>
                 </div>
                 <div class="ch-actions" @click.stop>
-                  <button @click="moveChapter(idx, -1)" :disabled="idx===0" title="上移">▲</button>
-                  <button @click="moveChapter(idx, 1)" :disabled="idx===config.chapters.length-1" title="下移">▼</button>
-                  <button @click="removeChapter(idx)" style="color:#ef4444;" title="删除">✕</button>
+                  <button @click="moveChapter(idx, -1)" :disabled="idx===0" title="上移">&#9650;</button>
+                  <button @click="moveChapter(idx, 1)" :disabled="idx===config.chapters.length-1" title="下移">&#9660;</button>
+                  <button class="danger" @click="removeChapter(idx)" title="删除">&times;</button>
                 </div>
               </div>
               <div v-show="ch._open" class="chapter-body">
-                <!-- 标题 -->
                 <div class="field-group">
-                  <label>📝 章节标题</label>
+                  <label>章节标题</label>
                   <input v-model="ch.title" placeholder="如：封面、产品表现概览、收益归因分析">
                   <span class="hint">给章节起一个简洁的名字，会显示在报告目录和页面标题中。</span>
                 </div>
-                <!-- 描述 -->
                 <div class="field-group">
-                  <label>📄 内容描述（Claude 生成指令）</label>
+                  <label>内容描述（Claude 生成指令）</label>
                   <textarea v-model="ch.desc" placeholder="用口语描述这一章要展示什么即可，AI 会自动扩展为正式文案..." rows="3"></textarea>
-                  <span class="hint">尽量详细地告诉 Claude：<b>主题是什么、包含哪些关键信息、大概几页、排版布局想要怎样</b>。写越具体，生成效果越好。例如：<br>"展示核心KPI：七日年化收益率2.15%（↑）、产品规模156.8亿（↑）。用3列数据卡片网格布局，每个卡片显示指标名+数值+环比趋势，约1页。"</span>
+                  <span class="hint">尽量详细地告诉 Claude：主题是什么、包含哪些关键信息、大概几页、排版布局想要怎样。写越具体效果越好。例如：<br>"展示核心KPI：七日年化收益率 2.15%（上升），产品规模 156.8 亿（上升）。用 3 列数据卡片网格布局，每个卡片显示指标名 + 数值 + 环比趋势，约 1 页。"</span>
                 </div>
-                <!-- 状态 -->
                 <div class="field-group">
-                  <label>📌 状态</label>
+                  <label>状态</label>
                   <select v-model="ch.status">
-                    <option value="pending">○ 待生成 — 尚未开始</option>
-                    <option value="draft">● 草稿 — 已生成，待确认</option>
-                    <option value="done">✓ 完成 — 已确认，可组装</option>
+                    <option value="pending">待生成 — 尚未开始</option>
+                    <option value="draft">草稿 — 已生成，待确认</option>
+                    <option value="done">完成 — 已确认，可组装</option>
                   </select>
                 </div>
-                <!-- 组件选择 -->
                 <div class="field-group">
-                  <label>🧩 组件库（点击缩略图勾选，可多选）</label>
+                  <label>组件库（点击缩略图勾选，可多选）</label>
                   <div class="comp-grid">
                     <div v-for="comp in allComponents" :key="comp.id"
                          class="comp-thumb"
@@ -414,7 +550,7 @@
                          @click="toggleComponent(ch, comp.id)"
                          :title="comp.desc">
                       <div class="mini">
-                        <template v-if="comp.id==='stat-card'"><div class="mini-stat"><span class="big"></span><div style="display:flex;flex-direction:column;gap:3px;"><span class="sm"></span><span class="sm"></span></div></div></template>
+                        <template v-if="comp.id==='stat-card'"><div class="mini-stat"><span class="big"></span><div style="display:flex;flex-direction:column;gap:4px;"><span class="sm"></span><span class="sm"></span></div></div></template>
                         <template v-else-if="comp.id==='timeline'"><div class="mini-timeline"><span class="dot"></span><span class="line"></span><span class="dot"></span><span class="line"></span><span class="dot"></span></div></template>
                         <template v-else-if="comp.id==='process-step'"><div class="mini-process"><span class="step">1</span><span class="step">2</span><span class="step">3</span></div></template>
                         <template v-else-if="comp.id==='circle-number'"><div class="mini-circle"><span class="c">1</span><span class="c">2</span><span class="c">3</span></div></template>
@@ -427,41 +563,36 @@
                       <div class="comp-name">{{ comp.label }}</div>
                     </div>
                   </div>
-                  <span class="hint">选中组件的缩略图会高亮。Claude 生成时会读取对应组件的 HTML 模板来组装。如不满意组件库选项，可在下方自定义。</span>
+                  <span class="hint">选中组件的缩略图会高亮。Claude 生成时会读取对应组件的 HTML 模板来组装。如对组件库选项不满意，可在下方自定义。</span>
                 </div>
-                <!-- 自定义布局 -->
                 <div class="field-group">
-                  <label>🎨 自定义展示需求（可选，非空时优先于上面的组件选择）</label>
-                  <textarea v-model="ch.customLayout" placeholder="不选组件库的组件时，在此自由描述你想要的布局方式。例如：左右两栏，左边放3个核心数字，右边放趋势图..."></textarea>
+                  <label>自定义展示需求（可选，非空时优先于组件选择）</label>
+                  <textarea v-model="ch.customLayout" placeholder="不选组件库的组件时，在此自由描述你想要的布局方式。例如：左右两栏，左边放 3 个核心数字，右边放趋势图..."></textarea>
                   <span class="hint">如果填写了此字段，Claude 会优先按你的描述生成，忽略上方勾选的组件列表。</span>
                 </div>
-                <!-- 数据文件 -->
                 <div class="field-group">
-                  <label>📊 数据来源</label>
-                  <input v-model="ch.dataFile" placeholder="如：data/产品数据.csv （填写文件名及要用到的表/列/数据范围）">
-                  <span class="hint">填写 <b>data/ 目录下的文件名</b>，并说明要用到文件的哪些数据。例如：<br>"data/产品数据.csv，使用'七日年化收益率'和'万份收益'两列近3个月的数据" 或 "data/收益归因分析.docx，提取五维度贡献度表格"</span>
+                  <label>数据来源</label>
+                  <input v-model="ch.dataFile" placeholder="如：data/产品数据.csv（填写文件名及要用到的表/列/数据范围）">
+                  <span class="hint">填写 data/ 目录下的文件名，并说明要用到文件的哪些数据。例如：<br>"data/产品数据.csv，使用「七日年化收益率」和「万份收益」两列近 3 个月的数据"，或 "data/收益归因分析.docx，提取五维度贡献度表格"。</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 添加章节按钮 — 在内容下方 -->
-          <button class="btn-add-chapter" @click="addChapter">
-            ＋ 添加章节
-          </button>
+          <button class="btn-add-chapter" @click="addChapter">添加章节</button>
 
         </div>
       </section>
 
-      <!-- ===== ③ 操作 ===== -->
+      <!-- ===== 3 操作 ===== -->
       <section>
         <div class="section-header" @click="toggleSection('actions')">
           <div class="sh-left">
-            <span class="step-num">③</span>
+            <span class="step-num">3</span>
             <h2>操作</h2>
-            <span class="sh-desc">— 组装 · 预览 · 保存</span>
+            <span class="sh-desc">组装 · 预览 · 保存</span>
           </div>
-          <span class="section-toggle" :class="{ open: expandedSections.actions }">▼</span>
+          <span class="section-toggle" :class="{ open: expandedSections.actions }">&#9660;</span>
         </div>
         <div v-show="expandedSections.actions" class="section-body">
           <div class="op-bar">
@@ -476,10 +607,10 @@
             <button class="btn-sm btn-outline" @click="previewReport">
               预览完整报告
             </button>
-            <span class="save-hint">⏱ 每5分钟自动保存一次 · 上次: {{ lastSavedText }}</span>
+            <span class="save-hint">每 5 分钟自动保存 &middot; 上次: {{ lastSavedText }}</span>
           </div>
-          <p style="font-size:13px;color:#64748b;margin-top:12px;line-height:1.6;">
-            ℹ️ 配置保存到项目目录的 <code>config.json</code>。切换到 <b>Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b>"开始生成报告"</b>或项目名，Claude 会自动读取配置并按章节逐章生成。
+          <p style="font-size:14px;color:var(--text-body);margin-top:18px;line-height:1.75;">
+            配置保存到项目目录的 <code style="background:#f3f4f6;padding:2px 6px;border-radius:4px;font-size:13px;">config.json</code>。切换到 <b style="color:var(--text);">Claude Code</b> 对话（工作目录为 AIProject 根目录），说<b style="color:var(--text);">"开始生成报告"</b>或项目名，Claude 会自动读取配置并按章节逐章生成。
           </p>
         </div>
       </section>
@@ -489,14 +620,14 @@
   <!-- ========== 新建项目弹窗 ========== -->
   <div v-if="showNewProjectModal" class="modal-mask" @click.self="showNewProjectModal = false">
     <div class="modal-box">
-      <h3>🆕 新建项目</h3>
+      <h3>新建项目</h3>
       <div class="field">
         <label>项目名称</label>
         <input v-model="newProjectName" placeholder="如：货币基金分析报告" @keyup.enter="createProject" ref="nameInput">
       </div>
       <div class="recommend">
-        <span>💡</span>
-        <span>推荐保存到 <code style="background:#dcfce7;padding:1px 4px;border-radius:3px;">report-tool/projects/</code> 目录下，确保 Claude Code 能自动发现并读取组件库和约束文档。</span>
+        <span style="flex-shrink:0;font-weight:700;">TIP</span>
+        <span>推荐保存到 <code style="background:rgba(37,99,235,.1);padding:2px 6px;border-radius:4px;">report-tool/projects/</code> 目录下，确保 Claude Code 能自动发现并读取组件库和约束文档。</span>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" @click="showNewProjectModal = false">取消</button>
@@ -513,7 +644,6 @@ const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vu
 
 createApp({
   setup() {
-    // --- 状态 ---
     const apiAvailable = ref(false);
     const projectHandle = ref(null);
     const projectPath = ref('');
@@ -526,7 +656,6 @@ createApp({
     const dragOverIdx = ref(null);
     const nameInput = ref(null);
 
-    // 区块折叠状态（默认全部展开）
     const expandedSections = ref({
       basic: true,
       chapters: true,
@@ -545,7 +674,6 @@ createApp({
       chapters: []
     });
 
-    // 版式定义（previewHTML 来自参考项目，CSS 微缩模型）
     const layoutDefs = [
       {
         id: 'a4-landscape',
@@ -558,31 +686,17 @@ createApp({
             <div class="text-[7px] font-bold leading-tight">报告标题</div>
             <div class="text-[5px] opacity-80">服务方案</div>
             <div class="flex-1 grid grid-cols-3 gap-1 mt-1">
-              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5">
-                <div class="h-1 w-4 bg-blue-200 rounded"></div>
-                <div class="h-2 bg-gray-200 rounded"></div>
-                <div class="h-1.5 bg-gray-100 rounded w-3/4"></div>
-              </div>
-              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5">
-                <div class="h-1 w-4 bg-blue-200 rounded"></div>
-                <div class="h-2 bg-gray-200 rounded"></div>
-                <div class="h-1.5 bg-gray-100 rounded w-3/4"></div>
-              </div>
-              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5">
-                <div class="h-1 w-4 bg-blue-200 rounded"></div>
-                <div class="h-2 bg-gray-200 rounded"></div>
-                <div class="h-1.5 bg-gray-100 rounded w-3/4"></div>
-              </div>
+              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5"><div class="h-1 w-4 bg-blue-200 rounded"></div><div class="h-2 bg-gray-200 rounded"></div><div class="h-1.5 bg-gray-100 rounded w-3/4"></div></div>
+              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5"><div class="h-1 w-4 bg-blue-200 rounded"></div><div class="h-2 bg-gray-200 rounded"></div><div class="h-1.5 bg-gray-100 rounded w-3/4"></div></div>
+              <div class="bg-white/90 rounded p-1.5 flex flex-col gap-0.5"><div class="h-1 w-4 bg-blue-200 rounded"></div><div class="h-2 bg-gray-200 rounded"></div><div class="h-1.5 bg-gray-100 rounded w-3/4"></div></div>
             </div>
-            <div class="flex justify-between text-[5px] opacity-60 mt-auto">
-              <span>服务背景与客户需求</span><span>02</span>
-            </div>
+            <div class="flex justify-between text-[5px] opacity-60 mt-auto"><span>服务背景与客户需求</span><span>02</span></div>
           </div>
         </div>`
       },
       {
         id: 'slide-deck',
-        name: 'PPT翻页演示',
+        name: 'Slide 翻页演示',
         category: 'slide',
         categoryLabel: '演示 · 汇报培训',
         description: '全屏Slide式演示，键盘/点击翻页。适合培训和汇报展示，像真实PPT。',
@@ -594,20 +708,13 @@ createApp({
               <div class="h-1 w-full bg-gray-200 rounded mb-0.5"></div>
               <div class="h-1 w-5/6 bg-gray-200 rounded mb-2"></div>
               <div class="grid grid-cols-2 gap-1 mt-1">
-                <div class="bg-white rounded p-1 shadow-sm border border-gray-100">
-                  <div class="h-1 bg-gray-200 rounded w-2/3 mb-0.5"></div>
-                  <div class="h-0.5 bg-gray-100 rounded w-full"></div>
-                </div>
-                <div class="bg-white rounded p-1 shadow-sm border border-gray-100">
-                  <div class="h-1 bg-gray-200 rounded w-2/3 mb-0.5"></div>
-                  <div class="h-0.5 bg-gray-100 rounded w-full"></div>
-                </div>
+                <div class="bg-white rounded p-1 shadow-sm border border-gray-100"><div class="h-1 bg-gray-200 rounded w-2/3 mb-0.5"></div><div class="h-0.5 bg-gray-100 rounded w-full"></div></div>
+                <div class="bg-white rounded p-1 shadow-sm border border-gray-100"><div class="h-1 bg-gray-200 rounded w-2/3 mb-0.5"></div><div class="h-0.5 bg-gray-100 rounded w-full"></div></div>
               </div>
             </div>
             <div class="absolute bottom-2 right-2 flex items-center gap-1">
               <span class="text-[5px] text-gray-400 bg-white/80 px-1 rounded-full">3/12</span>
-              <span class="h-1.5 w-1.5 bg-blue-600 rounded-full"></span>
-              <span class="h-1.5 w-1.5 bg-gray-300 rounded-full"></span>
+              <span class="h-1.5 w-1.5 bg-blue-600 rounded-full"></span><span class="h-1.5 w-1.5 bg-gray-300 rounded-full"></span>
             </div>
           </div>
         </div>`
@@ -622,23 +729,14 @@ createApp({
           <div class="h-full flex flex-col" style="background:linear-gradient(180deg,#08101f 0%,#0b1020 46%,#0f172a 100%);color:#f5f7fb;">
             <div class="flex justify-between items-center px-2 py-1.5 border-b border-white/10" style="backdrop-filter:blur(18px);">
               <div class="h-1.5 w-8 bg-white/30 rounded"></div>
-              <div class="flex gap-1.5">
-                <div class="h-1 w-4 bg-white/20 rounded"></div>
-                <div class="h-1 w-4 bg-white/20 rounded"></div>
-              </div>
+              <div class="flex gap-1.5"><div class="h-1 w-4 bg-white/20 rounded"></div><div class="h-1 w-4 bg-white/20 rounded"></div></div>
             </div>
             <div class="flex-1 p-2 space-y-1.5">
               <div class="h-2 bg-white/20 rounded w-2/3"></div>
               <div class="h-1.5 bg-white/10 rounded w-full"></div>
               <div class="flex gap-1 mt-1">
-                <div class="flex-1 bg-white/10 rounded p-1">
-                  <div class="h-1 bg-blue-400/40 rounded w-1/2 mb-0.5"></div>
-                  <div class="h-0.5 bg-white/10 rounded w-full"></div>
-                </div>
-                <div class="flex-1 bg-white/10 rounded p-1">
-                  <div class="h-1 bg-green-400/40 rounded w-1/2 mb-0.5"></div>
-                  <div class="h-0.5 bg-white/10 rounded w-full"></div>
-                </div>
+                <div class="flex-1 bg-white/10 rounded p-1"><div class="h-1 bg-blue-400/40 rounded w-1/2 mb-0.5"></div><div class="h-0.5 bg-white/10 rounded w-full"></div></div>
+                <div class="flex-1 bg-white/10 rounded p-1"><div class="h-1 bg-green-400/40 rounded w-1/2 mb-0.5"></div><div class="h-0.5 bg-white/10 rounded w-full"></div></div>
               </div>
             </div>
           </div>
@@ -658,7 +756,6 @@ createApp({
       { id: 'timeline-chart', label: '时间线图', desc: 'ECharts时间序列，展示趋势变化' },
     ];
 
-    // --- 计算属性 ---
     const totalChapters = computed(() => config.value.chapters.length);
     const doneCount = computed(() => config.value.chapters.filter(c => c.status === 'done').length);
     const lastSavedText = computed(() => {
@@ -667,63 +764,27 @@ createApp({
       return `${t.getHours().toString().padStart(2,'0')}:${t.getMinutes().toString().padStart(2,'0')}:${t.getSeconds().toString().padStart(2,'0')}`;
     });
 
-    // --- 工具方法 ---
-    function statusLabel(s) {
-      return { pending: '待生成', draft: '草稿', done: '完成' }[s] || s;
-    }
-    function generateId() {
-      return 'ch-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
-    }
-    function nowISO() {
-      return new Date().toISOString();
-    }
-
-    // 通过 URL 检测工具是否在 AIProject 内
+    function statusLabel(s) { return { pending: '待生成', draft: '草稿', done: '完成' }[s] || s; }
+    function generateId() { return 'ch-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6); }
+    function nowISO() { return new Date().toISOString(); }
     function detectWorkspace() {
       const href = window.location.href;
       return href.includes('AIProject') || href.includes('aiproject');
     }
 
-    // 初始配置（含默认2个章节）
     function makeInitialConfig(name) {
       const now = nowISO();
       return {
-        projectName: name,
-        createdAt: now,
-        updatedAt: now,
-        layout: 'a4-landscape',
-        theme: 'business-bluewhite',
-        mode: 'chapter',
-        audience: '',
-        purpose: '',
+        projectName: name, createdAt: now, updatedAt: now,
+        layout: 'a4-landscape', theme: 'business-bluewhite', mode: 'chapter',
+        audience: '', purpose: '',
         chapters: [
-          {
-            id: generateId(),
-            order: 1,
-            title: '封面',
-            desc: '报告封面页。包含：报告标题、副标题（简述报告目标）、日期、团队/机构名称。设计风格简洁大气，突出标题。',
-            components: ['hero-card'],
-            customLayout: null,
-            dataFile: null,
-            status: 'pending',
-            _open: true
-          },
-          {
-            id: generateId(),
-            order: 2,
-            title: '内容概览',
-            desc: '报告核心内容概览。展示关键数据和主要结论，用数据卡片网格布局呈现核心KPI，附简要文字说明。约1-2页。',
-            components: ['stat-card'],
-            customLayout: null,
-            dataFile: null,
-            status: 'pending',
-            _open: false
-          }
+          { id: generateId(), order: 1, title: '封面', desc: '报告封面页。包含：报告标题、副标题（简述报告目标）、日期、团队/机构名称。设计风格简洁大气，突出标题。', components: ['hero-card'], customLayout: null, dataFile: null, status: 'pending', _open: true },
+          { id: generateId(), order: 2, title: '内容概览', desc: '报告核心内容概览。展示关键数据和主要结论，用数据卡片网格布局呈现核心KPI，附简要文字说明。约1-2页。', components: ['stat-card'], customLayout: null, dataFile: null, status: 'pending', _open: false }
         ]
       };
     }
 
-    // --- 文件操作 ---
     async function writeConfigToHandle(handle, cfg) {
       const fileHandle = await handle.getFileHandle('config.json', { create: true });
       const writable = await fileHandle.createWritable();
@@ -736,44 +797,31 @@ createApp({
       const file = await fileHandle.getFile();
       const text = await file.text();
       const cfg = JSON.parse(text);
-      // 兼容旧配置：给章节加 _open 字段
-      if (cfg.chapters) {
-        cfg.chapters.forEach(ch => { if (ch._open === undefined) ch._open = false; });
-      }
+      if (cfg.chapters) { cfg.chapters.forEach(ch => { if (ch._open === undefined) ch._open = false; }); }
       return cfg;
     }
 
-    // --- 区块折叠 ---
-    function toggleSection(key) {
-      expandedSections.value[key] = !expandedSections.value[key];
-    }
+    function toggleSection(key) { expandedSections.value[key] = !expandedSections.value[key]; }
 
-    // --- 核心操作 ---
     async function createProject() {
       const name = newProjectName.value.trim();
       if (!name) return;
       showNewProjectModal.value = false;
       newProjectName.value = '';
-
       try {
         const parentHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
         const projHandle = await parentHandle.getDirectoryHandle(name, { create: true });
-        // 创建必要子目录
         await projHandle.getDirectoryHandle('data', { create: true });
         await projHandle.getDirectoryHandle('output', { create: true });
-
         const initialConfig = makeInitialConfig(name);
         await writeConfigToHandle(projHandle, initialConfig);
-
         projectHandle.value = projHandle;
         projectPath.value = projHandle.name;
         config.value = initialConfig;
         inWorkspace.value = detectWorkspace();
         lastSaved.value = new Date();
       } catch (e) {
-        if (e.name !== 'AbortError') {
-          alert('创建项目失败: ' + e.message);
-        }
+        if (e.name !== 'AbortError') { alert('创建项目失败: ' + e.message); }
       }
     }
 
@@ -781,30 +829,21 @@ createApp({
       try {
         const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
         let cfg;
-        try {
-          cfg = await readConfigFromHandle(handle);
-        } catch {
-          alert('所选文件夹中没有找到 config.json，请确认这是一个有效的报告项目。');
-          return;
-        }
-
+        try { cfg = await readConfigFromHandle(handle); }
+        catch { alert('所选文件夹中没有找到 config.json，请确认这是一个有效的报告项目。'); return; }
         projectHandle.value = handle;
         projectPath.value = handle.name;
         const defaults = makeInitialConfig(cfg.projectName);
         config.value = { ...defaults, ...cfg };
-        // audience / purpose 兼容旧配置
         if (cfg.audience === undefined) config.value.audience = '';
         if (cfg.purpose === undefined) config.value.purpose = '';
-        // chapters 覆盖
         if (cfg.chapters && cfg.chapters.length > 0) {
           config.value.chapters = cfg.chapters.map(ch => ({ ...ch, _open: ch._open ?? false }));
         }
         inWorkspace.value = detectWorkspace();
         lastSaved.value = new Date();
       } catch (e) {
-        if (e.name !== 'AbortError') {
-          alert('导入项目失败: ' + e.message);
-        }
+        if (e.name !== 'AbortError') { alert('导入项目失败: ' + e.message); }
       }
     }
 
@@ -814,25 +853,15 @@ createApp({
         config.value.updatedAt = nowISO();
         await writeConfigToHandle(projectHandle.value, config.value);
         lastSaved.value = new Date();
-      } catch (e) {
-        alert('保存失败: ' + e.message);
-      }
+      } catch (e) { alert('保存失败: ' + e.message); }
     }
 
-    // --- 章节操作 ---
     function addChapter() {
-      const ch = {
-        id: generateId(),
-        order: config.value.chapters.length + 1,
-        title: '',
-        desc: '',
-        components: [],
-        customLayout: null,
-        dataFile: null,
-        status: 'pending',
-        _open: true
-      };
-      config.value.chapters.push(ch);
+      config.value.chapters.push({
+        id: generateId(), order: config.value.chapters.length + 1,
+        title: '', desc: '', components: [], customLayout: null, dataFile: null,
+        status: 'pending', _open: true
+      });
     }
 
     function removeChapter(idx) {
@@ -859,25 +888,17 @@ createApp({
       else ch.components.push(compId);
     }
 
-    // --- 拖拽排序 ---
     function onDragStart(idx, event) {
       dragIdx.value = idx;
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', idx.toString());
       document.body.classList.add('dragging');
     }
-    function onDragOver(idx) {
-      if (dragIdx.value !== null && dragIdx.value !== idx) {
-        dragOverIdx.value = idx;
-      }
-    }
-    function onDragLeave() {
-      dragOverIdx.value = null;
-    }
+    function onDragOver(idx) { if (dragIdx.value !== null && dragIdx.value !== idx) { dragOverIdx.value = idx; } }
+    function onDragLeave() { dragOverIdx.value = null; }
     function onDrop(idx, event) {
       event.preventDefault();
-      const from = dragIdx.value;
-      dragOverIdx.value = null;
+      const from = dragIdx.value; dragOverIdx.value = null;
       if (from === null || from === idx) return;
       const arr = config.value.chapters;
       const [item] = arr.splice(from, 1);
@@ -885,13 +906,8 @@ createApp({
       dragIdx.value = null;
       document.body.classList.remove('dragging');
     }
-    function onDragEnd() {
-      dragIdx.value = null;
-      dragOverIdx.value = null;
-      document.body.classList.remove('dragging');
-    }
+    function onDragEnd() { dragIdx.value = null; dragOverIdx.value = null; document.body.classList.remove('dragging'); }
 
-    // --- 组装与预览 ---
     function assembleReport() {
       if (config.value.chapters.length === 0) return;
       alert('请在 Claude Code 中说"组装报告"，或执行:\nnode report-tool/assemble.cjs ' + projectPath.value);
@@ -901,7 +917,6 @@ createApp({
       alert('请先组装报告，然后在项目文件夹的 output/ 目录下查看 full-report.html');
     }
 
-    // --- 自动保存 ---
     let autoSaveTimer = null;
     function startAutoSave() {
       autoSaveTimer = setInterval(async () => {
@@ -910,27 +925,20 @@ createApp({
             config.value.updatedAt = nowISO();
             await writeConfigToHandle(projectHandle.value, config.value);
             lastSaved.value = new Date();
-          } catch { /* 静默失败 */ }
+          } catch { /* silent */ }
         }
       }, 5 * 60 * 1000);
     }
 
-    // --- 初始化 ---
     onMounted(() => {
       apiAvailable.value = typeof window.showDirectoryPicker === 'function';
       startAutoSave();
     });
 
-    onUnmounted(() => {
-      if (autoSaveTimer) clearInterval(autoSaveTimer);
-    });
+    onUnmounted(() => { if (autoSaveTimer) clearInterval(autoSaveTimer); });
 
-    // 弹窗打开时自动聚焦输入框
     watch(showNewProjectModal, async (val) => {
-      if (val) {
-        await nextTick();
-        if (nameInput.value) nameInput.value.focus();
-      }
+      if (val) { await nextTick(); if (nameInput.value) nameInput.value.focus(); }
     });
 
     return {
