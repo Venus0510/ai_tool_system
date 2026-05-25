@@ -26,3 +26,4 @@
 - 用户不需要知道组件库的内部路径或组件名称，用自然语言描述需求即可
 - 用户不需要知道 config.json 的格式，通过 report-tool/index.html 可视化配置
 - 你负责理解意图、匹配组件、主动建议、按配置执行
+- 生成的报告 HTML 文件必须是自包含的最终交付物：主题 CSS token 必须内联到 `<style>` 标签中，禁止使用相对路径（如 `../../UI-lib/`）引用组件库资源。CDN 绝对 URL 引用（Tailwind、Vue、ECharts）除外

@@ -1,6 +1,6 @@
 # UI 组件库 & 报告工具 · 设计规格文档
 
-> 版本: v3.3 | 2026-05-25 | 配置驱动 + 分章生成 + 可视化选择 + 引导推荐 + 导入告警
+> 版本: v3.4 | 2026-05-25 | 配置驱动 + 分章生成 + 可视化选择 + 引导推荐 + 导入告警 + 报告自包含
 > - v1.0（废弃）：iframe + report 提示词工具双系统
 > - v2.0（废弃）：去掉 report，纯 Claude Code 对话，缺乏项目管理和分步控制
 > - v3.3（当前）：report-tool 纯配置读写工具 + 新建推荐路径引导 + 导入位置检测告警
@@ -65,7 +65,7 @@ AIProject/
 │           ├── chapter-04-comparison.html
 │           ├── chapter-05-team.html
 │           └── output/
-│               └── full-report.html      # 最终组装成品
+│               └── <projectName>.html     # 最终组装成品，以项目名称命名
 │
 ├── config.cjs                            # Hook 配置
 ├── my-design.md                          # 本文件
@@ -353,8 +353,8 @@ Claude 读取 config.json
 方式一（推荐）：node report-tool/assemble.cjs <项目文件夹绝对路径>
   → 脚本读取 config.json → 按 order 合并所有 chapter HTML
     → 提取每个 chapter 的 <body> 内容
-    → 统一页面编号、CSS 引用
-    → 输出 <项目路径>/output/full-report.html
+    → 统一内联主题 CSS、页面编号
+    → 输出 <项目路径>/output/<projectName>.html（以 config.json 中的 projectName 命名）
 
 方式二：Claude 读取所有 status=done 的章节 → 合并输出
 ```
@@ -412,7 +412,16 @@ UI-lib 的结构和规范保持 v2.0 的设计不变。详见 UI-lib/.claude.md�
 - 多轮对话不会超出上下文限制
 - status 字段追踪进度，随时知道完成情况
 
-### 7.4 两层确认，避免跑偏
+### 7.4 报告文件自包含
+
+生成的报告 HTML 必须是自包含的最终交付物。主题 CSS token 必须内联到 `<style>` 标签中，禁止使用相对路径（如 `../../UI-lib/`）引用组件库资源。这样报告文件可以：
+- 脱离项目目录结构，复制到任意位置直接打开
+- 在 Claude Code 客户端预览时正确显示颜色
+- 发送给他人时无需附带整个项目文件夹
+
+CDN 绝对 URL 引用（Tailwind、Vue、ECharts）不受此限制。
+
+### 7.5 两层确认，避免跑偏
 
 ```
 第1层（工具页面）：用户选版式/主题/组件/章节 → 保存 config.json
@@ -464,6 +473,7 @@ UI-lib 的结构和规范保持 v2.0 的设计不变。详见 UI-lib/.claude.md�
 | 2026-05-25 | v3.1 合并 index.html/editor.html 为单页；版式/主题改为平铺卡片；组件选择改为缩略图+自定义描述；去掉复制提示词按钮 |
 | 2026-05-25 | v3.2 左侧改为"新建项目"/"导入项目"两个独立按钮；项目位置自由化，不再限制于 report-tool/projects/；工具定位变为纯配置读写工具 |
 | 2026-05-25 | v3.3 采用方案A：新建时引导推荐路径（report-tool/projects/），导入时检测路径是否在 AIProject 内并显示告警条；新增初始空状态、每5分钟自动保存、浏览器兼容性检测；更新 CLAUDE.md 和 UI-lib/.claude.md 中项目查找逻辑（优先扫描 projects/，未找到询问路径）；assemble.cjs 改为接受绝对路径 |
+| 2026-05-25 | v3.4 修复报告文件自包含问题：主题 CSS token 改为内联到 `<style>` 标签，禁止相对路径引用 UI-lib 资源，确保报告脱离项目目录也可正常打开 |
 
 ---
 
@@ -690,7 +700,7 @@ Claude 读取 config.json
 1. 打开 `report-tool/index.html`，加载项目
 2. 点击底部的 **[组装全部章节]** 按钮
 3. 自动调取所有完成的章节，合并为一个完整 HTML
-4. 输出到 `项目文件夹/output/full-report.html`
+4. 输出到 `项目文件夹/output/<projectName>.html`（以项目名称命名）
 
 **方式二：在 Claude Code 中说"组装报告"**
 - Claude 会读取所有 done 章节，合并输出
@@ -723,7 +733,7 @@ Claude 读取 config.json
 │ 主题       │              │               │                      │
 │ 组件       │ 配置         │ Claude        │ 输出                 │
 │ 模板       │ 版式/主题    │ 逐章生成       │ output/              │
-│            │ 章节/组件    │               │ full-report.html     │
+│            │ 章节/组件    │               │ <projectName>.html   │
 │ 了解       │ 数据绑定     │ 用户确认      │                      │
 │ 可用资源    │              │ 逐章修改       │ 完成！               │
 │            │ 自动保存     │ 直到全部      │                      │

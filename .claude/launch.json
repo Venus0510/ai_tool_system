@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "report-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", "report-tool/企业信贷风险审计报告/output", "-p", "3456", "--cors", "-c-1"],
+      "port": 3456
+    }
+  ]
+}
