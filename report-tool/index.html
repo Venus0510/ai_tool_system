@@ -287,6 +287,45 @@
     cursor: pointer; transition: all .2s; margin-top: 16px; font-family: var(--font);
   }
   .btn-add-chapter:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  /* 批量输入模式 */
+  .mode-tabs { display: flex; gap: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); margin-bottom: 18px; }
+  .mode-tab {
+    flex: 1; padding: 10px 16px; text-align: center; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; background: var(--card); color: var(--text-body);
+    transition: all .2s; font-family: var(--font);
+  }
+  .mode-tab:first-child { border-right: 1px solid var(--border); }
+  .mode-tab.active { background: var(--accent); color: #fff; }
+  .mode-tab:not(.active):hover { background: var(--accent-light); color: var(--accent); }
+  .batch-textarea {
+    width: 100%; min-height: 280px; padding: 16px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-lg); font-size: 14px; line-height: 1.8; resize: vertical;
+    font-family: var(--font); color: var(--text); background: var(--card);
+    transition: border-color .2s;
+  }
+  .batch-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring); }
+  .batch-format-hint {
+    font-size: 12px; color: var(--text-tertiary); margin-top: 8px; line-height: 1.7;
+    padding: 12px 16px; background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border-light);
+  }
+  .batch-format-hint code { background: #e2e8f0; padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+  .batch-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .btn-batch-import {
+    padding: 10px 24px; border: none; border-radius: var(--radius);
+    background: var(--accent); color: #fff; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .2s; font-family: var(--font);
+  }
+  .btn-batch-import:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+  .btn-batch-clear {
+    padding: 10px 20px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--text-body); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all .2s; font-family: var(--font);
+  }
+  .btn-batch-clear:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+  .batch-result { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: var(--radius); font-weight: 500; }
+  .batch-result.ok { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .batch-result.warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
   .btn-tip { position: relative; display: inline-flex; align-items: center; }
   .btn-tip .tooltip { display: none; position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; font-size: 12px; padding: 6px 14px; border-radius: 8px; white-space: nowrap; font-weight: 500; }
   .btn-tip:disabled:hover .tooltip { display: block; }
@@ -492,9 +531,17 @@
             <span><b>内容大纲写成口语化的初步想法即可</b>，不需要追求正式文案。AI 会自动将你口语化的大纲扩展为正式的报告内容。不确定的数据和细节可以留空或标记为「待补充」，AI 不会编造。越详细效果越好，但不必追求完美措辞。</span>
           </div>
 
-          <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--text-tertiary);padding:40px;font-size:15px;background:var(--card-alt);border-radius:var(--radius-lg);">
-            暂无章节，点击下方按钮开始配置报告结构
+          <!-- 添加模式切换 -->
+          <div class="mode-tabs">
+            <button class="mode-tab" :class="{ active: chapterMode === 'single' }" @click="chapterMode = 'single'">逐个添加</button>
+            <button class="mode-tab" :class="{ active: chapterMode === 'batch' }" @click="chapterMode = 'batch'">批量输入</button>
           </div>
+
+          <!-- 逐个添加模式 -->
+          <template v-if="chapterMode === 'single'">
+            <div v-if="config.chapters.length === 0" style="text-align:center;color:var(--text-tertiary);padding:40px;font-size:15px;background:var(--card-alt);border-radius:var(--radius-lg);">
+              暂无章节，点击下方按钮逐个添加
+            </div>
 
           <div class="chapter-list">
             <div v-for="(ch, idx) in config.chapters" :key="ch.id"
@@ -578,6 +625,24 @@
           </div>
 
           <button class="btn-add-chapter" @click="addChapter">添加章节</button>
+          </template>
+
+          <!-- 批量输入模式 -->
+          <template v-if="chapterMode === 'batch'">
+            <div class="batch-format-hint">
+              <b>自由粘贴大纲，AI 智能理解</b> — 无需遵循固定格式。你可以粘贴：<br>
+              · 与 AI 对话生成的结构化大纲（markdown / 纯文本 / 编号列表）<br>
+              · 自己手写的口语化章节想法<br>
+              · 从其他文档复制的报告目录<br><br>
+              Claude Code 会在生成时自动理解你的大纲结构，列出章节供你确认后再逐章生成。越详细效果越好。
+            </div>
+            <textarea class="batch-textarea" v-model="config.chapterOutline"
+              placeholder="在此自由粘贴所有章节内容，格式不限...&#10;&#10;比如：&#10;&#10;封面：展示报告标题、日期、审计主体等基本信息&#10;核心财务指标审计：分析近三年资产负债率、流动比率、利息保障倍数趋势，约2页&#10;贷款用途与资金流向核对：逐笔核对贷款合同约定用途与实际去向，约3页&#10;&#10;或者：&#10;&#10;## 第一章 · 封面与摘要&#10;- 报告封面、审计摘要、风险评级&#10;- 核心结论卡片（3列）&#10;&#10;## 第二章 · 核心财务指标审计&#10;- 资产负债率/流动比率/利息保障倍数趋势分析&#10;- ECharts柱状图对比"></textarea>
+            <div class="batch-actions">
+              <button class="btn-batch-clear" @click="config.chapterOutline = ''; batchResult = null">清空</button>
+            </div>
+            <div v-if="batchResult" class="batch-result" :class="batchResult.type">{{ batchResult.msg }}</div>
+          </template>
 
         </div>
       </section>
@@ -669,6 +734,7 @@ createApp({
       mode: 'chapter',
       audience: '',
       purpose: '',
+      chapterOutline: '',
       chapters: []
     });
 
@@ -775,7 +841,7 @@ createApp({
       return {
         projectName: name, createdAt: now, updatedAt: now,
         layout: 'a4-landscape', theme: 'business-bluewhite', mode: 'chapter',
-        audience: '', purpose: '',
+        audience: '', purpose: '', chapterOutline: '',
         chapters: [
           { id: generateId(), order: 1, title: '封面', desc: '报告封面页。包含：报告标题、副标题（简述报告目标）、日期、团队/机构名称。设计风格简洁大气，突出标题。', components: ['hero-card'], customLayout: null, dataFile: null, status: 'pending', _open: true },
           { id: generateId(), order: 2, title: '内容概览', desc: '报告核心内容概览。展示关键数据和主要结论，用数据卡片网格布局呈现核心KPI，附简要文字说明。约1-2页。', components: ['stat-card'], customLayout: null, dataFile: null, status: 'pending', _open: false }
@@ -835,6 +901,7 @@ createApp({
         config.value = { ...defaults, ...cfg };
         if (cfg.audience === undefined) config.value.audience = '';
         if (cfg.purpose === undefined) config.value.purpose = '';
+        if (cfg.chapterOutline === undefined) config.value.chapterOutline = '';
         if (cfg.chapters && cfg.chapters.length > 0) {
           config.value.chapters = cfg.chapters.map(ch => ({ ...ch, _open: ch._open ?? false }));
         }
@@ -860,6 +927,31 @@ createApp({
         title: '', desc: '', components: [], customLayout: null, dataFile: null,
         status: 'pending', _open: true
       });
+    }
+
+    // 批量输入：原样存储大纲，交给 AI 智能理解
+    const chapterMode = ref('single');
+    const batchResult = ref(null);
+
+    async function saveOutline() {
+      if (!config.value.chapterOutline || !config.value.chapterOutline.trim()) {
+        batchResult.value = { type: 'warn', msg: '请先粘贴章节大纲内容再保存' };
+        return;
+      }
+      if (projectHandle.value) {
+        try {
+          config.value.updatedAt = nowISO();
+          await writeConfigToHandle(projectHandle.value, config.value);
+          lastSaved.value = new Date();
+          batchResult.value = { type: 'ok', msg: '大纲已保存到 ' + projectPath.value + '/config.json！切换到 Claude Code 对话时，AI 会自动理解你的大纲并列出章节结构供确认' };
+        } catch (e) {
+          batchResult.value = { type: 'warn', msg: '保存失败: ' + e.message };
+          return;
+        }
+      } else {
+        batchResult.value = { type: 'ok', msg: '大纲已暂存（未关联项目文件）。新建或导入项目后，点击「保存配置」写入磁盘' };
+      }
+      setTimeout(() => { batchResult.value = null; }, 5000);
     }
 
     function removeChapter(idx) {
@@ -946,7 +1038,8 @@ createApp({
       dragIdx, dragOverIdx, nameInput, expandedSections,
       statusLabel, toggleSection,
       createProject, importProject, saveConfig,
-      addChapter, removeChapter, moveChapter, toggleChapter, toggleComponent,
+      addChapter, chapterMode, batchResult, saveOutline,
+      removeChapter, moveChapter, toggleChapter, toggleComponent,
       onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
       assembleReport, previewReport
     };
