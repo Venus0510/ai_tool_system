@@ -1,7 +1,7 @@
 {
   "projectName": "货币基金分析",
   "createdAt": "2026-05-25T05:39:56.100Z",
-  "updatedAt": "2026-05-25T07:49:12.696Z",
+  "updatedAt": "2026-05-25T08:07:31.663Z",
   "layout": "slide-deck",
   "theme": "business-bluewhite",
   "mode": "chapter",
@@ -14,7 +14,10 @@
       "title": "你好",
       "desc": "啊叭叭叭叭叭叭叭",
       "components": [
-        "hero-card"
+        "hero-card",
+        "timeline",
+        "process-step",
+        "bar-chart"
       ],
       "customLayout": "接口舅舅哦饿",
       "dataFile": "用产品疏忽",
