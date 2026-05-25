@@ -666,5 +666,5 @@ JS 语法验证通过。让我快速过一遍关键区域确认完整性。
 工具引导页，去掉所有icon展示，
 组件库模版文件优化：
 1，把A4横版参考文件combo-a4-bluewhite.html左下角页脚的标题不要，再排查一下其他范围;
+2，把combo-slide-rc.html的翻页上一页下一页改成slide-deck-skeleton.html的小图标翻页；
 2，明确当选了A4横版骨架时，生成的报告内容不可溢出，在可视范围最佳排版布局；
-3，把combo-slide-rc.html的翻页上一页下一页改成slide-deck-skeleton.html的小图标翻页；

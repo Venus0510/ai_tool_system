@@ -258,18 +258,14 @@
 
     <!-- 导航控件 -->
     <div class="nav-fixed fixed right-6 bottom-5 z-50 flex gap-2.5">
-      <button @click="prev" :disabled="current === 0" class="border-0 rounded-full bg-rc-navy text-white font-black px-4 py-2.5 cursor-pointer
-                   shadow-[0_8px_22px_rgba(18,58,99,.24)] hover:bg-[#0b2f52]
-                   disabled:opacity-30 disabled:cursor-default"
-        :class="{ 'opacity-30 cursor-default': current === 0 }">
-        ← 上一页
-      </button>
-      <button @click="next" :disabled="current === total - 1" class="border-0 rounded-full bg-rc-navy text-white font-black px-4 py-2.5 cursor-pointer
-                   shadow-[0_8px_22px_rgba(18,58,99,.24)] hover:bg-[#0b2f52]
-                   disabled:opacity-30 disabled:cursor-default"
-        :class="{ 'opacity-30 cursor-default': current === total - 1 }">
-        下一页 →
-      </button>
+      <button @click="prev" :disabled="current === 0"
+              class="border-0 rounded-full bg-rc-navy text-white font-black px-4 py-2.5 cursor-pointer
+                     shadow-[0_8px_22px_rgba(18,58,99,.24)] hover:bg-[#0b2f52]
+                     disabled:opacity-30 disabled:cursor-default">←</button>
+      <button @click="next" :disabled="current === total - 1"
+              class="border-0 rounded-full bg-rc-navy text-white font-black px-4 py-2.5 cursor-pointer
+                     shadow-[0_8px_22px_rgba(18,58,99,.24)] hover:bg-[#0b2f52]
+                     disabled:opacity-30 disabled:cursor-default">→</button>
     </div>
 
     <div
