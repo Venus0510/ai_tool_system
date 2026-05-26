@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>反洗钱可疑交易审计报告 · 改进建议与行动清单</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style id="token-css">
+:root {
+  --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
+  --bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;--bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+  --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+  --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;--bw-text-inverse:#ffffff;
+  --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+  --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+  --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+  --bw-radius-card:14px;--bw-radius-table:12px;--bw-radius-tag:999px;--bw-radius-process:0 12px 12px 0;
+  --bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);--bw-shadow-process:0 6px 18px rgba(15,23,42,0.06);
+  --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+  --bw-big-number:48px;--bw-big-number-color:var(--bw-primary-500);
+  --bw-process-border:4px solid var(--bw-primary-500);
+  --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+  --primary-300:var(--bw-primary-300);--primary-400:#3b82f6;--primary-500:var(--bw-primary-500);
+  --primary-700:var(--bw-primary-700);--primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+  --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+  --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+  --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+  --radius-card:var(--bw-radius-card);--radius-tag:var(--bw-radius-tag);--shadow-card:var(--bw-shadow-card);
+  --font:var(--bw-font);--accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);
+  --accent-amber:var(--bw-accent-amber);--big-number:var(--bw-big-number);
+  --big-number-color:var(--bw-big-number-color);--table-th-bg:var(--bw-table-th-bg);
+  --table-th-text:var(--bw-table-th-text);--process-border:var(--bw-process-border);
+}
+  </style>
+  <script>tailwind.config={theme:{extend:{colors:{bw:{primary:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',500:'#2563eb',700:'#1e3a8a',800:'#1e40af',900:'#0f172a'},surface:'#ffffff',alt:'#f8fafc',bg:'#f3f6fb',text:'#1f2937',muted:'#64748b',light:'#94a3b8',border:'#e5e7eb'}},fontFamily:{bw:['"Microsoft YaHei"','"PingFang SC"','Arial','sans-serif']}}}}</script>
+  <style>
+    @page{size:A4 landscape;margin:0}
+    .a4-page{width:297mm;height:210mm;padding:18mm 22mm;page-break-after:always;break-after:page;position:relative;overflow:hidden}
+    .a4-page:last-child{page-break-after:auto;break-after:auto}
+    @media print{html,body{width:297mm;height:210mm;background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}.a4-page{margin:0;box-shadow:none}}
+    @media screen{.a4-page{margin:20px auto;box-shadow:0 0 30px rgba(0,0,0,.12);border-radius:4px}}
+  </style>
+</head>
+<body class="bg-bw-bg font-bw">
+<div id="app">
+
+  <!-- 页面一：改进建议流程 + 阈值调整表 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-2" style="color: var(--text);">六、改进建议与行动清单</h2>
+    <p class="text-base max-w-3xl mb-4" style="color: var(--text-muted);">
+      基于前述审计发现，从规则优化、白名单建设、账户管控三个维度提出改进建议与具体行动项。
+    </p>
+
+    <div v-for="(item,i) in recommendations" :key="i"
+         class="py-3 px-4 rounded-r-xl mb-2.5 shadow-md"
+         style="border-left: var(--process-border); background: var(--surface);">
+      <h3 class="text-base font-bold mb-1.5" style="color: var(--primary-700);">
+        <span class="inline-block w-7 h-7 rounded-full text-center text-sm leading-7 mr-2"
+              style="background: var(--primary-100); color: var(--primary-700);">{{ i+1 }}</span>
+        {{ item.title }}
+      </h3>
+      <p class="text-sm leading-relaxed ml-9" style="color: var(--text);">{{ item.desc }}</p>
+    </div>
+
+    <h3 class="text-lg font-bold mt-4 mb-2" style="color: var(--primary-700);">可疑阈值参数调整建议</h3>
+    <div class="rounded-xl overflow-hidden shadow-lg" style="background: var(--surface);">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">规则参数</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">当前值</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">建议值</th>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">调整理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(t,i) in thresholdAdjust" :key="i" class="border-b" style="border-color: var(--border-light);"
+              :style="{ background: i%2===0 ? 'var(--surface)' : 'var(--surface-alt)' }">
+            <td class="p-2 text-xs font-semibold" style="color: var(--text);">{{ t.param }}</td>
+            <td class="p-2 text-center text-xs" style="color: var(--text-muted);">{{ t.current }}</td>
+            <td class="p-2 text-center text-xs font-bold" style="color: var(--primary-700);">{{ t.proposed }}</td>
+            <td class="p-2 text-xs" style="color: var(--text-muted);">{{ t.reason }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">11</div>
+  </section>
+
+  <!-- 页面二：白名单 + 冻结/尽调清单（深色背景收尾） -->
+  <section class="a4-page" style="background: var(--primary-900); color: #fff;">
+    <h2 class="text-3xl font-bold mb-2" style="color: #fff;">六、行动清单（续）</h2>
+    <p class="text-base max-w-3xl mb-4" style="color: rgba(255,255,255,0.65);">
+      行业特征白名单建议与需立即采取管控措施的账户清单，按优先级排序。
+    </p>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08);">
+        <h3 class="text-base font-bold mb-2" style="color: var(--primary-300);">建议新增行业白名单</h3>
+        <div v-for="(w,i) in whitelist" :key="i"
+             class="flex items-center gap-2 py-1.5 border-b" style="border-color: rgba(255,255,255,0.08);">
+          <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                style="background: var(--accent-green); color: #fff;">{{ i+1 }}</span>
+          <div>
+            <div class="text-sm font-semibold" style="color: rgba(255,255,255,0.9);">{{ w.industry }}</div>
+            <div class="text-xs" style="color: rgba(255,255,255,0.5);">{{ w.reason }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="rounded-2xl p-4" style="background: rgba(255,255,255,0.08);">
+        <h3 class="text-base font-bold mb-2" style="color: #f87171;">高优先级行动摘要</h3>
+        <div v-for="(a,i) in actionSummary" :key="i"
+             class="flex justify-between items-center py-2 border-b" style="border-color: rgba(255,255,255,0.08);">
+          <span class="text-sm" style="color: rgba(255,255,255,0.8);">{{ a.item }}</span>
+          <span class="text-xs font-bold" :style="{ color: a.urgent ? 'var(--accent-red)' : 'var(--accent-amber)' }">{{ a.deadline }}</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="text-base font-bold mb-2" style="color: #f87171;">需立即管控账户清单</h3>
+    <div class="rounded-xl overflow-hidden" style="background: rgba(255,255,255,0.06);">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th class="p-2 text-left font-bold" style="color: rgba(255,255,255,0.5);">账户</th>
+            <th class="p-2 text-left font-bold" style="color: rgba(255,255,255,0.5);">风险等级</th>
+            <th class="p-2 text-left font-bold" style="color: rgba(255,255,255,0.5);">建议动作</th>
+            <th class="p-2 text-left font-bold" style="color: rgba(255,255,255,0.5);">理由</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(acc,i) in actionAccounts" :key="i" class="border-b" style="border-color: rgba(255,255,255,0.06);">
+            <td class="p-2 text-xs" style="color: rgba(255,255,255,0.85);">{{ acc.name }}</td>
+            <td class="p-2">
+              <span class="inline-block w-2 h-2 rounded-full mr-1.5" :style="{ background: acc.riskColor }"></span>
+              <span class="text-xs" :style="{ color: acc.riskColor }">{{ acc.riskLevel }}</span>
+            </td>
+            <td class="p-2">
+              <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
+                    :style="{ background: acc.action==='冻结'?'rgba(220,38,38,0.25)':'rgba(217,119,6,0.25)', color: acc.action==='冻结'?'#fca5a5':'#fcd34d' }">
+                {{ acc.action }}
+              </span>
+            </td>
+            <td class="p-2 text-xs" style="color: rgba(255,255,255,0.55);">{{ acc.reason }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.4);">12</div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        recommendations: [
+          { title: '优化可疑阈值参数', desc: '针对当前5万元固定阈值导致大量结构化拆分漏报的问题，建议引入动态阈值机制——对高频交易账户降低触发阈值至2万元，对低频账户维持5万元。同时增加"多笔接近阈值"组合特征，识别刻意规避行为。' },
+          { title: '建设行业特征白名单', desc: '针对电商卖家、政府采购供应商、薪酬代发企业等具有合理高频交易特征的行业，建立特征白名单机制。白名单内账户可豁免部分通用规则，但保留大额和跨境规则监控，减少假阳性误报。' },
+          { title: '加强跨境规则覆盖', desc: '当前跨境监控规则仅覆盖OFAC制裁名单国家，建议扩展至FATF灰名单辖区及BVI、开曼等离岸金融中心。增加"收款方为壳公司"特征检测，与工商登记信息联动验证交易对手方真实性。' },
+          { title: '完善账户生命周期监控', desc: '将休眠账户激活监控窗口从12个月扩展至36个月，并对突然激活的大额交易账户增加增强尽职调查（EDD）环节。引入IP登录地突变实时告警，当登录地与常用地跨越国境时触发人工复核。' },
+          { title: '建立UBO穿透核查机制', desc: '对新开对公账户及高风险个人账户引入UBO穿透核查流程，交叉比对工商登记、税务申报与实际控制人信息。对已识别UBO不一致的存量账户分批开展回溯核查。' },
+        ],
+        thresholdAdjust: [
+          { param: '单笔可疑金额阈值', current: '5 万元', proposed: '2-5 万元（动态）', reason: '高频账户拆分交易集中在4.2-4.9万元区间，固定5万阈值存在明显规避空间' },
+          { param: '多笔聚合时间窗口', current: '24 小时', proposed: '72 小时', reason: '当前识别到部分拆分交易分散在2-3天内完成，扩展窗口可提升覆盖率' },
+          { param: '快进快出资金留存比', current: '<10%', proposed: '<20%', reason: '当前阈值过于严格，漏掉部分18-20%留存率的洗钱交易，适度放宽可提高召回' },
+          { param: '休眠账户判定周期', current: '12 个月', proposed: '36 个月', reason: '部分可疑账户在14-18个月后激活进行洗钱，当前周期覆盖不足' },
+          { param: '跨境交易高风险国家', current: 'OFAC 名单', proposed: 'OFAC + FATF + 离岸中心', reason: 'BVI、开曼等管辖区不在制裁名单但实际洗钱风险高，需扩展覆盖' },
+        ],
+        whitelist: [
+          { industry: '电商平台卖家', reason: '日均数十笔小额收单为正常经营模式，需与拆分洗钱区分' },
+          { industry: '薪酬代发服务机构', reason: '月度集中代发工资产生大量公转私交易，有明确劳动合同备案' },
+          { industry: '政府供应商/承包商', reason: '政府采购项目分期拨款具有备案可查，不应误判为不明来源资金' },
+          { industry: '跨境贸易企业（有海关备案）', reason: '有报关记录的跨境结算应豁免部分跨境快闪规则，避免正常贸易误报' },
+        ],
+        actionSummary: [
+          { item: '规则阈值参数调整上线', deadline: '2周内', urgent: true },
+          { item: '行业白名单首批发布', deadline: '1个月内', urgent: true },
+          { item: '跨境规则扩展（FATF+离岸）', deadline: '1个月内', urgent: true },
+          { item: 'IP登录突变告警上线', deadline: '6周内', urgent: false },
+          { item: 'UBO存量回溯核查', deadline: '3个月内', urgent: false },
+        ],
+        actionAccounts: [
+          { name: '张** (6222****8891)', riskLevel: '极高', riskColor: 'var(--accent-red)', action: '冻结', reason: '疑似人头账户，实际控制人为黄**，涉及结构化+跨境快闪，立即冻结并报送' },
+          { name: 'XX贸易公司 (3200****1024)', riskLevel: '高', riskColor: 'var(--accent-red)', action: '冻结', reason: 'UBO不一致，资金流向BVI壳公司，涉嫌通过循环交易洗钱' },
+          { name: '李** (6228****3356)', riskLevel: '高', riskColor: 'var(--accent-red)', action: '冻结', reason: 'IP频繁跨境跳变，交易集中在深夜，快进快出特征明显' },
+          { name: 'YY科技公司 (3101****5088)', riskLevel: '中高', riskColor: 'var(--accent-amber)', action: '加强尽调', reason: '对手方含高风险地区企业，需进一步核查贸易背景真实性' },
+          { name: '刘** (6217****4421)', riskLevel: '中高', riskColor: 'var(--accent-amber)', action: '加强尽调', reason: '持续12周固定模式拆分交易，需确认是否为代客理财或非法集资' },
+          { name: '陈** (6212****1189)', riskLevel: '中', riskColor: 'var(--accent-amber)', action: '持续监控', reason: '快进快出行为偶发，暂不冻结但纳入月度监控名单' },
+        ],
+      };
+    }
+  }).mount('#app');
+</script>
+</body>
+</html>

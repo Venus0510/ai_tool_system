@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>反洗钱可疑交易审计报告 · 典型可疑模式检出</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style id="token-css">
+:root {
+  --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
+  --bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;--bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+  --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+  --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;--bw-text-inverse:#ffffff;
+  --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+  --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+  --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+  --bw-radius-card:14px;--bw-radius-table:12px;--bw-radius-tag:999px;--bw-radius-process:0 12px 12px 0;
+  --bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);--bw-shadow-process:0 6px 18px rgba(15,23,42,0.06);
+  --bw-cover-bg:linear-gradient(135deg,var(--bw-primary-900),var(--bw-primary-700));
+  --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+  --bw-big-number:48px;--bw-big-number-color:var(--bw-primary-500);
+  --bw-process-border:4px solid var(--bw-primary-500);
+  --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+  --primary-300:var(--bw-primary-300);--primary-400:#3b82f6;--primary-500:var(--bw-primary-500);
+  --primary-700:var(--bw-primary-700);--primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+  --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+  --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+  --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+  --radius-card:var(--bw-radius-card);--radius-tag:var(--bw-radius-tag);--shadow-card:var(--bw-shadow-card);
+  --font:var(--bw-font);--accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);
+  --accent-amber:var(--bw-accent-amber);--big-number:var(--bw-big-number);
+  --big-number-color:var(--bw-big-number-color);--table-th-bg:var(--bw-table-th-bg);
+  --table-th-text:var(--bw-table-th-text);--process-border:var(--bw-process-border);--cover-bg:var(--bw-cover-bg);
+}
+  </style>
+  <script>tailwind.config={theme:{extend:{colors:{bw:{primary:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',500:'#2563eb',700:'#1e3a8a',800:'#1e40af',900:'#0f172a'},surface:'#ffffff',alt:'#f8fafc',bg:'#f3f6fb',text:'#1f2937',muted:'#64748b',light:'#94a3b8',border:'#e5e7eb'}},fontFamily:{bw:['"Microsoft YaHei"','"PingFang SC"','Arial','sans-serif']}}}}</script>
+  <style>
+    @page{size:A4 landscape;margin:0}
+    .a4-page{width:297mm;height:210mm;padding:18mm 22mm;page-break-after:always;break-after:page;position:relative;overflow:hidden}
+    .a4-page:last-child{page-break-after:auto;break-after:auto}
+    @media print{html,body{width:297mm;height:210mm;background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}.a4-page{margin:0;box-shadow:none}}
+    @media screen{.a4-page{margin:20px auto;box-shadow:0 0 30px rgba(0,0,0,.12);border-radius:4px}}
+    .risk-high{color:var(--accent-red)}.risk-mid{color:var(--accent-amber)}.risk-low{color:var(--accent-green)}
+  </style>
+</head>
+<body class="bg-bw-bg font-bw">
+<div id="app">
+
+  <!-- 页面一：三种可疑模式概览 + 检出统计 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-2" style="color: var(--text);">三、典型可疑模式检出</h2>
+    <p class="text-base max-w-3xl mb-4" style="color: var(--text-muted);">
+      基于规则引擎与行为特征模型，识别出结构化交易、循环交易、跨境快闪三类典型可疑模式，
+      以下为各模式的检出统计与识别逻辑。
+    </p>
+
+    <div class="grid grid-cols-3 gap-4 mb-4">
+      <div v-for="mode in suspiciousModes" :key="mode.title"
+           class="rounded-2xl p-4 shadow-lg" style="background: var(--surface);">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-3 h-3 rounded-full" :style="{ background: mode.dotColor }"></span>
+          <h3 class="text-lg font-bold" style="color: var(--primary-700);">{{ mode.title }}</h3>
+        </div>
+        <div class="text-3xl font-bold mb-1" :style="{ color: mode.dotColor }">{{ mode.count }}</div>
+        <p class="text-xs mb-3" style="color: var(--text-muted);">{{ mode.sub }}</p>
+        <div class="border-t pt-2" style="border-color: var(--border-light);">
+          <div class="text-xs" style="color: var(--text-muted);">涉及金额</div>
+          <div class="text-base font-bold" style="color: var(--text);">{{ mode.amount }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-5 gap-4">
+      <div class="col-span-3 rounded-2xl p-4 shadow-lg" style="background: var(--surface);">
+        <h3 class="text-base font-bold mb-1" style="color: var(--primary-700);">各模式检出分布</h3>
+        <div id="chart-mode" style="width:100%;height:240px;"></div>
+      </div>
+      <div class="col-span-2 rounded-2xl p-4 shadow-lg" style="background: var(--surface);">
+        <h3 class="text-base font-bold mb-3" style="color: var(--primary-700);">模式关键指标</h3>
+        <div v-for="item in modeStats" :key="item.label"
+             class="flex justify-between items-center py-2 border-b" style="border-color: var(--border-light);">
+          <span class="text-sm" style="color: var(--text);">{{ item.label }}</span>
+          <span class="text-sm font-bold" :style="{ color: item.color }">{{ item.value }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">05</div>
+  </section>
+
+  <!-- 页面二：识别流程 + 案例表 -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-2" style="color: var(--text);">三、可疑模式识别逻辑与案例</h2>
+    <p class="text-base max-w-3xl mb-3" style="color: var(--text-muted);">
+      三种可疑模式的识别逻辑及典型特征，基于真实交易数据提取的代表性案例。
+    </p>
+
+    <div v-for="(step,i) in detectLogic" :key="i"
+         class="py-3 px-4 rounded-r-xl mb-2.5 shadow-md"
+         style="border-left: var(--process-border); background: var(--surface);">
+      <h3 class="text-base font-bold mb-1.5" style="color: var(--primary-700);">
+        <span class="inline-block w-7 h-7 rounded-full text-center text-sm leading-7 mr-2"
+              style="background: var(--primary-100); color: var(--primary-700);">{{ i+1 }}</span>
+        {{ step.title }}
+      </h3>
+      <p class="text-sm leading-relaxed ml-9" style="color: var(--text);">{{ step.desc }}</p>
+    </div>
+
+    <div class="rounded-xl overflow-hidden shadow-lg mt-3" style="background: var(--surface);">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">案例编号</th>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">可疑模式</th>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">涉及账户</th>
+            <th class="p-2 text-right font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">涉及金额</th>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">特征描述</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(c,i) in cases" :key="i" class="border-b" style="border-color: var(--border-light);"
+              :style="{ background: i%2===0 ? 'var(--surface)' : 'var(--surface-alt)' }">
+            <td class="p-2 font-mono text-xs" style="color: var(--primary-500);">{{ c.id }}</td>
+            <td class="p-2">
+              <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
+                    :style="{ background: c.mode==='结构化交易'?'rgba(220,38,38,0.08)':c.mode==='循环交易'?'rgba(217,119,6,0.08)':'rgba(37,99,235,0.08)', color: c.mode==='结构化交易'?'var(--accent-red)':c.mode==='循环交易'?'var(--accent-amber)':'var(--primary-500)' }">
+                {{ c.mode }}
+              </span>
+            </td>
+            <td class="p-2 font-mono text-xs" style="color: var(--text);">{{ c.accounts }}</td>
+            <td class="p-2 text-right font-bold" style="color: var(--accent-red);">{{ c.amount }}</td>
+            <td class="p-2 text-xs" style="color: var(--text-muted);">{{ c.feature }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">06</div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        suspiciousModes: [
+          { title: '结构化交易', dotColor: 'var(--accent-red)', count: '4,283 组', sub: '拆分规避5万元报告阈值，多笔小额分散转出', amount: '8.62 亿元' },
+          { title: '循环交易', dotColor: 'var(--accent-amber)', count: '1,647 组', sub: 'A→B→C→A 闭环资金路径，疑似资金空转洗钱', amount: '12.35 亿元' },
+          { title: '跨境快闪', dotColor: 'var(--primary-500)', count: '892 组', sub: '入金后24小时内转出至境外账户，资金快进快出', amount: '5.18 亿元' },
+        ],
+        modeStats: [
+          { label: '结构化单组平均笔数', value: '8.6 笔', color: 'var(--text)' },
+          { label: '循环最大层级深度', value: '7 层', color: 'var(--accent-red)' },
+          { label: '跨境涉及国家(高风险)', value: '12 个', color: 'var(--accent-amber)' },
+          { label: '同时命中多模式', value: '326 组', color: 'var(--accent-red)' },
+          { label: '涉及高风险地区', value: '48 组', color: 'var(--accent-amber)' },
+        ],
+        detectLogic: [
+          { title: '结构化交易识别', desc: '扫描同一付款方在24小时内向同一收款方或关联收款方发起多笔（≥5笔）金额均小于5万元（报告阈值）的交易组合。判定标准：单笔金额高度接近（CV<15%），总金额超过20万元，且分散至多个收款账户。' },
+          { title: '循环交易识别', desc: '构建交易对手方有向图，检测3层及以上的闭环路径（A→B→C→...→A）。判定标准：闭环总金额超过50万元，单层资金留存率低于5%（即资金几乎全部流转至下一节点），具有明显的资金空转特征。' },
+          { title: '跨境快闪识别', desc: '筛选境内账户收到大额入金（≥10万元）后24小时内将超过80%资金转出至境外账户的交易。判定标准：境外对手方位于高风险或避税天堂管辖区，且收款后资金去向不明。' },
+        ],
+        cases: [
+          { id: 'AML-C001', mode: '结构化交易', accounts: '张** (6222****8891)', amount: '186 万', feature: '单日发起18笔4.5-4.9万元转账至5个不同个人账户，笔均4.72万，CV仅6.8%' },
+          { id: 'AML-C002', mode: '结构化交易', accounts: '李** (6228****3356)', amount: '142 万', feature: '3日内发起32笔4.2-4.8万元转账，分散至12个收款账户，均规避5万报告线' },
+          { id: 'AML-C003', mode: '循环交易', accounts: 'A公司→B公司→C公司→A公司', amount: '860 万', feature: '7层闭环，涉及3个对公账户+2个个人账户，每层资金留存<3%，疑似空转' },
+          { id: 'AML-C004', mode: '循环交易', accounts: '王**→赵**→钱**→王**', amount: '520 万', feature: '4层闭环循环3轮，关联账户IP均位于同一城市，疑似团伙操作' },
+          { id: 'AML-C005', mode: '跨境快闪', accounts: '陈**→香港渣打****2108', amount: '275 万', feature: '境内入金280万，6小时内转出275万至香港账户，收款方为离岸贸易公司' },
+          { id: 'AML-C006', mode: '跨境快闪', accounts: 'XX贸易公司→新加坡****5592', amount: '436 万', feature: '多笔入金后集中转出，收款方注册地为BVI群岛，无实际贸易背景' },
+          { id: 'AML-C007', mode: '结构化交易', accounts: '刘** (6217****4421)', amount: '98 万', feature: '每周五固定时段发起8-10笔4.3-4.7万元转账，持续12周，模式高度固定' },
+          { id: 'AML-C008', mode: '跨境快闪', accounts: '周**→开曼群岛****3306', amount: '310 万', feature: '3笔分散入金后1小时内集中转出至开曼账户，对手方为匿名壳公司' },
+        ],
+      };
+    },
+    mounted() {
+      this.initModeChart();
+    },
+    methods: {
+      initModeChart() {
+        var colors = this.getChartColors();
+        var chart = echarts.init(document.getElementById('chart-mode'));
+        chart.setOption({
+          grid: { left: '8%', right: '6%', top: 12, bottom: 25 },
+          tooltip: { trigger: 'axis' },
+          xAxis: { type: 'category', data: ['结构化交易','循环交易','跨境快闪'], axisLabel: { fontSize: 11, color: colors.textMuted } },
+          yAxis: { type: 'value', name: '检出数(组)', nameTextStyle: { fontSize: 11, color: colors.textMuted }, axisLabel: { fontSize: 11, color: colors.textMuted } },
+          series: [{
+            type: 'bar', barWidth: '45%',
+            itemStyle: { borderRadius: [6,6,0,0] },
+            data: [
+              { value: 4283, itemStyle: { color: colors.red } },
+              { value: 1647, itemStyle: { color: colors.amber } },
+              { value: 892, itemStyle: { color: colors.primary } },
+            ]
+          }]
+        });
+      },
+      getChartColors() {
+        var style = getComputedStyle(document.documentElement);
+        return {
+          primary: style.getPropertyValue('--primary-500').trim(),
+          red: style.getPropertyValue('--accent-red').trim(),
+          amber: style.getPropertyValue('--accent-amber').trim(),
+          textMuted: style.getPropertyValue('--text-muted').trim(),
+        };
+      }
+    }
+  }).mount('#app');
+</script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>费用报销合规性审计 · 内部培训</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            rc: {
+              navy: '#123a63', blue: '#0f5a96', primary: '#0096d6',
+              'primary-50': '#eef8fc', 'primary-400': '#0096d6',
+              muted: '#7b8088', line: '#d9e4ef', bg: '#eef2f6',
+            }
+          },
+          fontFamily: {
+            display: ['"STKaiti"', '"Kaiti SC"', '"KaiTi"', '"Noto Serif SC"', 'serif'],
+            body: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"Noto Sans SC"', '"Microsoft YaHei"', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style id="token-css">
+    /* ========================================
+       Design Token: RC浅蓝主题 (RC Light Blue)
+       ======================================== */
+    :root {
+      --rc-primary-50:  #eef8fc;
+      --rc-primary-100: #d0eef8;
+      --rc-primary-200: #a3ddf2;
+      --rc-primary-400: #0096d6;
+      --rc-primary-500: #008bc7;
+      --rc-primary-600: #007ba8;
+      --rc-navy:        #123a63;
+      --rc-blue-dark:   #0f5a96;
+      --rc-blue-mid:    #00a6de;
+      --rc-surface:     #ffffff;
+      --rc-bg:          #eef2f6;
+      --rc-text:        #1f2937;
+      --rc-text-dark:   #20242a;
+      --rc-text-muted:  #7b8088;
+      --rc-text-muted2: #65758a;
+      --rc-text-light:  #666a70;
+      --rc-border:      #d9e3ee;
+      --rc-border-dark: #d7e4ef;
+      --rc-line:        #d9e4ef;
+      --rc-accent-green:  #39b54a;
+      --rc-accent-red:    #d13b32;
+      --rc-accent-amber:  #c89007;
+      --rc-accent-cyan:   #178f84;
+      --rc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --rc-font-display: "STKaiti", "Kaiti SC", "KaiTi", "Noto Serif SC", "Microsoft YaHei", serif;
+      --rc-radius-card: 18px;
+      --rc-radius-tag: 999px;
+      --rc-radius-circle: 999px;
+      --rc-shadow-card: 0 8px 24px rgba(18,58,99,0.035);
+      --rc-shadow-circle: 0 14px 38px rgba(0,150,214,0.12);
+      --rc-shadow-nav: 0 8px 22px rgba(18,58,99,0.24);
+      --rc-accent-bar-w: 7px;
+      --rc-nav-bg: var(--rc-navy);
+      /* === 通用变量别名 === */
+      --primary-50:  var(--rc-primary-50);
+      --primary-100: var(--rc-primary-100);
+      --primary-200: var(--rc-primary-200);
+      --primary-300: #a3ddf2;
+      --primary-400: var(--rc-primary-400);
+      --primary-500: var(--rc-primary-500);
+      --primary-700: var(--rc-navy);
+      --primary-800: var(--rc-blue-dark);
+      --primary-900: var(--rc-navy);
+      --surface:     var(--rc-surface);
+      --surface-alt: #f3f6fa;
+      --bg:          var(--rc-bg);
+      --text:        var(--rc-text-dark);
+      --text-muted:  var(--rc-text-muted2);
+      --text-light:  var(--rc-text-light);
+      --text-inverse: #ffffff;
+      --border:      var(--rc-border);
+      --border-light: var(--rc-line);
+      --radius-card: var(--rc-radius-card);
+      --radius-tag:  var(--rc-radius-tag);
+      --radius-circle: var(--rc-radius-circle);
+      --shadow-card: var(--rc-shadow-card);
+      --font:        var(--rc-font);
+      --font-display: var(--rc-font-display);
+      --accent-green:  var(--rc-accent-green);
+      --accent-red:    var(--rc-accent-red);
+      --accent-amber:  var(--rc-accent-amber);
+      --big-number: 48px;
+      --big-number-color: var(--rc-primary-400);
+      --process-border: 4px solid var(--rc-primary-400);
+      --table-th-bg: var(--rc-primary-50);
+      --table-th-text: var(--rc-navy);
+      --tag-bg:      var(--rc-primary-50);
+      --tag-text:    var(--rc-blue-dark);
+      --cover-bg: linear-gradient(135deg, var(--rc-navy), var(--rc-primary-500));
+    }
+  </style>
+
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+    .slide {
+      position: absolute; inset: 0;
+      visibility: hidden; opacity: 0;
+      transition: opacity .22s ease;
+      background: #fff; overflow-y: auto;
+    }
+    .slide.active { visibility: visible; opacity: 1; z-index: 5; }
+
+    /* stat-card 组件 */
+    .stat-card { border-radius: var(--radius-card); padding: 22px 20px; background: var(--surface); border: 1px solid var(--border-light); box-shadow: var(--shadow-card); }
+    .stat-card .num { font-size: var(--big-number); font-weight: 900; color: var(--big-number-color); font-family: var(--font-display); line-height: 1.1; }
+    .stat-card.accent-top { border-top: 5px solid var(--primary-400); }
+    .stat-card h3 { font-size: 16px; font-weight: 700; color: var(--primary-700); margin: 6px 0 4px; }
+    .stat-card p  { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+    /* badge-tag 组件 */
+    .badge { display: inline-flex; align-items: center; border-radius: var(--radius-tag); font-weight: 700; white-space: nowrap; }
+    .badge-sm { padding: 2px 10px; font-size: 12px; }
+    .badge-md { padding: 3px 14px; font-size: 13px; }
+    .badge-fill { background: var(--tag-bg); color: var(--tag-text); }
+    .badge-accent { background: var(--accent-red); color: #fff; }
+    .badge-accent.green { background: var(--accent-green); }
+    .badge-accent.amber { background: var(--accent-amber); }
+    .badge-dot { background: var(--tag-bg); color: var(--tag-text); }
+    .badge-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; background: var(--accent-red); }
+    .badge-dot.green::before { background: var(--accent-green); }
+    .badge-dot.amber::before { background: var(--accent-amber); }
+
+    /* data-table 组件 */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table th { background: var(--table-th-bg); color: var(--table-th-text); font-weight: 700; text-align: left; padding: 10px 14px; border-bottom: 2px solid var(--primary-200); }
+    .data-table td { padding: 9px 14px; border-bottom: 1px solid var(--border-light); color: var(--text); }
+    .data-table.striped tbody tr:nth-child(even) { background: #f8fafd; }
+    .data-table.compact th, .data-table.compact td { padding: 6px 10px; font-size: 13px; }
+
+    /* process-step 组件 */
+    .process-step { position: relative; padding: 16px 20px 16px 28px; margin-bottom: 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border-light); }
+    .process-step::before { content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 5px; border-radius: 3px; background: var(--primary-400); }
+    .process-step h3 { font-size: 17px; font-weight: 700; color: var(--primary-700); margin: 0 0 4px; }
+    .process-step p  { font-size: 13px; color: var(--text-muted); margin: 0; line-height: 1.5; }
+    .process-step .step-num { font-family: var(--font-display); font-size: 28px; font-weight: 900; color: var(--primary-400); }
+
+    @media print {
+      html, body { overflow: visible; height: auto; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .slide { position: relative; visibility: visible; opacity: 1; height: 100vh; page-break-after: always; }
+      .nav-fixed { display: none !important; }
+    }
+  </style>
+</head>
+<body class="font-body">
+
+<div id="app">
+  <main class="relative w-screen h-screen overflow-hidden bg-white">
+
+    <!-- ===== Slide 0: 封面 ===== -->
+    <section class="slide active" :class="{ active: current === 0 }">
+      <div class="relative w-full h-full px-[7.2vw] py-[8.8vh] overflow-hidden">
+        <div style="position:absolute;left:0;top:24vh;width:7px;height:34vh;background:var(--primary-400);"></div>
+        <h1 class="mt-[8.5vh] max-w-[1180px] font-display text-[clamp(42px,6.1vw,78px)] font-black tracking-[.08em] leading-tight"
+            style="color: var(--primary-400);">
+          {{ deck.cover.title }}
+        </h1>
+        <div class="mt-[21vh] font-display text-[clamp(30px,4.1vw,52px)] font-black tracking-[.04em]"
+             style="color: var(--text-muted);">
+          {{ deck.cover.brand }}
+        </div>
+        <div class="mt-[2.6vh] text-[clamp(24px,3.1vw,42px)] font-extrabold"
+             style="color: var(--text-light);">
+          {{ deck.cover.date }}
+        </div>
+        <div class="absolute left-[7.2vw] bottom-[8.6vh] text-[clamp(40px,5.2vw,72px)] font-black"
+             style="color: var(--text-light);">
+          {{ deck.cover.org }}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 1: 目录 ===== -->
+    <section class="slide" :class="{ active: current === 1 }">
+      <div class="relative w-full h-full px-[7.6vw] py-[7.6vh] overflow-hidden">
+        <div style="position:absolute;left:0;top:18vh;width:7px;height:58vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(14px,1.25vw,20px)] tracking-[.14em] font-extrabold uppercase mb-[1.2vh]"
+             style="color: var(--text-muted);">Contents</div>
+        <h1 class="font-display text-[clamp(42px,5.2vw,72px)] font-black tracking-[.08em] leading-none"
+            style="color: var(--primary-400);">目录</h1>
+
+        <div class="mt-[7.4vh] w-[min(1120px,92vw)]">
+          <div class="grid grid-cols-[minmax(72px,9vw)_1fr] items-center gap-x-[3.1vw] py-[1.55vh] border-b-2 text-[clamp(17px,1.6vw,24px)] font-extrabold"
+               style="border-color: var(--primary-400); color: var(--text);">
+            <span>模块</span><span>主题</span>
+          </div>
+          <div v-for="(toc, i) in deck.tocItems" :key="i"
+               class="grid grid-cols-[minmax(72px,9vw)_1fr] items-center gap-x-[3.1vw] py-[1.55vh] border-b"
+               style="border-color: var(--border-light);">
+            <span class="w-[clamp(44px,5vw,66px)] h-[clamp(44px,5vw,66px)] inline-flex items-center justify-center
+                         rounded-full font-display text-[clamp(22px,2.8vw,38px)] font-black"
+                  style="background: var(--primary-50); color: var(--primary-500);">
+              {{ toc.num }}
+            </span>
+            <span class="text-[clamp(24px,2.85vw,40px)] font-extrabold tracking-[.015em] leading-tight"
+                  style="color: var(--text);">
+              {{ toc.title }}
+            </span>
+          </div>
+        </div>
+
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
+          <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 2: 模块一分隔页 ===== -->
+    <section class="slide" :class="{ active: current === 2 }">
+      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden"
+           style="background: radial-gradient(circle at 88% 18%, var(--primary-100) 0%, var(--primary-100) 18%, transparent 19%), linear-gradient(90deg, rgba(0,150,214,0.055), transparent 34%);">
+        <div style="position:absolute;left:0;top:21vh;width:7px;height:42vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(16px,1.45vw,22px)] font-extrabold tracking-[.14em] uppercase mb-[2.1vh]"
+             style="color: var(--text-muted);">Section Node</div>
+        <div class="flex items-center gap-6 mb-[4.6vh]">
+          <span class="w-[clamp(86px,9.4vw,132px)] h-[clamp(86px,9.4vw,132px)] inline-flex items-center justify-center
+                       rounded-full font-display text-[clamp(42px,5.4vw,74px)] font-black"
+                style="background: var(--primary-50); color: var(--primary-400); box-shadow: 0 14px 38px rgba(0,150,214,0.12);">
+            {{ deck.modules[0].num }}
+          </span>
+          <span class="font-display text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none"
+                style="color: var(--primary-400);">{{ deck.modules[0].label }}</span>
+        </div>
+        <h1 class="max-w-[1180px] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight"
+            style="color: var(--primary-700);">
+          {{ deck.modules[0].title }}
+        </h1>
+        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full"
+             style="background: linear-gradient(90deg, var(--primary-400), var(--primary-400), rgba(0,166,222,0));"></div>
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
+          <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 3: 模块一内容 — 案例冲击 ===== -->
+    <section class="slide" :class="{ active: current === 3 }">
+      <div class="w-full h-full px-12 py-8 overflow-y-auto" style="background: var(--surface-alt);">
+        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b" style="border-color: var(--border);">
+          <div>
+            <div class="text-sm font-extrabold tracking-[.04em] mb-2" style="color: var(--primary-800);">SECTION {{ deck.modules[0].num }}</div>
+            <h1 class="text-4xl font-bold leading-tight mb-2.5" style="color: var(--primary-700);">{{ deck.modules[0].title }}</h1>
+            <p class="text-lg max-w-[980px] leading-relaxed" style="color: var(--text-muted);">{{ deck.modules[0].desc }}</p>
+          </div>
+          <span class="text-6xl font-black leading-none shrink-0" style="color: var(--text-muted); opacity: 0.3;">{{ deck.modules[0].num }}</span>
+        </div>
+
+        <!-- 案例卡片 -->
+        <div class="grid grid-cols-3 gap-4 my-7">
+          <div v-for="(card, j) in deck.modules[0].cards" :key="j"
+               class="border rounded-[18px] p-5 shadow-sm min-h-[160px]"
+               style="background: var(--surface); border-color: var(--border-light);">
+            <span class="badge badge-md" :class="card.tagClass" style="margin-bottom:10px;display:inline-block;">{{ card.tag }}</span>
+            <h3 class="text-lg font-bold mb-2 mt-2" style="color: var(--primary-700);">{{ card.title }}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ card.desc }}</p>
+          </div>
+        </div>
+
+        <!-- 关键数字冲击 -->
+        <div class="grid grid-cols-4 gap-4 mt-5">
+          <div v-for="(stat, j) in deck.modules[0].stats" :key="j" class="stat-card accent-top">
+            <div class="num">{{ stat.num }}</div>
+            <h3>{{ stat.label }}</h3>
+            <p>{{ stat.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 4: 模块二分隔页 ===== -->
+    <section class="slide" :class="{ active: current === 4 }">
+      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden"
+           style="background: radial-gradient(circle at 88% 18%, var(--primary-100) 0%, var(--primary-100) 18%, transparent 19%), linear-gradient(90deg, rgba(0,150,214,0.055), transparent 34%);">
+        <div style="position:absolute;left:0;top:21vh;width:7px;height:42vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(16px,1.45vw,22px)] font-extrabold tracking-[.14em] uppercase mb-[2.1vh]"
+             style="color: var(--text-muted);">Section Node</div>
+        <div class="flex items-center gap-6 mb-[4.6vh]">
+          <span class="w-[clamp(86px,9.4vw,132px)] h-[clamp(86px,9.4vw,132px)] inline-flex items-center justify-center
+                       rounded-full font-display text-[clamp(42px,5.4vw,74px)] font-black"
+                style="background: var(--primary-50); color: var(--primary-400); box-shadow: 0 14px 38px rgba(0,150,214,0.12);">
+            {{ deck.modules[1].num }}
+          </span>
+          <span class="font-display text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none"
+                style="color: var(--primary-400);">{{ deck.modules[1].label }}</span>
+        </div>
+        <h1 class="max-w-[1180px] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight"
+            style="color: var(--primary-700);">
+          {{ deck.modules[1].title }}
+        </h1>
+        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full"
+             style="background: linear-gradient(90deg, var(--primary-400), var(--primary-400), rgba(0,166,222,0));"></div>
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
+          <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 5: 模块二内容 — 灰色地带 ===== -->
+    <section class="slide" :class="{ active: current === 5 }">
+      <div class="w-full h-full px-12 py-8 overflow-y-auto" style="background: var(--surface-alt);">
+        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b" style="border-color: var(--border);">
+          <div>
+            <div class="text-sm font-extrabold tracking-[.04em] mb-2" style="color: var(--primary-800);">SECTION {{ deck.modules[1].num }}</div>
+            <h1 class="text-4xl font-bold leading-tight mb-2.5" style="color: var(--primary-700);">{{ deck.modules[1].title }}</h1>
+            <p class="text-lg max-w-[980px] leading-relaxed" style="color: var(--text-muted);">{{ deck.modules[1].desc }}</p>
+          </div>
+          <span class="text-6xl font-black leading-none shrink-0" style="color: var(--text-muted); opacity: 0.3;">{{ deck.modules[1].num }}</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 my-7">
+          <div v-for="(card, j) in deck.modules[1].cards" :key="j"
+               class="border rounded-[18px] p-5 shadow-sm min-h-[150px]"
+               style="background: var(--surface); border-color: var(--border-light);">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="badge badge-sm" :class="card.badgeClass">{{ card.badge }}</span>
+            </div>
+            <h3 class="text-lg font-bold mb-2" style="color: var(--primary-700);">{{ card.title }}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ card.desc }}</p>
+            <div class="mt-3 pt-3 border-t text-xs font-bold" style="border-color: var(--border-light); color: var(--accent-red);">
+              {{ card.warning }}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-5">
+          <div v-for="(card, j) in deck.modules[1].extraCards" :key="'e'+j"
+               class="border rounded-[18px] p-5 shadow-sm"
+               style="background: var(--surface); border-color: var(--border-light);">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="badge badge-sm" :class="card.badgeClass">{{ card.badge }}</span>
+            </div>
+            <h3 class="text-lg font-bold mb-2" style="color: var(--primary-700);">{{ card.title }}</h3>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ card.desc }}</p>
+            <div class="mt-3 pt-3 border-t text-xs font-bold" style="border-color: var(--border-light); color: var(--accent-red);">
+              {{ card.warning }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 6: 模块三分隔页 ===== -->
+    <section class="slide" :class="{ active: current === 6 }">
+      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden"
+           style="background: radial-gradient(circle at 88% 18%, var(--primary-100) 0%, var(--primary-100) 18%, transparent 19%), linear-gradient(90deg, rgba(0,150,214,0.055), transparent 34%);">
+        <div style="position:absolute;left:0;top:21vh;width:7px;height:42vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(16px,1.45vw,22px)] font-extrabold tracking-[.14em] uppercase mb-[2.1vh]"
+             style="color: var(--text-muted);">Section Node</div>
+        <div class="flex items-center gap-6 mb-[4.6vh]">
+          <span class="w-[clamp(86px,9.4vw,132px)] h-[clamp(86px,9.4vw,132px)] inline-flex items-center justify-center
+                       rounded-full font-display text-[clamp(42px,5.4vw,74px)] font-black"
+                style="background: var(--primary-50); color: var(--primary-400); box-shadow: 0 14px 38px rgba(0,150,214,0.12);">
+            {{ deck.modules[2].num }}
+          </span>
+          <span class="font-display text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none"
+                style="color: var(--primary-400);">{{ deck.modules[2].label }}</span>
+        </div>
+        <h1 class="max-w-[1180px] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight"
+            style="color: var(--primary-700);">
+          {{ deck.modules[2].title }}
+        </h1>
+        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full"
+             style="background: linear-gradient(90deg, var(--primary-400), var(--primary-400), rgba(0,166,222,0));"></div>
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
+          <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 7: 模块三内容 — 审批责任 ===== -->
+    <section class="slide" :class="{ active: current === 7 }">
+      <div class="w-full h-full px-12 py-8 overflow-y-auto" style="background: var(--surface-alt);">
+        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b" style="border-color: var(--border);">
+          <div>
+            <div class="text-sm font-extrabold tracking-[.04em] mb-2" style="color: var(--primary-800);">SECTION {{ deck.modules[2].num }}</div>
+            <h1 class="text-4xl font-bold leading-tight mb-2.5" style="color: var(--primary-700);">{{ deck.modules[2].title }}</h1>
+            <p class="text-lg max-w-[980px] leading-relaxed" style="color: var(--text-muted);">{{ deck.modules[2].desc }}</p>
+          </div>
+          <span class="text-6xl font-black leading-none shrink-0" style="color: var(--text-muted); opacity: 0.3;">{{ deck.modules[2].num }}</span>
+        </div>
+
+        <!-- 审批责任卡片 -->
+        <div class="grid grid-cols-3 gap-4 my-7">
+          <div v-for="(card, j) in deck.modules[2].cards" :key="j"
+               class="border rounded-[18px] p-5 shadow-sm min-h-[140px]"
+               style="background: var(--surface); border-color: var(--border-light);">
+            <h3 class="text-lg font-bold mb-2 flex items-center gap-2" style="color: var(--primary-700);">
+              <span class="text-2xl font-black" style="color: var(--primary-400); font-family: var(--font-display);">{{ j + 1 }}</span>
+              {{ card.title }}
+            </h3>
+            <p class="text-sm leading-relaxed" style="color: var(--text-muted);">{{ card.desc }}</p>
+          </div>
+        </div>
+
+        <!-- 追责对照表 -->
+        <div class="mt-5 border rounded-[18px] p-5" style="background: var(--surface); border-color: var(--border-light);">
+          <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">违规行为与追责对照</h3>
+          <table class="data-table striped compact">
+            <thead><tr>
+              <th v-for="col in deck.modules[2].table.columns" :key="col">{{ col }}</th>
+            </tr></thead>
+            <tbody>
+              <tr v-for="(row, r) in deck.modules[2].table.rows" :key="r">
+                <td v-for="(col, c) in deck.modules[2].table.columns" :key="c">{{ row[col] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 8: 模块四分隔页 ===== -->
+    <section class="slide" :class="{ active: current === 8 }">
+      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden"
+           style="background: radial-gradient(circle at 88% 18%, var(--primary-100) 0%, var(--primary-100) 18%, transparent 19%), linear-gradient(90deg, rgba(0,150,214,0.055), transparent 34%);">
+        <div style="position:absolute;left:0;top:21vh;width:7px;height:42vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(16px,1.45vw,22px)] font-extrabold tracking-[.14em] uppercase mb-[2.1vh]"
+             style="color: var(--text-muted);">Section Node</div>
+        <div class="flex items-center gap-6 mb-[4.6vh]">
+          <span class="w-[clamp(86px,9.4vw,132px)] h-[clamp(86px,9.4vw,132px)] inline-flex items-center justify-center
+                       rounded-full font-display text-[clamp(42px,5.4vw,74px)] font-black"
+                style="background: var(--primary-50); color: var(--primary-400); box-shadow: 0 14px 38px rgba(0,150,214,0.12);">
+            {{ deck.modules[3].num }}
+          </span>
+          <span class="font-display text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none"
+                style="color: var(--primary-400);">{{ deck.modules[3].label }}</span>
+        </div>
+        <h1 class="max-w-[1180px] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight"
+            style="color: var(--primary-700);">
+          {{ deck.modules[3].title }}
+        </h1>
+        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full"
+             style="background: linear-gradient(90deg, var(--primary-400), var(--primary-400), rgba(0,166,222,0));"></div>
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
+          <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 9: 模块四内容 — 数据画像 ===== -->
+    <section class="slide" :class="{ active: current === 9 }">
+      <div class="w-full h-full px-12 py-8 overflow-y-auto" style="background: var(--surface-alt);">
+        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b" style="border-color: var(--border);">
+          <div>
+            <div class="text-sm font-extrabold tracking-[.04em] mb-2" style="color: var(--primary-800);">SECTION {{ deck.modules[3].num }}</div>
+            <h1 class="text-4xl font-bold leading-tight mb-2.5" style="color: var(--primary-700);">{{ deck.modules[3].title }}</h1>
+            <p class="text-lg max-w-[980px] leading-relaxed" style="color: var(--text-muted);">{{ deck.modules[3].desc }}</p>
+          </div>
+          <span class="text-6xl font-black leading-none shrink-0" style="color: var(--text-muted); opacity: 0.3;">{{ deck.modules[3].num }}</span>
+        </div>
+
+        <!-- 关键数字 -->
+        <div class="grid grid-cols-4 gap-4 my-7">
+          <div v-for="(stat, j) in deck.modules[3].stats" :key="j" class="stat-card accent-top">
+            <div class="num">{{ stat.num }}</div>
+            <h3>{{ stat.label }}</h3>
+            <p>{{ stat.desc }}</p>
+          </div>
+        </div>
+
+        <!-- 柱状图占位 + 违规类型分布 -->
+        <div class="grid grid-cols-2 gap-5 mt-5">
+          <div class="border rounded-[18px] p-5 flex items-center justify-center"
+               style="background: var(--surface); border-color: var(--border-light); min-height: 280px;">
+            <div class="text-center" style="color: var(--text-muted);">
+              <div class="text-5xl mb-3">📊</div>
+              <div class="text-lg font-bold">违规类型分布柱状图</div>
+              <div class="text-sm mt-1">（第2轮填充 ECharts 图表）</div>
+            </div>
+          </div>
+          <div class="border rounded-[18px] p-5" style="background: var(--surface); border-color: var(--border-light);">
+            <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">违规类别 TOP5</h3>
+            <table class="data-table striped compact">
+              <thead><tr><th>排名</th><th>违规类别</th><th>占比</th><th>涉及金额</th></tr></thead>
+              <tbody>
+                <tr v-for="(row, r) in deck.modules[3].table.rows" :key="r">
+                  <td style="font-weight:900;color:var(--primary-400);">{{ r + 1 }}</td>
+                  <td>{{ row.category }}</td>
+                  <td>{{ row.pct }}</td>
+                  <td style="color:var(--accent-red);font-weight:700;">{{ row.amount }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 10: 模块五分隔页 ===== -->
+    <section class="slide" :class="{ active: current === 10 }">
+      <div class="relative w-full h-full px-[7.6vw] py-[8.2vh] overflow-hidden"
+           style="background: radial-gradient(circle at 88% 18%, var(--primary-100) 0%, var(--primary-100) 18%, transparent 19%), linear-gradient(90deg, rgba(0,150,214,0.055), transparent 34%);">
+        <div style="position:absolute;left:0;top:21vh;width:7px;height:42vh;background:var(--primary-400);"></div>
+        <div class="text-[clamp(16px,1.45vw,22px)] font-extrabold tracking-[.14em] uppercase mb-[2.1vh]"
+             style="color: var(--text-muted);">Section Node</div>
+        <div class="flex items-center gap-6 mb-[4.6vh]">
+          <span class="w-[clamp(86px,9.4vw,132px)] h-[clamp(86px,9.4vw,132px)] inline-flex items-center justify-center
+                       rounded-full font-display text-[clamp(42px,5.4vw,74px)] font-black"
+                style="background: var(--primary-50); color: var(--primary-400); box-shadow: 0 14px 38px rgba(0,150,214,0.12);">
+            {{ deck.modules[4].num }}
+          </span>
+          <span class="font-display text-[clamp(38px,5vw,68px)] font-black tracking-[.09em] leading-none"
+                style="color: var(--primary-400);">{{ deck.modules[4].label }}</span>
+        </div>
+        <h1 class="max-w-[1180px] text-[clamp(44px,5.35vw,76px)] font-black tracking-[.018em] leading-tight"
+            style="color: var(--primary-700);">
+          {{ deck.modules[4].title }}
+        </h1>
+        <div class="w-[min(560px,48vw)] h-[5px] mt-[5.5vh] rounded-full"
+             style="background: linear-gradient(90deg, var(--primary-400), var(--primary-400), rgba(0,166,222,0));"></div>
+        <div class="absolute left-[7.6vw] right-[7.6vw] bottom-[5.8vh] flex justify-between text-[clamp(13px,1.2vw,18px)] font-bold"
+             style="color: var(--text-muted);">
+          <span>{{ deck.cover.title }}</span><span>{{ deck.cover.brand }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Slide 11: 模块五内容 — 操作指引 ===== -->
+    <section class="slide" :class="{ active: current === 11 }">
+      <div class="w-full h-full px-12 py-8 overflow-y-auto" style="background: var(--surface-alt);">
+        <div class="flex justify-between items-start gap-6 mb-5 pb-3.5 border-b" style="border-color: var(--border);">
+          <div>
+            <div class="text-sm font-extrabold tracking-[.04em] mb-2" style="color: var(--primary-800);">SECTION {{ deck.modules[4].num }}</div>
+            <h1 class="text-4xl font-bold leading-tight mb-2.5" style="color: var(--primary-700);">{{ deck.modules[4].title }}</h1>
+            <p class="text-lg max-w-[980px] leading-relaxed" style="color: var(--text-muted);">{{ deck.modules[4].desc }}</p>
+          </div>
+          <span class="text-6xl font-black leading-none shrink-0" style="color: var(--text-muted); opacity: 0.3;">{{ deck.modules[4].num }}</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-5 my-7">
+          <!-- 左侧：流程步骤 -->
+          <div>
+            <h3 class="text-lg font-bold mb-4" style="color: var(--primary-700);">合规报销五步法</h3>
+            <div v-for="(step, j) in deck.modules[4].steps" :key="j" class="process-step">
+              <div style="display:flex;align-items:baseline;gap:8px;">
+                <span class="step-num">{{ step.num }}</span>
+                <div>
+                  <h3>{{ step.title }}</h3>
+                  <p>{{ step.desc }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 右侧：标准速查表 -->
+          <div class="border rounded-[18px] p-5" style="background: var(--surface); border-color: var(--border-light);">
+            <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">费用类别报销标准速查</h3>
+            <table class="data-table striped compact">
+              <thead><tr>
+                <th v-for="col in deck.modules[4].table.columns" :key="col">{{ col }}</th>
+              </tr></thead>
+              <tbody>
+                <tr v-for="(row, r) in deck.modules[4].table.rows" :key="r">
+                  <td v-for="(col, c) in deck.modules[4].table.columns" :key="c">{{ row[col] }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="mt-4 p-3 rounded-xl text-sm font-bold" style="background: var(--primary-50); color: var(--primary-800);">
+              提示：所有报销需在事发后30日内提交，超期需附加情况说明并经部门负责人审批。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 导航控件 -->
+  <div class="nav-fixed fixed right-6 bottom-5 z-50 flex gap-2.5">
+    <button @click="prev" :disabled="current === 0"
+            class="border-0 rounded-full text-white font-black px-4 py-2.5 cursor-pointer
+                   disabled:opacity-30"
+            style="background: var(--primary-700); box-shadow: 0 8px 22px rgba(18,58,99,0.24);">←</button>
+    <button @click="next" :disabled="current === total - 1"
+            class="border-0 rounded-full text-white font-black px-4 py-2.5 cursor-pointer
+                   disabled:opacity-30"
+            style="background: var(--primary-700); box-shadow: 0 8px 22px rgba(18,58,99,0.24);">→</button>
+  </div>
+  <div class="nav-fixed fixed left-6 bottom-6 z-50 px-3 py-2 rounded-full text-white text-sm"
+       style="background: var(--primary-700); opacity: 0.86;">
+    {{ current + 1 }} / {{ total }}
+  </div>
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        current: 0,
+        total: 12,
+        deck: {
+          cover: {
+            title: '费用报销合规性审计',
+            brand: 'XX公司审计部 · 内部培训专题',
+            date: '2026年5月',
+            org: 'XX公司',
+          },
+          tocItems: [
+            { num: '一', title: '触目惊心：真实案例警示' },
+            { num: '二', title: '你以为合规？灰色地带识别' },
+            { num: '三', title: '签字的代价：审批人责任' },
+            { num: '四', title: '数据说话：违规画像与金额' },
+            { num: '五', title: '正确报销操作指引' },
+            { num: '六', title: '正确报销操作指引' },
+          ],
+          modules: [
+            /* modules[0] — 真实案例 */
+            {
+              num: '一', label: '模块一',
+              title: '触目惊心：真实案例警示',
+              desc: '以下案例均来自近两年审计发现，已做脱敏处理。每一个案例背后，都是真实的职业代价。',
+              cards: [
+                { tag: '虚假报销', tagClass: 'badge-accent', title: '案例A：虚构差旅套取费用', desc: '某部门员工利用虚假行程单和酒店发票，在6个月内累计虚报差旅费8.6万元。审计通过比对考勤记录和交通票据时间线发现异常。当事人被辞退并退还全部款项。' },
+                { tag: '重复报销', tagClass: 'badge-accent amber', title: '案例B：电子发票重复提交', desc: '某项目组3名成员交叉使用同一批电子发票在不同项目中重复报销，涉及招待费和办公用品合计5.2万元。审计系统发票查重功能自动锁定。涉事人员被通报批评并扣发绩效。' },
+                { tag: '审批串通', tagClass: 'badge-accent', title: '案例C：审批人默许违规', desc: '某部门负责人长期默许下属将个人消费以"客户招待"名义报销，累计金额12.3万元。审计抽查招待费明细时发现无对应客户拜访记录。该负责人被免职并移交纪检。' },
+              ],
+              stats: [
+                { num: '47.6万', label: '全年违规金额', desc: '最近年度审计累计发现的违规报销总额' },
+                { num: '23人', label: '涉及人员', desc: '包含申请人、审批人及协同违规人员' },
+                { num: '68%', label: '招待费占比', desc: '违规报销中招待费类目占比最高' },
+                { num: '3起', label: '移送纪检', desc: '因情节严重被移送纪检监察部门' },
+              ],
+            },
+            /* modules[1] — 灰色地带 */
+            {
+              num: '二', label: '模块二',
+              title: '你以为合规？灰色地带识别',
+              desc: '多数违规并非故意造假，而是对边界认知不清。以下场景，你是否也遇到过？',
+              cards: [
+                { badge: '高频违规', badgeClass: 'badge-accent', title: '替票/凑票报销', desc: '实际消费无法取得发票，用其他发票"替代"报销。即使金额一致，发票内容与业务实质不符即构成虚假报销。', warning: '红线：发票内容必须与实际业务一致' },
+                { badge: '易忽视', badgeClass: 'badge-accent amber', title: '拆分报销规避审批', desc: '将一笔大额消费拆分为多笔小额报销，规避上级审批额度限制。系统可识别同一供应商、临近时间的多笔交易。', warning: '红线：故意拆单等同于规避内控' },
+                { badge: '常见误区', badgeClass: 'badge-accent amber', title: '差旅超标"领导同意的"', desc: '口头同意不等于合规。住宿、交通超标必须有书面审批记录，事后补签属于违规操作。', warning: '红线：超标需事前书面审批，非事后补签' },
+              ],
+              extraCards: [
+                { badge: '边界模糊', badgeClass: 'badge-dot amber', title: '招待费与个人消费的模糊边界', desc: '商务宴请中掺杂个人用餐、招待对象不明确、无业务实质的吃喝。审计重点核查"跟谁吃、为什么吃、谈了什么"。', warning: '自查：每次招待是否有明确业务目的和参与人员记录？' },
+                { badge: '隐蔽性强', badgeClass: 'badge-dot', title: '私车公用里程水分', desc: '报销私车公用费用时虚增里程数，或报销的出发地/目的地与实际业务路线不符。审计可通过导航距离比对核实。', warning: '自查：里程是否与实际业务路径和导航距离一致？' },
+              ],
+            },
+            /* modules[2] — 审批责任 */
+            {
+              num: '三', label: '模块三',
+              title: '签字的代价：审批人责任',
+              desc: '审批不是形式、不是人情、更不是"走过场"。每一次签字，都意味着你对报销真实性做出了专业判断。',
+              cards: [
+                { title: '审批 = 背书', desc: '你在报销单上签字的那一刻，就意味着你确认了该笔费用的真实性、合理性和合规性。一旦查出问题，审批人与申请人承担连带责任。' },
+                { title: '流于形式的代价', desc: '"太忙了没细看""他平时很靠谱就没多问"——这些都不是免责理由。审计追责时，审批人无法以"不知情"或"疏忽"为由免除责任。' },
+                { title: '连带追责机制', desc: '根据公司制度，审批人未履行审慎审核义务的，视情节给予警告至降级处分；明知违规仍批准的，与经办人同责处理。' },
+              ],
+              table: {
+                columns: ['违规行为', '经办人处理', '审批人追责', '制度依据'],
+                rows: [
+                  { '违规行为': '虚假发票报销', '经办人处理': '辞退 + 退还', '审批人追责': '降级/免职', '制度依据': '《费用报销管理办法》第18条' },
+                  { '违规行为': '超标准报销', '经办人处理': '退还差额 + 通报', '审批人追责': '警告 + 罚款', '制度依据': '《差旅费管理办法》第12条' },
+                  { '违规行为': '拆分规避审批', '经办人处理': '警告 + 扣绩效', '审批人追责': '通报批评', '制度依据': '《费用报销管理办法》第22条' },
+                  { '违规行为': '重复报销', '经办人处理': '退还 + 记过', '审批人追责': '警告 + 罚款', '制度依据': '《费用报销管理办法》第20条' },
+                  { '违规行为': '虚构招待费', '经办人处理': '辞退 + 司法移送', '审批人追责': '免职 + 纪检', '制度依据': '《员工行为准则》第5条' },
+                ],
+              },
+            },
+            /* modules[3] — 数据画像 */
+            {
+              num: '四', label: '模块四',
+              title: '数据说话：违规画像与金额',
+              desc: '让数字还原违规的全貌。以下数据基于近三年审计发现统计，每一分钱背后都是制度的漏洞和个人的风险。',
+              stats: [
+                { num: '¥ 47.6万', label: '累计违规金额', desc: '最近年度审计发现的违规报销总金额，相当于3名员工的年薪' },
+                { num: '156笔', label: '问题报销单', desc: '涉及违规的报销单据总数，平均每月13笔异常报销' },
+                { num: '¥ 3,051', label: '笔均违规金额', desc: '每笔违规报销的平均金额，最高单笔达4.2万元' },
+                { num: '41%', label: '审批流于形式', desc: '违规报销中审批环节存在明显疏漏的比例，审批人未有效履职' },
+              ],
+              table: {
+                rows: [
+                  { category: '虚假发票/替票', pct: '32%', amount: '¥ 15.2万' },
+                  { category: '超标报销', pct: '25%', amount: '¥ 11.9万' },
+                  { category: '重复报销', pct: '18%', amount: '¥ 8.6万' },
+                  { category: '拆分规避审批', pct: '15%', amount: '¥ 7.1万' },
+                  { category: '虚构招待费', pct: '10%', amount: '¥ 4.8万' },
+                ],
+              },
+            },
+            /* modules[4] — 操作指引 */
+            {
+              num: '五', label: '模块五',
+              title: '正确报销操作指引',
+              desc: '了解规则、遵守流程，是对自己最好的保护。以下五步帮助你和团队远离合规风险。',
+              steps: [
+                { num: '01', title: '事前确认', desc: '费用发生前确认预算归属、费用标准和审批权限。差旅需提前提交申请并获批。' },
+                { num: '02', title: '票据合规', desc: '取得真实、完整、清晰的发票/收据。发票抬头必须为公司全称及税号，内容与实际业务一致。' },
+                { num: '03', title: '材料齐全', desc: '招待费需附参与人名单及业务背景说明；差旅需附行程单和审批记录；大额采购需附比价单。' },
+                { num: '04', title: '及时提交', desc: '费用发生后30日内通过OA系统提交报销申请，超期需附加情况说明并经部门负责人审批。' },
+                { num: '05', title: '审批核实', desc: '审批人必须核实费用真实性、金额合理性、票据合规性和材料完整性后再签字确认。' },
+              ],
+              table: {
+                columns: ['费用类别', '报销标准', '必需附件', '审批层级'],
+                rows: [
+                  { '费用类别': '国内差旅', '报销标准': '住宿≤500元/晚，餐补100元/天', '必需附件': '行程单+发票+审批单', '审批层级': '部门负责人' },
+                  { '费用类别': '商务招待', '报销标准': '人均≤200元/次', '必需附件': '发票+参与人名单+业务说明', '审批层级': '部门负责人+分管领导' },
+                  { '费用类别': '办公用品', '报销标准': '单项≤500元，月累计≤2000元', '必需附件': '发票+明细清单', '审批层级': '部门负责人' },
+                  { '费用类别': '交通出行', '报销标准': '按实际行程实报实销', '必需附件': '行程单/网约车订单截图', '审批层级': '部门负责人' },
+                  { '费用类别': '培训会议', '报销标准': '按审批预算执行', '必需附件': '培训通知+发票+预算审批单', '审批层级': '部门负责人+分管领导' },
+                ],
+              },
+            },
+          ],
+        },
+      };
+    },
+    methods: {
+      next() { if (this.current < this.total - 1) this.current++; },
+      prev() { if (this.current > 0) this.current--; },
+      handleKey(e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); this.next(); }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); this.prev(); }
+      },
+    },
+    mounted() { window.addEventListener('keydown', this.handleKey); },
+    beforeUnmount() { window.removeEventListener('keydown', this.handleKey); },
+  }).mount('#app');
+</script>
+
+</body>
+</html>

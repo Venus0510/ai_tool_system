@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>反洗钱可疑交易审计报告 · 封面与审计范围</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style id="token-css">
+/* ========================================
+   Design Token: 商务蓝白风格 (Business Blue-White)
+   适用场景: A4打印报告、正式商务文档、金融分析报告
+   ======================================== */
+
+:root {
+  /* ---- 色板 ---- */
+  --bw-primary-50:  #eff6ff;
+  --bw-primary-100: #dbeafe;
+  --bw-primary-200: #bfdbfe;
+  --bw-primary-300: #93c5fd;
+  --bw-primary-500: #2563eb;
+  --bw-primary-700: #1e3a8a;
+  --bw-primary-800: #1e40af;
+  --bw-primary-900: #0f172a;
+
+  --bw-surface:       #ffffff;
+  --bw-surface-alt:   #f8fafc;
+  --bw-bg:            #f3f6fb;
+
+  --bw-text:          #1f2937;
+  --bw-text-muted:    #64748b;
+  --bw-text-light:    #94a3b8;
+  --bw-text-inverse:  #ffffff;
+
+  --bw-border:        #e5e7eb;
+  --bw-border-light:  #f1f5f9;
+
+  --bw-accent-green:  #16a34a;
+  --bw-accent-red:    #dc2626;
+  --bw-accent-amber:  #d97706;
+
+  /* ---- 排版 ---- */
+  --bw-font:          "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+  --bw-font-mono:     "SF Mono", "Cascadia Code", monospace;
+
+  --bw-text-h1:       40px;
+  --bw-text-h2:       30px;
+  --bw-text-h3:       18px;
+  --bw-text-body:     15px;
+  --bw-text-sm:       13px;
+  --bw-text-xs:       12px;
+
+  --bw-leading:       1.7;
+  --bw-leading-head:  1.25;
+
+  /* ---- 间距 ---- */
+  --bw-page-padding-x: 22mm;
+  --bw-page-padding-y: 18mm;
+  --bw-card-padding:   18px;
+  --bw-grid-gap:       16px;
+  --bw-section-gap:    24px;
+
+  /* ---- 圆角 ---- */
+  --bw-radius-card:    14px;
+  --bw-radius-table:   12px;
+  --bw-radius-tag:     999px;
+  --bw-radius-process: 0 12px 12px 0;
+
+  /* ---- 阴影 ---- */
+  --bw-shadow-card:    0 8px 24px rgba(15, 23, 42, 0.08);
+  --bw-shadow-process: 0 6px 18px rgba(15, 23, 42, 0.06);
+
+  /* ---- 页面 ---- */
+  --bw-page-width:     297mm;
+  --bw-page-height:    210mm;
+
+  /* ---- 组件 Token ---- */
+  --bw-cover-bg:       linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
+  --bw-table-th-bg:    var(--bw-primary-100);
+  --bw-table-th-text:  var(--bw-primary-700);
+  --bw-tag-bg:         var(--bw-primary-100);
+  --bw-tag-text:       var(--bw-primary-800);
+  --bw-big-number:     48px;
+  --bw-big-number-color: var(--bw-primary-500);
+  --bw-process-border: 4px solid var(--bw-primary-500);
+  --bw-footer-text:    var(--bw-text-light);
+
+  /* === 通用变量别名 === */
+  --primary-50:      var(--bw-primary-50);
+  --primary-100:     var(--bw-primary-100);
+  --primary-200:     var(--bw-primary-200);
+  --primary-300:     var(--bw-primary-300);
+  --primary-400:     #3b82f6;
+  --primary-500:     var(--bw-primary-500);
+  --primary-700:     var(--bw-primary-700);
+  --primary-800:     var(--bw-primary-800);
+  --primary-900:     var(--bw-primary-900);
+  --surface:         var(--bw-surface);
+  --surface-alt:     var(--bw-surface-alt);
+  --bg:              var(--bw-bg);
+  --text:            var(--bw-text);
+  --text-muted:      var(--bw-text-muted);
+  --text-light:      var(--bw-text-light);
+  --text-inverse:    var(--bw-text-inverse);
+  --border:          var(--bw-border);
+  --border-light:    var(--bw-border-light);
+  --radius-card:     var(--bw-radius-card);
+  --radius-tag:      var(--bw-radius-tag);
+  --radius-circle:   999px;
+  --shadow-card:     var(--bw-shadow-card);
+  --font:            var(--bw-font);
+  --font-display:    var(--bw-font);
+  --accent-green:    var(--bw-accent-green);
+  --accent-red:      var(--bw-accent-red);
+  --accent-amber:    var(--bw-accent-amber);
+  --big-number:      var(--bw-big-number);
+  --big-number-color: var(--bw-big-number-color);
+  --process-border:  var(--bw-process-border);
+  --table-th-bg:     var(--bw-table-th-bg);
+  --table-th-text:   var(--bw-table-th-text);
+  --tag-bg:          var(--bw-tag-bg);
+  --tag-text:        var(--bw-tag-text);
+  --cover-bg:        var(--bw-cover-bg);
+}
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bw: {
+              primary: {
+                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                500: '#2563eb', 700: '#1e3a8a', 800: '#1e40af', 900: '#0f172a',
+              },
+              surface: '#ffffff', alt: '#f8fafc', bg: '#f3f6fb',
+              text: '#1f2937', muted: '#64748b', light: '#94a3b8', border: '#e5e7eb',
+            }
+          },
+          fontFamily: {
+            bw: ['"Microsoft YaHei"', '"PingFang SC"', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm;
+      padding: 18mm 22mm;
+      page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { margin: 0; box-shadow: none; }
+    }
+    @media screen {
+      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+    }
+    .divider-line { width: 60px; height: 3px; border-radius: 2px; background: var(--primary-300); }
+    .risk-high { color: var(--accent-red); }
+    .risk-mid  { color: var(--accent-amber); }
+    .risk-low  { color: var(--accent-green); }
+  </style>
+</head>
+<body class="bg-bw-bg font-bw">
+
+<div id="app">
+
+  <!-- ===== 页面一：封面 ===== -->
+  <section class="a4-page flex flex-col justify-center"
+           style="background: var(--cover-bg); color: var(--text-inverse);">
+
+    <div class="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-6 tracking-wider"
+         style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);">
+      内部 · 审计报告
+    </div>
+
+    <h1 class="text-5xl font-bold leading-tight mb-3" style="color: var(--text-inverse);">
+      反洗钱可疑交易<br/>审计报告
+    </h1>
+
+    <div class="divider-line mb-5"></div>
+
+    <div class="grid grid-cols-3 gap-5 mb-7 max-w-3xl">
+      <div>
+        <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">报告编号</div>
+        <div class="text-base font-semibold" style="color: rgba(255,255,255,0.9);">{{ meta.reportNo }}</div>
+      </div>
+      <div>
+        <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">审计期间</div>
+        <div class="text-base font-semibold" style="color: rgba(255,255,255,0.9);">{{ meta.auditPeriod }}</div>
+      </div>
+      <div>
+        <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">被审计主体</div>
+        <div class="text-base font-semibold" style="color: rgba(255,255,255,0.9);">{{ meta.entity }}</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div v-for="card in coverCards" :key="card.title"
+           class="rounded-2xl p-5 shadow-lg"
+           style="background: var(--surface); color: var(--text);">
+        <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
+      </div>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.4);">01</div>
+  </section>
+
+  <!-- ===== 页面二：审计范围与数据概况 ===== -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-2" style="color: var(--text);">一、审计范围与数据概况</h2>
+    <p class="text-base max-w-3xl mb-5" style="color: var(--text-muted);">
+      本次审计覆盖{{ meta.entity }}在{{ meta.auditPeriod }}期间的全量交易流水数据，
+      涉及个人账户、对公账户及跨境交易三类账户类型，基于监管规则引擎与行为特征模型进行全量扫描。
+    </p>
+
+    <!-- 数据规模概览：3列 stat-card(numbered) -->
+    <div class="grid grid-cols-3 gap-4 mb-5">
+      <div v-for="card in scopeCards" :key="card.num"
+           class="rounded-2xl p-5 shadow-lg" style="background: var(--surface);">
+        <div class="text-5xl font-bold mb-2" style="color: var(--big-number-color);">{{ card.num }}</div>
+        <h3 class="text-lg font-bold mb-2" style="color: var(--primary-700);">{{ card.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
+      </div>
+    </div>
+
+    <!-- 审计参数详表 -->
+    <div class="rounded-xl overflow-hidden shadow-lg" style="background: var(--surface);">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th class="p-3 text-left font-bold w-1/4" style="background: var(--table-th-bg); color: var(--table-th-text);">参数项</th>
+            <th class="p-3 text-left font-bold w-1/3" style="background: var(--table-th-bg); color: var(--table-th-text);">设定值</th>
+            <th class="p-3 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in auditParams" :key="row.param" class="border-b" style="border-color: var(--border-light);">
+            <td class="p-3 font-semibold" style="color: var(--text);">{{ row.param }}</td>
+            <td class="p-3" style="color: var(--primary-700);">{{ row.value }}</td>
+            <td class="p-3" style="color: var(--text-muted);">{{ row.note }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 关键指标摘要 -->
+    <div class="grid grid-cols-4 gap-3 mt-4">
+      <div v-for="kpi in kpiSummary" :key="kpi.label"
+           class="rounded-xl p-3 text-center" style="background: var(--surface); border: 1px solid var(--border-light);">
+        <div class="text-2xl font-bold" style="color: var(--big-number-color);">{{ kpi.value }}</div>
+        <div class="text-xs mt-1" style="color: var(--text-muted);">{{ kpi.label }}</div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">02</div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        meta: {
+          reportNo: 'AML-2026-05001',
+          auditPeriod: '2025.01 — 2025.12',
+          entity: 'XX商业银行（样本数据池）',
+        },
+        coverCards: [
+          {
+            title: '数据总览',
+            desc: '本次审计覆盖总交易 1,283,600 笔，涉及 46,820 个账户，总金额 3,826 亿元，涵盖个人储蓄、对公结算及跨境汇兑三类账户。',
+          },
+          {
+            title: '审计目标',
+            desc: '基于人民银行反洗钱监管规则与交易行为特征模型，筛查洗钱风险特征，评估现有反洗钱规则引擎与监测模型的有效性。',
+          },
+          {
+            title: '审计方法',
+            desc: '规则引擎全量扫描 + 行为模式聚类分析 + 穿透式账户追踪，覆盖结构化拆分、循环交易、跨境快闪等典型可疑交易模式。',
+          },
+        ],
+        scopeCards: [
+          { num: '38,200', title: '个人账户', desc: '覆盖个人储蓄账户及结算账户，月均活跃账户 21,500 个，可疑标记率约 2.3%，主要涉及高频小额拆分交易。' },
+          { num: '7,850', title: '对公账户', desc: '覆盖企业结算账户及基本户，涉及批发零售、外贸、科技等行业，大额交易占比 68%，重点关注公转私链路。' },
+          { num: '770', title: '跨境交易', desc: '涉及跨境汇款、外汇兑换及离岸账户往来，对手方覆盖 32 个国家/地区，重点关注高风险及避税天堂管辖区。' },
+        ],
+        auditParams: [
+          { param: '审计起始日期', value: '2025-01-01', note: '涵盖完整自然年度交易数据' },
+          { param: '审计截止日期', value: '2025-12-31', note: '年末结算及集中转账高峰期数据纳入审计' },
+          { param: '单笔可疑阈值', value: '5 万元（人民币）', note: '依据《金融机构大额交易和可疑交易报告管理办法》设定' },
+          { param: '可疑规则版本', value: 'AML-RuleSet v3.2', note: '含 28 条行为特征规则 + 6 条名单匹配规则' },
+          { param: '数据来源系统', value: '核心交易系统 / 网银 / SWIFT', note: '覆盖柜面、网银、手机银行及跨境报文全渠道' },
+          { param: '覆盖分支机构', value: '全辖 128 个网点', note: '含省分行 1 家、市分行 12 家、支行及分理处 115 家' },
+          { param: '名单筛查库', value: '联合国 + OFAC + 公安部', note: '制裁名单、PEP 名单及国内通缉/失信名单联动筛查' },
+        ],
+        kpiSummary: [
+          { label: '交易总笔数', value: '128.4万' },
+          { label: '交易总金额', value: '3,826亿' },
+          { label: '覆盖账户数', value: '46,820' },
+          { label: '标记可疑交易', value: '12,647笔' },
+        ],
+      };
+    }
+  }).mount('#app');
+</script>
+
+</body>
+</html>
