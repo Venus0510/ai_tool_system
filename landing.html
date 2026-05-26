@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Report Studio — 聊天式报告生成系统</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --accent: #2563eb; --accent2: #7c3aed; --accent3: #059669; --accent4: #ea580c;
+  --text: #1e293b; --muted: #64748b; --border: #e2e8f0;
+}
+html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--text); background: #fff; margin: 0; }
+
+.snap-section { scroll-snap-align: start; }
+
+/* Fixed nav */
+.fixed-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; transition: all .3s; }
+.fixed-nav.transparent { background: transparent; box-shadow: none; }
+.fixed-nav.solid { background: rgba(255,255,255,.94); backdrop-filter: blur(14px); box-shadow: 0 1px 8px rgba(0,0,0,.06); }
+.fixed-nav .nav-brand { font-weight: 800; font-size: 16px; text-decoration: none; transition: color .3s; }
+.fixed-nav.transparent .nav-brand { color: #fff; }
+.fixed-nav.solid .nav-brand { color: #0f172a; }
+.fixed-nav .nav-links { display: flex; gap: 22px; align-items: center; }
+.fixed-nav .nav-link { font-size: 13px; font-weight: 600; text-decoration: none; transition: color .15s; }
+.fixed-nav.transparent .nav-link { color: rgba(255,255,255,.78); }
+.fixed-nav.transparent .nav-link:hover { color: #fff; }
+.fixed-nav.solid .nav-link { color: #64748b; }
+.fixed-nav.solid .nav-link:hover { color: var(--accent); }
+
+/* Section tag */
+.section-tag { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 12px; }
+
+/* Hero */
+.gradient-hero { background: linear-gradient(135deg, #0b0f1a 0%, #102040 30%, #1a3a6a 60%, #1e4b8a 100%); position: relative; }
+.hero-orb { position: absolute; border-radius: 50%; filter: blur(100px); }
+.glass-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(10px); }
+.glass-btn:hover { background: rgba(255,255,255,.16); }
+
+/* Feature cards */
+.feature-card { transition: all .25s; cursor: default; }
+.feature-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,.1); }
+
+/* Core feature highlight */
+.core-card { border-radius: 20px; padding: 40px 32px; transition: all .3s; cursor: default; position: relative; overflow: hidden; }
+.core-card:hover { transform: translateY(-4px); }
+.core-card .core-glow { position: absolute; width: 200px; height: 200px; border-radius: 50%; filter: blur(60px); opacity: .15; top: -40px; right: -40px; }
+
+/* Chat mockup */
+.chat-mock { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; max-width: 440px; }
+.chat-msg { display: flex; margin-bottom: 14px; }
+.chat-msg.user { justify-content: flex-end; }
+.chat-msg .bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 12px; line-height: 1.6; }
+.chat-msg.user .bubble { background: #2563eb; color: #fff; border-bottom-right-radius: 4px; }
+.chat-msg.ai .bubble { background: #fff; color: #334155; border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+.chat-msg .avatar { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.chat-msg.ai .avatar { background: #e0e7ff; color: #4338ca; margin-right: 8px; }
+.chat-msg.user .avatar { background: #bfdbfe; color: #1d4ed8; margin-left: 8px; order: 1; }
+
+/* Workflow step */
+.wf-step { position: relative; }
+.wf-step::after { content: ''; position: absolute; left: 23px; top: 48px; bottom: -4px; width: 2px; background: linear-gradient(180deg, #2563eb, #93c5fd); }
+.wf-step:last-child::after { display: none; }
+
+/* Component preview */
+.comp-preview { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 16px 14px; transition: all .25s; cursor: default; }
+.comp-preview:hover { border-color: #93c5fd; box-shadow: 0 4px 16px rgba(37,99,235,.08); }
+.comp-preview .comp-name { font-size: 11px; font-weight: 700; color: #475569; margin-top: 10px; text-align: center; }
+
+/* Preview micro-styles */
+.pv-stat { background: linear-gradient(135deg, #eff6ff, #f8fafc); border-radius: 8px; padding: 12px; text-align: center; }
+.pv-stat .pv-big { font-size: 22px; font-weight: 800; color: #2563eb; }
+.pv-stat .pv-label { font-size: 9px; color: #64748b; margin-top: 2px; }
+.pv-stat .pv-trend { font-size: 9px; color: #16a34a; margin-top: 1px; }
+.pv-hero-card { background: linear-gradient(135deg, #1e3a5f, #2563eb); border-radius: 8px; padding: 14px; }
+.pv-hero-card .pv-title { font-size: 12px; font-weight: 800; color: #fff; }
+.pv-hero-card .pv-sub { font-size: 8px; color: rgba(255,255,255,.7); margin-top: 4px; }
+.pv-table { width: 100%; border-collapse: collapse; }
+.pv-table th { background: #f1f5f9; font-size: 8px; font-weight: 700; padding: 4px 6px; text-align: left; color: #475569; }
+.pv-table td { font-size: 8px; padding: 3px 6px; border-bottom: 1px solid #f1f5f9; color: #64748b; }
+.pv-steps { display: flex; align-items: center; gap: 0; justify-content: center; }
+.pv-steps .pv-dot { width: 14px; height: 14px; border-radius: 50%; background: #2563eb; flex-shrink: 0; }
+.pv-steps .pv-line { width: 18px; height: 2px; background: #bfdbfe; flex-shrink: 0; }
+.pv-badges { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.pv-badge { font-size: 8px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+.pv-circles { display: flex; gap: 8px; justify-content: center; }
+.pv-circle { width: 18px; height: 18px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; }
+.pv-timeline { position: relative; padding-left: 14px; }
+.pv-timeline::before { content: ''; position: absolute; left: 5px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+.pv-tl-item { position: relative; margin-bottom: 8px; padding-left: 10px; }
+.pv-tl-item::before { content: ''; position: absolute; left: -12px; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: #2563eb; }
+.pv-tl-item .pv-tl-title { font-size: 9px; font-weight: 700; color: #334155; }
+.pv-tl-item .pv-tl-desc { font-size: 7px; color: #94a3b8; }
+.pv-bars { display: flex; align-items: flex-end; gap: 6px; height: 48px; justify-content: center; }
+.pv-bar { width: 12px; border-radius: 3px 3px 0 0; }
+.pv-tl-chart { display: flex; align-items: center; justify-content: center; gap: 0; padding: 8px 0; }
+.pv-tl-node { width: 8px; height: 8px; border-radius: 50%; background: #2563eb; flex-shrink: 0; }
+.pv-tl-conn { width: 22px; height: 2px; background: #bfdbfe; flex-shrink: 0; }
+
+/* CTA pulse */
+.cta-btn { animation: pulse-glow 2.5s ease-in-out infinite; }
+@keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,.3); } 50% { box-shadow: 0 0 0 12px rgba(37,99,235,0); } }
+
+/* Data-driven section icons */
+.dd-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============================================================
+ *  PAGE DATA
+ * ============================================================ */
+const S = { name:'AI Report Studio', tagline:'聊天式报告生成系统', desc:'可视化配置 + AI 对话生成 → 自包含 HTML 报告。一句话，一份报告。', ver:'v3.6' };
+const NAV = [
+  { label:'组件库', href:'#lib' },
+  { label:'工作模式', href:'#modes' },
+  { label:'项目流程', href:'#projectFlow' },
+  { label:'核心体验', href:'#core' },
+  { label:'结构与记忆', href:'#arch' },
+];
+const blocks = [
+
+/* ── Hero ── */
+{ id:'hero', type:'hero' },
+  /* ── 组件库预览 ── */
+  { id: 'lib', type: 'libPreviews', tag: '组件库', title: '开箱即用的组件库', subtitle: '9 大组件，在工具页面勾选即用。每个组件都有视觉预览，直观了解生成效果。' },
+
+/* ── 两种工作模式：自由对话重点展示 + 项目驱动简介 ── */
+{ id:'modes', type:'modes', tag:'工作模式', title:'两种模式，灵活切换', subtitle:'自由对话快速验证想法，项目驱动深度打磨交付物。同一套组件库，同一个 Claude。' },
+
+/* ── 项目驱动 + 工作流 合并 ── */
+{ id:'projectFlow', type:'projectFlow', tag:'项目流程', title:'项目驱动：配置一次，持续生成', subtitle:'在可视化工具中创建项目，config.json 持久化保存。Claude 自动读取配置，逐章生成，对话修改，最终组装为自包含 HTML。' },
+
+/* ── 三大核心体验 ── */
+{ id:'core', type:'coreFeatures', tag:'核心体验', title:'全程聊天式，效率拉满', subtitle:'这三项能力让报告生成从"手工排版"变成"对话确认"，真正省时间。',
+  features:[
+    { icon:'💬', title:'全程聊天式交互', color:'#2563eb', desc:'用自然语言描述需求："我要一份A4报告，蓝白配色，有柱状图"。AI 理解意图并推荐方案，确认即生成。<br><br>不需要记任何组件名、路径或语法。所有操作都在对话中完成：选版式、改颜色、调布局、增删内容，说话就行。', points:['口语化需求理解','AI 主动推荐方案','对话中实时修改','零学习成本'] },
+    { icon:'📝', title:'批量导入大纲', color:'#7c3aed', desc:'在工具页面粘贴原始大纲——格式不限，markdown、纯文本、甚至聊天记录。<br><br>AI 智能解析章节结构，自动拆分为可编辑的章节列表。一个专题报告通常十来个章节，3秒粘贴，告别逐章录入。', points:['格式不限，粘贴即用','AI 智能拆分章节','支持 markdown / 纯文本','3 秒完成章节录入'] },
+    { icon:'📊', title:'灵活数据绑定', color:'#ea580c', desc:'支持 CSV、DOCX、PDF、XLSX、TXT 等格式。数据文件放入 data/ 目录，章节配置中一键绑定。<br><br>Claude 生成时自动读取对应数据文件，图表、表格、指标卡自动填充真实数据，无需手动搬运。', points:['CSV / DOCX / PDF / XLSX','章节级数据绑定','AI 自动读取填充','支持多文件组合'] },
+  ] },
+
+/* ── 跨会话记忆 + 结构与数据分离 合并 ── */
+{ id:'arch', type:'archCombine', tag:'结构与记忆', title:'持久记忆 + 敏捷架构', subtitle:'config.json 跨会话记住所有偏好；页面数据与结构分离，分章生成、逐章确认、一键组装，响应更快。',
+  memoryItems:[
+    { icon:'💾', title:'文件即记忆', desc:'所有配置存于 config.json。版式、主题、章节、数据绑定——一个文件全记录。' },
+    { icon:'🔄', title:'跨会话无缝续接', desc:'今天写封面，明天继续第二章。Claude 读取 config.json 自动知道进度。' },
+    { icon:'📦', title:'项目自包含', desc:'配置 + 数据 + 章节 + 成品都在一个文件夹。Git 同步、U 盘拷贝、团队共享。' },
+    { icon:'⏱', title:'5 分钟自动保存', desc:'工具页面定时存盘，手动点"保存配置"也可即时写入，绝不丢进度。' },
+  ],
+  archItems:[
+    { icon:'✂️', title:'分章独立生成', desc:'每章一个 HTML 文件，互不干扰。改第二章不影响第三章，Claude 只加载当前章节上下文，响应更快。', color:'#2563eb' },
+    { icon:'✅', title:'逐章确认迭代', desc:'每章生成后状态标为 draft，用户确认满意才标 done。不满意就在对话中改，改到满意再继续。', color:'#7c3aed' },
+    { icon:'🔧', title:'一键组装输出', desc:'全部 done 后说"组装报告"，Claude 合并所有章节为自包含 HTML，统一样式、页码、打印控制。', color:'#059669' },
+    { icon:'⚡', title:'秒级定位新增', desc:'页面内容全在 blocks 数组中。{ id, type, title, items... }，Ctrl+F 搜 id 直达目标，增删改一目了然。', color:'#ea580c' },
+  ] },
+
+/* ── 能力亮点 ── */
+{ id:'features', type:'featureGrid', tag:'能力亮点', title:'更多值得说的',
+  features:[
+    { icon:'📐', title:'3 种版式骨架', desc:'A4 横版（297×210mm 打印级）、PPT 翻页（全屏演示）、自由滚动（响应式），覆盖所有交付场景。' },
+    { icon:'🎨', title:'3 套主题 Token', desc:'商务蓝白、RC 浅蓝、暗黑科技。CSS Token 内联到输出文件，自包含无依赖。' },
+    { icon:'🏷', title:'6 种受众标签', desc:'高管汇报/客户展示/内部协同/正式交付/培训材料/方案建议。AI 自动调整语气和排版。' },
+    { icon:'🔍', title:'导入位置检测', desc:'导入外部项目时自动检测路径，不在工作区内则告警，避免 Claude 找不到组件库。' },
+    { icon:'🏁', title:'章节状态追踪', desc:'每章 pending → draft → done 三种状态。工具页面可视化进度，随时掌握全局。' },
+    { icon:'📄', title:'自包含输出', desc:'生成报告是独立 HTML，CSS 内联、无外部依赖。可直接打印 A4/PDF 或浏览器展示分发。' },
+  ] },
+
+
+/* ── CTA ── */
+{ id:'cta', type:'cta', title:'准备好开始了？', desc:'用 Chrome 或 Edge 打开 report-tool/index.html，新建项目，定义章节，保存配置，然后在 Claude Code 中说「开始生成报告」。第一份报告，10 分钟搞定。' },
+];
+
+/* ============================================================
+ *  RENDER ENGINE
+ * ============================================================ */
+function wrap(tag, title, subtitle, body, cls, id) {
+  const t = tag ? `<span class="section-tag bg-blue-50 text-blue-600">${tag}</span>` : '';
+  const h = title ? `<h2 class="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight mb-3">${title}</h2>` : '';
+  const s = subtitle ? `<p class="text-slate-500 max-w-3xl leading-relaxed">${subtitle}</p>` : '';
+  return `<section class="snap-section min-h-screen flex items-center py-16 lg:py-20 px-5 ${cls||''}" id="${id||''}"><div class="max-w-6xl mx-auto w-full">${t}${h}${s}${body}</div></section>`;
+}
+
+/* Hero */
+function rHero(b) {
+  return `
+  <header class="snap-section gradient-hero min-h-screen flex items-center px-5 relative overflow-hidden">
+    <div class="hero-orb w-[600px] h-[600px] bg-blue-500/15 -top-60 -right-40"></div>
+    <div class="hero-orb w-[400px] h-[400px] bg-violet-500/10 -bottom-40 -left-20"></div>
+    <div class="hero-orb w-[200px] h-[200px] bg-cyan-400/8 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="max-w-6xl mx-auto w-full relative z-10 py-20">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(12px)">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="text-white/80 text-xs font-medium">${S.ver} · 已通过内部验证</span>
+        </div>
+        <h1 class="text-5xl lg:text-7xl font-extrabold text-white tracking-tight mb-4" style="letter-spacing:-0.03em">${S.name}</h1>
+        <p class="text-2xl lg:text-3xl text-blue-200 font-medium mb-4">${S.tagline}</p>
+        <p class="text-base text-white/55 max-w-lg leading-relaxed mb-10">${S.desc}</p>
+        <div class="flex gap-4 flex-wrap">
+          <a href="report-tool/index.html" target="_blank" class="cta-btn inline-flex items-center gap-2 bg-white text-slate-900 px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-blue-50 transition shadow-xl shadow-black/20 no-underline">打开报告工具 <span class="text-lg">&rarr;</span></a>
+          <a href="#modes" class="inline-flex items-center gap-2 glass-btn text-white px-7 py-3.5 rounded-xl font-bold text-sm no-underline">了解工作模式 <span class="text-lg">&darr;</span></a>
+        </div>
+      </div>
+    </div>
+  </header>`;
+}
+
+/* Modes — 自由对话配聊天预览 */
+function rModes(b) {
+  const chat = `
+  <div class="chat-mock">
+    <div class="chat-msg user"><div class="bubble">我要一份A4报告，蓝白配色，有柱状图和指标卡片</div><div class="avatar">U</div></div>
+    <div class="chat-msg ai"><div class="avatar">C</div><div class="bubble">好的，推荐：<b>A4横版</b>骨架 + <b>商务蓝白</b>主题 + <b>stat-card + bar-chart + data-table</b>。需要几章？</div></div>
+    <div class="chat-msg user"><div class="bubble">5章吧，封面、总览、数据分析、问题发现、改进建议</div><div class="avatar">U</div></div>
+    <div class="chat-msg ai"><div class="avatar">C</div><div class="bubble">收到。正在生成 chapter-01-封面.html…<br>已完成，请查看效果。</div></div>
+    <div class="chat-msg user"><div class="bubble">标题字号再大一点，加个日期</div><div class="avatar">U</div></div>
+    <div class="chat-msg ai"><div class="avatar">C</div><div class="bubble">已修改，标题加大 + 日期已添加。继续下一章？</div></div>
+  </div>`;
+  return wrap(b.tag, b.title, b.subtitle, `
+    <div class="mt-10 flex gap-8 flex-wrap lg:flex-nowrap items-start">
+      <div class="flex-1 min-w-[300px]">
+        <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-7 h-7 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-xl font-bold text-slate-900">自由对话</span>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">模式 A</span>
+          </div>
+          <p class="text-sm text-slate-500 leading-relaxed mb-5">直接在对话中描述需求，没有预先配置。AI 根据你的描述智能推荐版式、主题和组件，确认后一键生成。<br><br><b>适合：</b>快速原型、单页需求、头脑风暴、临时方案。</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-medium px-3 py-1.5 rounded-full bg-blue-50 text-blue-700">口语化交互</span>
+            <span class="text-xs font-medium px-3 py-1.5 rounded-full bg-violet-50 text-violet-700">AI 推荐方案</span>
+            <span class="text-xs font-medium px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700">实时修改</span>
+            <span class="text-xs font-medium px-3 py-1.5 rounded-full bg-amber-50 text-amber-700">零学习成本</span>
+          </div>
+        </div>
+        <div class="mt-6 bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <svg class="w-7 h-7 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span class="text-xl font-bold text-slate-900">项目驱动</span>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">模式 B ★</span>
+          </div>
+          <p class="text-sm text-slate-500 leading-relaxed mb-3">在可视化工具中创建项目，config.json 持久化保存，跨会话记忆，Claude 自动读取逐章生成。<br><br><b>适合：</b>正式报告、长篇交付物、团队协作项目。</p>
+          <a href="#projectFlow" class="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:text-blue-800 transition no-underline">详细了解项目流程 &darr;</a>
+        </div>
+      </div>
+      <div class="flex-1 min-w-[300px] flex justify-center lg:justify-start">
+        <div>
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 text-center lg:text-left">实时对话预览</div>
+          ${chat}
+        </div>
+      </div>
+    </div>
+  `, 'bg-slate-50', b.id);
+}
+
+/* Project Flow — 项目驱动 + 工作流合并 */
+function rProjectFlow(b) {
+  const steps = [
+    { num:1, title:'新建项目', desc:'工具页面点击「新建项目」，输入名称，选择保存位置。自动生成初始 config.json。', icon:'🆕' },
+    { num:2, title:'可视化配置', desc:'选版式（A4横版/Slide翻页/自由滚动）、主题（商务蓝白/RC浅蓝/暗黑科技）、章节结构，批量粘贴大纲。', icon:'⚙️' },
+    { num:3, title:'保存配置', desc:'每 5 分钟自动存盘，config.json 落盘到项目文件夹。关闭浏览器不丢失，下次导入继续。', icon:'💾' },
+    { num:4, title:'Claude 对话生成', desc:'终端说「开始生成报告」，Claude 自动发现项目、读取配置。逐章生成 HTML 文件，每章独立。', icon:'🤖' },
+    { num:5, title:'对话中修改', desc:'不满意直接在对话中说——"把柱状图换成蓝色""第三章加个数据表"。Claude 修改对应文件，即刻生效。', icon:'💬' },
+    { num:6, title:'组装最终报告', desc:'所有章节 done 后说「组装报告」，一键合并为自包含 HTML。统一样式、页码、打印控制，即可分发。', icon:'📦' },
+  ];
+  const stepsHtml = steps.map((s,i) => `
+    <div class="wf-step flex gap-4 items-start pb-6">
+      <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-lg shadow-lg shadow-blue-200" style="z-index:1">${s.icon}</div>
+      <div>
+        <div class="flex items-center gap-2 mb-1"><span class="text-xs font-extrabold text-blue-500">STEP ${s.num}</span><span class="font-bold text-slate-900">${s.title}</span></div>
+        <div class="text-sm text-slate-500 leading-relaxed">${s.desc}</div>
+      </div>
+    </div>`).join('');
+  return wrap(b.tag, b.title, b.subtitle, `
+    <div class="mt-10 flex gap-8 flex-wrap lg:flex-nowrap">
+      <div class="flex-1 min-w-[300px]">
+        
+        ${stepsHtml}
+      </div>
+      <div class="flex-1 min-w-[280px] flex items-center justify-center">
+        <div class="bg-slate-900 rounded-2xl p-6 text-white/90 text-xs font-mono leading-relaxed max-w-sm w-full shadow-xl">
+          <div class="text-blue-400 mb-2">// config.json 结构预览</div>
+          <div><span class="text-blue-300">"projectName"</span>: <span class="text-emerald-300">"反洗钱审计报告"</span>,</div>
+          <div><span class="text-blue-300">"layout"</span>: <span class="text-emerald-300">"a4-landscape"</span>,</div>
+          <div><span class="text-blue-300">"theme"</span>: <span class="text-emerald-300">"business-bluewhite"</span>,</div>
+          <div><span class="text-blue-300">"mode"</span>: <span class="text-emerald-300">"chapter"</span>,</div>
+          <div><span class="text-blue-300">"tags"</span>: [<span class="text-emerald-300">"高管汇报"</span>, <span class="text-emerald-300">"正式交付"</span>],</div>
+          <div><span class="text-blue-300">"chapters"</span>: [</div>
+          <div class="pl-4"><span class="text-slate-400">{</span></div>
+          <div class="pl-6"><span class="text-blue-300">"title"</span>: <span class="text-emerald-300">"封面与审计范围"</span>,</div>
+          <div class="pl-6"><span class="text-blue-300">"status"</span>: <span class="text-amber-300">"done"</span>,</div>
+          <div class="pl-6"><span class="text-blue-300">"components"</span>: [<span class="text-emerald-300">"hero-card"</span>],</div>
+          <div class="pl-6"><span class="text-blue-300">"dataFile"</span>: <span class="text-purple-300">null</span></div>
+          <div class="pl-4"><span class="text-slate-400">}</span></div>
+          <div>]</div>
+        </div>
+      </div>
+    </div>
+  `, null, b.id);
+}
+
+/* Core Features */
+function rCoreFeatures(b) {
+  const cards = b.features.map(f => `
+    <div class="core-card bg-white border shadow-sm flex-1 min-w-[300px]" style="border-top:4px solid ${f.color}">
+      <div class="core-glow" style="background:${f.color}"></div>
+      <span style="font-size:48px;margin-bottom:16px;display:block">${f.icon}</span>
+      <h3 class="text-xl font-extrabold text-slate-900 mb-3">${f.title}</h3>
+      <p class="text-sm text-slate-500 leading-relaxed mb-4">${f.desc}</p>
+      <div class="flex flex-wrap gap-2">${f.points.map(p=>`<span class="text-xs font-medium px-3 py-1.5 rounded-full" style="background:${f.color}10;color:${f.color}">${p}</span>`).join('')}</div>
+    </div>`).join('');
+  return wrap(b.tag, b.title, b.subtitle, `<div class="mt-10 flex gap-6 flex-wrap">${cards}</div>`, 'bg-slate-50', b.id);
+}
+
+/* Arch Combine — 跨会话记忆 + 分章架构 */
+function rArchCombine(b) {
+  const memCards = b.memoryItems.map(it => `
+    <div class="feature-card bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+      <div class="text-2xl mb-2">${it.icon}</div>
+      <div class="font-bold text-slate-900 mb-1 text-sm">${it.title}</div>
+      <div class="text-xs text-slate-500 leading-relaxed">${it.desc}</div>
+    </div>`).join('');
+  const archCards = b.archItems.map(it => `
+    <div class="flex gap-4 items-start p-5 bg-white border border-slate-200 rounded-xl shadow-sm feature-card">
+      <div class="dd-icon flex-shrink-0" style="background:${it.color}15;color:${it.color}">${it.icon}</div>
+      <div>
+        <div class="font-bold text-slate-900 mb-1 text-sm">${it.title}</div>
+        <div class="text-xs text-slate-500 leading-relaxed">${it.desc}</div>
+      </div>
+    </div>`).join('');
+  return wrap(b.tag, b.title, b.subtitle, `
+    <div class="mt-10 space-y-10">
+      <div>
+        <div class="flex items-center gap-2 mb-5"><span class="text-xl">🧠</span><h3 class="text-lg font-extrabold text-slate-800">跨会话持久记忆</h3></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${memCards}</div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-5"><span class="text-xl">🏗️</span><h3 class="text-lg font-extrabold text-slate-800">分章生成 · 逐章确认 · 一键组装</h3></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">${archCards}</div>
+      </div>
+    </div>
+  `, null, b.id);
+}
+
+/* Feature Grid */
+function rFeatureGrid(b) {
+  const colors = ['#2563eb','#7c3aed','#059669','#ea580c','#0891b2','#d97706'];
+  const items = b.features.map((f,i) => {
+    const c = colors[i % colors.length];
+    return `
+    <div class="feature-card bg-white border border-slate-200 rounded-xl p-6 shadow-sm relative overflow-hidden" style="border-left:4px solid ${c}">
+      <div class="absolute top-0 right-0 w-24 h-24 rounded-full -translate-y-1/2 translate-x-1/2" style="background:${c};opacity:.04"></div>
+      <div class="dd-icon mb-3" style="background:${c}15;color:${c}">${f.icon}</div>
+      <div class="font-bold text-slate-900 mb-2 text-sm">${f.title}</div>
+      <div class="text-sm text-slate-500 leading-relaxed">${f.desc}</div>
+    </div>`;
+  }).join('');
+  return wrap(b.tag, b.title, null, `<div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">${items}</div>`, 'bg-gradient-to-br from-slate-50 via-blue-50/30 to-violet-50/30', b.id);
+}
+
+/* Component Previews */
+function rLibPreviews(b) {
+  const comps = [
+    { name:'hero-card', p:()=>`<div class="pv-hero-card"><div class="pv-title">主标题</div><div class="pv-sub">副标题描述信息</div></div>` },
+    { name:'stat-card', p:()=>`<div class="pv-stat"><div class="pv-big">156.8<span style="font-size:12px;font-weight:500">亿</span></div><div class="pv-label">产品规模</div><div class="pv-trend">↑ 12.5%</div></div>` },
+    { name:'data-table', p:()=>`<table class="pv-table"><tr><th>指标</th><th>Q1</th><th>Q2</th></tr><tr><td>营收</td><td>12.3</td><td>15.8</td></tr><tr><td>利润</td><td>3.2</td><td>4.1</td></tr></table>` },
+    { name:'process-step', p:()=>`<div class="pv-steps"><div class="pv-dot"></div><div class="pv-line"></div><div class="pv-dot"></div><div class="pv-line"></div><div class="pv-dot"></div><div class="pv-line"></div><div class="pv-dot" style="background:#cbd5e1"></div></div>` },
+    { name:'badge-tag', p:()=>`<div class="pv-badges"><span class="pv-badge" style="background:#dbeafe;color:#2563eb">高管汇报</span><span class="pv-badge" style="background:#dcfce7;color:#16a34a">正式交付</span><span class="pv-badge" style="background:#fef3c7;color:#d97706">内部协同</span></div>` },
+    { name:'circle-number', p:()=>`<div class="pv-circles"><div class="pv-circle">1</div><div class="pv-circle">2</div><div class="pv-circle">3</div></div>` },
+    { name:'timeline', p:()=>`<div class="pv-timeline"><div class="pv-tl-item"><div class="pv-tl-title">第一阶段</div><div class="pv-tl-desc">需求调研</div></div><div class="pv-tl-item"><div class="pv-tl-title">第二阶段</div><div class="pv-tl-desc">方案实施</div></div></div>` },
+    { name:'bar-chart', p:()=>`<div class="pv-bars"><div class="pv-bar" style="height:70%;background:#2563eb"></div><div class="pv-bar" style="height:100%;background:#3b82f6"></div><div class="pv-bar" style="height:50%;background:#60a5fa"></div><div class="pv-bar" style="height:85%;background:#93c5fd"></div></div>` },
+    { name:'line-chart', p:()=>`<div class="pv-tl-chart"><div class="pv-tl-node"></div><div class="pv-tl-conn"></div><div class="pv-tl-node" style="background:#7c3aed"></div><div class="pv-tl-conn"></div><div class="pv-tl-node" style="background:#059669"></div><div class="pv-tl-conn"></div><div class="pv-tl-node" style="background:#ea580c"></div></div>` },
+  ];
+  const previews = comps.map(c => `
+    <div class="comp-preview flex flex-col items-center">
+      <div class="w-full flex items-center justify-center" style="min-height:80px">${c.p()}</div>
+      <span class="comp-name">${c.name}</span>
+    </div>`).join('');
+  return wrap(b.tag, b.title, b.subtitle, `
+    <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">${previews}</div>
+    <div class="mt-8 flex gap-4 flex-wrap justify-center">
+      <a href="UI-lib/index.html" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-lg shadow-blue-200 no-underline">浏览完整组件库 &rarr;</a>
+      <a href="report-tool/index.html" target="_blank" class="inline-flex items-center gap-2 bg-white border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-bold text-sm hover:border-blue-300 hover:text-blue-600 transition no-underline">在工具页面使用组件</a>
+    </div>
+  `, 'bg-gradient-to-br from-violet-50 via-white to-blue-50', b.id);
+}
+
+/* CTA */
+function rCta(b) {
+  return `<section class="snap-section min-h-[60vh] flex items-center py-20 px-5 relative overflow-hidden" id="${b.id||''}" style="background:linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a365d 100%)">
+    <div class="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-blue-500/8 blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+    <div class="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full bg-violet-500/8 blur-3xl translate-y-1/2 -translate-x-1/4"></div>
+    <div class="max-w-2xl mx-auto text-center w-full relative z-10">
+      <h2 class="text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-4">${b.title}</h2>
+      <p class="text-blue-100/70 leading-relaxed mb-8">${b.desc}</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <a href="report-tool/index.html" target="_blank" class="cta-btn inline-flex items-center gap-2 bg-white text-slate-900 px-8 py-4 rounded-xl font-bold text-sm hover:bg-blue-50 transition shadow-xl shadow-black/20 no-underline text-lg">打开报告工具，开始创建 &rarr;</a>
+        <a href="report-tool/guide.html" target="_blank" class="inline-flex items-center gap-2 text-white/80 px-6 py-4 rounded-xl font-bold text-sm hover:text-white transition no-underline" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px)">查看操作指引</a>
+        <a href="UI-lib/index.html" target="_blank" class="inline-flex items-center gap-2 text-white/80 px-6 py-4 rounded-xl font-bold text-sm hover:text-white transition no-underline" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px)">预览组件库</a>
+      </div>
+    </div>
+  </section>`;
+}
+
+function renderBlock(b) {
+  switch(b.type){
+    case 'hero': return rHero(b);
+    case 'modes': return rModes(b);
+    case 'projectFlow': return rProjectFlow(b);
+    case 'coreFeatures': return rCoreFeatures(b);
+    case 'archCombine': return rArchCombine(b);
+    case 'featureGrid': return rFeatureGrid(b);
+    case 'libPreviews': return rLibPreviews(b);
+    case 'cta': return rCta(b);
+    default: return '';
+  }
+}
+
+/* ============================================================
+ *  BOOT
+ * ============================================================ */
+document.getElementById('app').innerHTML = `
+<nav class="fixed-nav transparent" id="topNav">
+  <a href="#" class="nav-brand">${S.name}</a>
+  <div class="nav-links">${NAV.map(n=>`<a href="${n.href}" class="nav-link">${n.label}</a>`).join('')}</div>
+</nav>
+${blocks.map(renderBlock).join('')}
+<footer class="py-10 text-center text-xs text-slate-400 border-t border-slate-100 bg-white">
+  ${S.name} ${S.ver} · 聊天式报告生成系统 · 内部测试版
+</footer>
+`;
+
+const nav = document.getElementById('topNav');
+window.addEventListener('scroll', () => {
+  const solid = window.scrollY > 60;
+  nav.classList.toggle('transparent', !solid);
+  nav.classList.toggle('solid', solid);
+});
+</script>
+</body>
+</html>

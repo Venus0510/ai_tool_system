@@ -1627,7 +1627,7 @@
                             style="height:85%;"></span><span class="b" style="height:45%;"></span><span class="b"
                             style="height:70%;"></span></div>
                       </template>
-                      <template v-else-if="comp.id==='timeline-chart'">
+                      <template v-else-if="comp.id==='line-chart'">
                         <div class="mini-line"></div>
                       </template>
                     </div>
@@ -1860,7 +1860,7 @@
           { id: 'data-table', label: '数据表格', desc: '斑马纹/紧凑/全边框，展示结构化数据' },
           { id: 'hero-card', label: '封面卡片', desc: 'light-on-dark/dark-section/stat-grid' },
           { id: 'bar-chart', label: '柱状图', desc: 'ECharts柱状图，适合对比数据' },
-          { id: 'timeline-chart', label: '时间线图', desc: 'ECharts时间序列，展示趋势变化' },
+          { id: 'line-chart', label: '折线图', desc: 'ECharts时间序列，展示趋势变化' },
         ];
 
         const totalChapters = computed(() => config.value.chapters.length);
