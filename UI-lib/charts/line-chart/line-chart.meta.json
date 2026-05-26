@@ -1,13 +1,29 @@
 {
-  "name": "timeline-chart",
-  "label": "时间线图",
+  "name": "line-chart",
+  "label": "折线图",
   "category": "图表",
   "description": "基于 ECharts 5 的时序数据图表组件，支持折线面积图和双轴对比图（柱状+折线）。图表颜色通过 CSS 变量适配主题切换。",
   "props": {
-    "layout":  { "type": "enum", "values": ["line-area", "dual-axis"], "desc": "图表类型：line-area=折线面积图，dual-axis=双轴对比图（柱状+折线）" },
-    "data":    { "type": "object", "desc": "图表数据：categories（时间轴数组）、series（系列数组，每项含 name、data、type 等）" },
-    "height":  { "type": "string", "desc": "图表高度，默认 360px" },
-    "smooth":  { "type": "boolean", "desc": "折线是否平滑，默认 true" }
+    "layout": {
+      "type": "enum",
+      "values": [
+        "line-area",
+        "dual-axis"
+      ],
+      "desc": "图表类型：line-area=折线面积图，dual-axis=双轴对比图（柱状+折线）"
+    },
+    "data": {
+      "type": "object",
+      "desc": "图表数据：categories（时间轴数组）、series（系列数组，每项含 name、data、type 等）"
+    },
+    "height": {
+      "type": "string",
+      "desc": "图表高度，默认 360px"
+    },
+    "smooth": {
+      "type": "boolean",
+      "desc": "折线是否平滑，默认 true"
+    }
   },
   "slots": [],
   "cssPath": "../tokens/business-bluewhite.css",
