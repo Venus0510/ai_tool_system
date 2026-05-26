@@ -7,6 +7,35 @@
 
 ---
 
+## 文档层级与引用导向
+
+本项目有三份核心规则文档，层级关系如下：
+
+```
+SPEC.md（本文件）         ← 顶层：设计规格书，定义系统是什么、有哪些功能
+  ↓ 指导
+.claude/CLAUDE.md        ← 入口层：项目根指令，定义触发规则和顶层行为
+  ↓ 委托
+UI-lib/.claude.md        ← 执行层：组件库约束，定义具体生成规则和组件索引
+```
+
+**优先级（冲突时以上层为准）**：SPEC.md > .claude/CLAUDE.md > UI-lib/.claude.md
+
+**各文档定位**：
+
+| 文档 | 受众 | 用途 | 何时读 |
+|------|------|------|--------|
+| `SPEC.md` | 开发者、维护者 | 理解系统全貌、功能规格、变更历史 | 新加入项目、做架构决策 |
+| `.claude/CLAUDE.md` | Claude Code | 触发规则、工作模式分发、对用户承诺 | Claude 每次对话自动加载 |
+| `UI-lib/.claude.md` | Claude Code | 组件索引、生成规则、资源层级、禁止事项 | 生成报告/页面时按需读取 |
+
+**典型阅读路径**：
+- 新人入门 → 先读 SPEC.md 了解全貌，再按需查阅 CLAUDE.md
+- 改功能 → 改代码 → 按文档同步规则更新 SPEC.md → 同步 .claude/CLAUDE.md 或 UI-lib/.claude.md
+- 写规则 → 判断是顶层行为（放 .claude/CLAUDE.md）还是执行细节（放 UI-lib/.claude.md）
+
+---
+
 ## 一、核心理念
 
 **工具页面管配置，Claude Code 管生成，config.json 是桥梁。**
@@ -366,18 +395,7 @@ Claude 读取所有 status=done 的章节
 
 ### 5.5 数据文件处理
 
-数据文件格式不限制，Claude 直接读取原始文件：
-
-| 文件格式 | Claude 处理方式 |
-|---------|----------------|
-| `.csv` | 直接读取，解析行列数据 |
-| `.xlsx` | 需要用户先导出为 csv，或使用 Python 脚本转换（Claude 可执行） |
-| `.docx` | Claude 直接读取文本内容 |
-| `.pdf` | Claude 直接读取内容 |
-| `.txt` / `.md` | 直接读取 |
-| `.json` | 直接读取 |
-
-config.json 中 `dataFile` 字段存相对路径（相对于项目子文件夹），Claude 按路径读取。
+`dataFile` 字段存相对路径（相对于项目子文件夹），Claude 按路径读取。各格式处理方式详见 `UI-lib/.claude.md` 3.7 节。
 
 ---
 
