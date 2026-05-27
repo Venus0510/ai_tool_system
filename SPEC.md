@@ -446,7 +446,7 @@ CDN 绝对 URL 引用（Tailwind、Vue、ECharts）不受此限制。
 
 ### 7.5 A4 页面内容不可溢出
 
-A4 横版骨架的 `.a4-page` 固定为 297mm×210mm 且 `overflow: hidden`。生成的内容必须在可视区域内最佳排版，不可溢出被裁剪。
+A4 横版骨架的 `.a4-page` 显式设置 `box-sizing: border-box`。打印时固定 297mm×210mm 且 `overflow: hidden`；屏幕浏览时通过 `width: min(297mm, calc(100vw - 32px))` + `aspect-ratio: 297/210` 自适应视口宽度、保持 A4 长宽比。生成的内容必须在可视区域内最佳排版，不可溢出被裁剪。
 
 - **可用内容区**：扣除 padding 后约 253mm × 174mm
 - **字号约束**：标题 28-36px，正文 14-15px，辅助 11-13px，数据大字 40-48px

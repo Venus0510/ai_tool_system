@@ -52,6 +52,7 @@
       width: 297mm;
       height: 210mm;
       padding: 18mm 22mm;
+      box-sizing: border-box;
       page-break-after: always;
       break-after: page;
       position: relative;
@@ -61,6 +62,23 @@
     .a4-page:last-child {
       page-break-after: auto;
       break-after: auto;
+    }
+
+    @media screen {
+      html,
+      body {
+        background: #e5e7eb;
+        margin: 0;
+        padding: 0;
+      }
+      .a4-page {
+        width: min(297mm, calc(100vw - 32px));
+        height: auto;
+        aspect-ratio: 297 / 210;
+        margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, .12);
+        border-radius: 4px;
+      }
     }
 
     @media print {
@@ -75,16 +93,12 @@
       }
 
       .a4-page {
+        width: 297mm;
+        height: 210mm;
+        aspect-ratio: auto;
         margin: 0;
         box-shadow: none;
-      }
-    }
-
-    @media screen {
-      .a4-page {
-        margin: 20px auto;
-        box-shadow: 0 0 30px rgba(0, 0, 0, .12);
-        border-radius: 4px;
+        border-radius: 0;
       }
     }
   </style>
