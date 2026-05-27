@@ -1,0 +1,33 @@
+{
+  "name": "line-chart",
+  "label": "折线图",
+  "category": "图表",
+  "description": "基于 ECharts 5 的时序数据图表组件，支持折线面积图和双轴对比图（柱状+折线）。图表颜色通过 CSS 变量适配主题切换。",
+  "props": {
+    "layout": {
+      "type": "enum",
+      "values": [
+        "line-area",
+        "dual-axis"
+      ],
+      "desc": "图表类型：line-area=折线面积图，dual-axis=双轴对比图（柱状+折线）"
+    },
+    "data": {
+      "type": "object",
+      "desc": "图表数据：categories（时间轴数组）、series（系列数组，每项含 name、data、type 等）"
+    },
+    "height": {
+      "type": "string",
+      "desc": "图表高度，默认 360px"
+    },
+    "smooth": {
+      "type": "boolean",
+      "desc": "折线是否平滑，默认 true"
+    }
+  },
+  "slots": [],
+  "cssPath": "../tokens/business-bluewhite.css",
+  "echarts": true,
+  "usage": "<div class=\"chart\" id=\"myChart\" style=\"width:100%;height:360px;\"></div>\n<script>\n  const chart = echarts.init(document.getElementById('myChart'));\n  chart.setOption({ /* ECharts 配置，含 xAxis/yAxis/series */ });\n<\/script>",
+  "promptHint": "适用于时间序列分析、收益率走势图、规模变化趋势、多指标对比等场景。需要引入 ECharts 5 CDN。双轴图适合展示两个量级不同的指标（如规模+收益率）。面积渐变用 LinearGradient 实现，颜色读取 CSS 变量。"
+}

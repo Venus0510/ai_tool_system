@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>反洗钱（AML）可疑交易审计报告</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+  <!-- Design Token: 商务蓝白（内联，自包含） -->
+  <style id="token-css">
+    :root {
+      --bw-primary-50:#eff6ff; --bw-primary-100:#dbeafe; --bw-primary-200:#bfdbfe;
+      --bw-primary-300:#93c5fd; --bw-primary-500:#2563eb; --bw-primary-700:#1e3a8a;
+      --bw-primary-800:#1e40af; --bw-primary-900:#0f172a;
+      --bw-surface:#ffffff; --bw-surface-alt:#f8fafc; --bw-bg:#f3f6fb;
+      --bw-text:#1f2937; --bw-text-muted:#64748b; --bw-text-light:#94a3b8; --bw-text-inverse:#ffffff;
+      --bw-border:#e5e7eb; --bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a; --bw-accent-red:#dc2626; --bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px; --bw-radius-table:12px; --bw-radius-tag:999px;
+      --bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-cover-bg:linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
+      --bw-table-th-bg:var(--bw-primary-100); --bw-table-th-text:var(--bw-primary-700);
+      --bw-tag-bg:var(--bw-primary-100); --bw-tag-text:var(--bw-primary-800);
+      --bw-big-number:48px; --bw-big-number-color:var(--bw-primary-500);
+      --bw-process-border:4px solid var(--bw-primary-500);
+      --primary-50:var(--bw-primary-50); --primary-100:var(--bw-primary-100);
+      --primary-200:var(--bw-primary-200); --primary-300:var(--bw-primary-300);
+      --primary-500:var(--bw-primary-500); --primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800); --primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface); --surface-alt:var(--bw-surface-alt); --bg:var(--bw-bg);
+      --text:var(--bw-text); --text-muted:var(--bw-text-muted);
+      --text-light:var(--bw-text-light); --text-inverse:var(--bw-text-inverse);
+      --border:var(--bw-border); --border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card); --radius-tag:var(--bw-radius-tag);
+      --shadow-card:var(--bw-shadow-card); --font:var(--bw-font);
+      --accent-green:var(--bw-accent-green); --accent-red:var(--bw-accent-red);
+      --accent-amber:var(--bw-accent-amber);
+      --big-number:var(--bw-big-number); --big-number-color:var(--bw-big-number-color);
+      --process-border:var(--bw-process-border);
+      --table-th-bg:var(--bw-table-th-bg); --table-th-text:var(--bw-table-th-text);
+      --tag-bg:var(--bw-tag-bg); --tag-text:var(--bw-tag-text);
+      --cover-bg:var(--bw-cover-bg);
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bw: {
+              primary:{50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',500:'#2563eb',700:'#1e3a8a',800:'#1e40af',900:'#0f172a'},
+              surface:'#ffffff',alt:'#f8fafc',bg:'#f3f6fb',
+              text:'#1f2937',muted:'#64748b',light:'#94a3b8',
+              border:'#e5e7eb',
+            }
+          },
+          fontFamily:{ bw:['"Microsoft YaHei"','"PingFang SC"','Arial','sans-serif'] }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { margin: 0; box-shadow: none; }
+    }
+    @media screen {
+      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+    }
+    .page-num { position: absolute; bottom: 10mm; right: 22mm; font-size: 12px; }
+    .tag-high { background: #fef2f2; color: #dc2626; }
+    .tag-mid { background: #fffbeb; color: #d97706; }
+    .tag-low { background: #f0fdf4; color: #16a34a; }
+    .tag-info { background: var(--bw-primary-100); color: var(--bw-primary-800); }
+    .chart-box { width: 100%; height: 260px; }
+    .kpi-num { font-size: 48px; font-weight: 700; color: var(--bw-primary-500); line-height: 1.1; }
+    .section-title { font-size: 30px; font-weight: 700; color: var(--bw-primary-900); margin-bottom: 14px; }
+    .section-sub { font-size: 16px; color: var(--bw-text-muted); margin-bottom: 24px; max-width: 850px; line-height: 1.6; }
+  </style>
+</head>
+<body class="bg-bw-bg font-bw">
+<div id="app">
+
+  <!-- ===== 封面 · 页码 01 ===== -->
+  <section class="a4-page flex flex-col justify-center bg-gradient-to-br from-bw-primary-900 to-bw-primary-700 text-white">
+    <div class="mb-4">
+      <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold border border-white/30 text-white/80">机密 · CONFIDENTIAL</span>
+    </div>
+    <h1 class="text-[40px] leading-tight font-bold mb-4">反洗钱（AML）可疑交易<br/>审计报告</h1>
+    <p class="text-base text-slate-300 max-w-[780px] mb-7 leading-relaxed">
+      本报告依据《中华人民共和国反洗钱法》《金融机构大额交易和可疑交易报告管理办法》等相关法规，
+      对审计期间内监测识别的可疑交易进行全面审查，评估交易监测机制有效性，并提出整改建议。
+    </p>
+    <div class="grid grid-cols-4 gap-3 mb-8">
+      <div><div class="text-xs text-slate-400 mb-1">报告编号</div><div class="text-sm font-semibold">AML-AUDIT-2025-001</div></div>
+      <div><div class="text-xs text-slate-400 mb-1">审计期间</div><div class="text-sm font-semibold">2025.01.01 — 2025.12.31</div></div>
+      <div><div class="text-xs text-slate-400 mb-1">被审计机构</div><div class="text-sm font-semibold">XX商业银行股份有限公司</div></div>
+      <div><div class="text-xs text-slate-400 mb-1">报告日期</div><div class="text-sm font-semibold">2026年3月</div></div>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="bg-white text-bw-text rounded-2xl p-5 shadow-lg min-h-[110px]">
+        <h3 class="text-base text-bw-primary-700 mb-2 font-bold">可疑交易监测评估</h3>
+        <p class="text-sm leading-relaxed">全面审查大额及可疑交易识别规则有效性、阈值合理性和系统覆盖完整性。</p>
+      </div>
+      <div class="bg-white text-bw-text rounded-2xl p-5 shadow-lg min-h-[110px]">
+        <h3 class="text-base text-bw-primary-700 mb-2 font-bold">客户风险分类审查</h3>
+        <p class="text-sm leading-relaxed">评估客户风险等级划分的准确性，验证高风险客户的强化尽职调查（EDD）执行情况。</p>
+      </div>
+      <div class="bg-white text-bw-text rounded-2xl p-5 shadow-lg min-h-[110px]">
+        <h3 class="text-base text-bw-primary-700 mb-2 font-bold">合规整改与建议</h3>
+        <p class="text-sm leading-relaxed">针对审计发现的差距和不足，提出可落地的整改措施和分阶段实施计划。</p>
+      </div>
+    </div>
+    <div class="page-num text-slate-400">01</div>
+  </section>
+
+  <!-- PLACEHOLDER-CH-02 -->
+  <!-- ===== 第2章：摘要与关键发现 · 页码 02-03 ===== -->
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">一、摘要与关键发现</h2>
+    <p class="section-sub">本章汇总审计期间可疑交易监测的整体情况，呈现核心风险指标、关键发现和风险分布态势。</p>
+    <div class="grid grid-cols-4 gap-4 mb-5">
+      <div class="bg-white rounded-2xl p-4 shadow-lg" v-for="k in ch2_kpis" :key="k.label">
+        <div class="kpi-num">{{ k.value }}</div>
+        <div class="text-sm text-bw-muted mt-1">{{ k.label }}</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white rounded-2xl p-5 shadow-lg">
+        <h3 class="text-base text-bw-primary-700 mb-3 font-bold">风险等级分布</h3>
+        <div class="space-y-3">
+          <div><div class="flex justify-between text-sm mb-1"><span class="text-bw-text">高风险</span><span class="font-semibold" style="color:var(--accent-red)">195 笔（23%）</span></div><div class="h-2 bg-bw-border rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:23%;background:var(--accent-red)"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span class="text-bw-text">中风险</span><span class="font-semibold" style="color:var(--accent-amber)">381 笔（45%）</span></div><div class="h-2 bg-bw-border rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:45%;background:var(--accent-amber)"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1"><span class="text-bw-text">低风险</span><span class="font-semibold" style="color:var(--accent-green)">271 笔（32%）</span></div><div class="h-2 bg-bw-border rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:32%;background:var(--accent-green)"></div></div></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-lg">
+        <h3 class="text-base text-bw-primary-700 mb-3 font-bold">关键发现摘要</h3>
+        <div class="space-y-2 text-sm leading-relaxed">
+          <div class="flex items-start gap-2"><span class="flex-shrink-0 w-5 h-5 rounded-full bg-red-100 text-red-600 text-xs flex items-center justify-center font-bold">1</span><span class="text-bw-text">拆分交易规避监测阈值问题突出，涉及 322 笔</span></div>
+          <div class="flex items-start gap-2"><span class="flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 text-amber-600 text-xs flex items-center justify-center font-bold">2</span><span class="text-bw-text">快进快出资金涉及 56 个账户，资金留存不足 24 小时</span></div>
+          <div class="flex items-start gap-2"><span class="flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 text-amber-600 text-xs flex items-center justify-center font-bold">3</span><span class="text-bw-text">壳公司关联交易网络识别延迟，平均延迟 15 天</span></div>
+          <div class="flex items-start gap-2"><span class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs flex items-center justify-center font-bold">4</span><span class="text-bw-text">STR 报送时效性达标率 88%，存在改进空间</span></div>
+          <div class="flex items-start gap-2"><span class="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs flex items-center justify-center font-bold">5</span><span class="text-bw-text">跨境交易监测覆盖不足，需补充 12 个高风险地区规则</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num text-bw-light">02</div>
+  </section>
+
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">一、摘要与关键发现（续）</h2>
+    <table class="w-full border-collapse bg-white rounded-xl overflow-hidden text-sm">
+      <thead>
+        <tr>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold w-1/6">编号</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold w-1/4">发现事项</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold w-1/6">严重程度</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">影响范围</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">建议措施</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(r,i) in ch2_findings" :key="i" class="border-b border-bw-border">
+          <td class="p-3 font-semibold">{{ r.id }}</td>
+          <td class="p-3">{{ r.item }}</td>
+          <td class="p-3"><span :class="r.sevClass">{{ r.severity }}</span></td>
+          <td class="p-3 text-sm">{{ r.scope }}</td>
+          <td class="p-3 text-sm">{{ r.action }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="grid grid-cols-3 gap-4 mt-5">
+      <div class="bg-white rounded-2xl p-4 shadow-lg text-center">
+        <div class="kpi-num">42</div>
+        <div class="text-sm text-bw-muted">STR 已报送</div>
+      </div>
+      <div class="bg-white rounded-2xl p-4 shadow-lg text-center">
+        <div class="kpi-num" style="color:var(--accent-amber)">88%</div>
+        <div class="text-sm text-bw-muted">报送时效达标率</div>
+      </div>
+      <div class="bg-white rounded-2xl p-4 shadow-lg text-center">
+        <div class="kpi-num" style="color:var(--accent-green)">93%</div>
+        <div class="text-sm text-bw-muted">系统覆盖率</div>
+      </div>
+    </div>
+    <div class="page-num text-bw-light">03</div>
+  </section>
+  <!-- /PLACEHOLDER-CH-02 -->
+
+  <!-- PLACEHOLDER-CH-03 -->
+  <!-- ===== 第3章：可疑交易概览 · 页码 04-05 ===== -->
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">二、可疑交易概览</h2>
+    <p class="section-sub">本章展示审计期间可疑交易的月度趋势、交易类型分布和风险分类统计。</p>
+    <div class="grid grid-cols-4 gap-3 mb-4">
+      <div class="bg-white rounded-2xl p-3 shadow-lg" v-for="k in ch3_kpis" :key="k.label">
+        <div class="text-3xl font-bold text-bw-primary-500">{{ k.value }}</div>
+        <div class="text-xs text-bw-muted mt-1">{{ k.label }}</div>
+      </div>
+    </div>
+    <div id="chart-ch3-trend" class="chart-box"></div>
+    <div class="page-num text-bw-light">04</div>
+  </section>
+
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">二、可疑交易概览（续）</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div><h3 class="text-base text-bw-primary-700 mb-2 font-bold">风险类别分布</h3><div id="chart-ch3-category" class="chart-box"></div></div>
+      <div><h3 class="text-base text-bw-primary-700 mb-2 font-bold">季度预警统计</h3><div id="chart-ch3-quarter" class="chart-box"></div></div>
+    </div>
+    <div class="page-num text-bw-light">05</div>
+  </section>
+  <!-- /PLACEHOLDER-CH-03 -->
+
+  <!-- PLACEHOLDER-CH-04 -->
+  <!-- ===== 第4章：交易模式分析 · 页码 06-07 ===== -->
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">三、交易模式分析</h2>
+    <p class="section-sub">深度分析可疑交易的行为模式特征，识别结构化拆分、快进快出、壳公司网络等典型洗钱手法。</p>
+    <table class="w-full border-collapse bg-white rounded-xl overflow-hidden text-sm mb-4">
+      <thead>
+        <tr>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">交易模式</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">涉及笔数</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">占比</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">平均单笔金额（万元）</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">特征描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(r,i) in ch4_patterns" :key="i" class="border-b border-bw-border">
+          <td class="p-3 font-semibold">{{ r.pattern }}</td>
+          <td class="p-3">{{ r.count }}</td>
+          <td class="p-3">{{ r.pct }}</td>
+          <td class="p-3">{{ r.avgAmt }}</td>
+          <td class="p-3 text-sm">{{ r.feature }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="page-num text-bw-light">06</div>
+  </section>
+
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">三、交易模式分析（续）</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <h3 class="text-base text-bw-primary-700 mb-3 font-bold">重大风险事件时间线</h3>
+        <div class="space-y-3">
+          <div v-for="(e,i) in ch4_timeline" :key="i" class="flex gap-3">
+            <div class="flex-shrink-0 text-xs font-bold text-bw-primary-500 w-16 pt-1">{{ e.date }}</div>
+            <div class="flex-1 bg-white rounded-xl p-3 shadow-sm border-l-4" :style="'border-left-color:'+e.color">
+              <div class="text-sm font-semibold text-bw-text">{{ e.title }}</div>
+              <div class="text-xs text-bw-muted mt-1">{{ e.desc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-base text-bw-primary-700 mb-3 font-bold">高风险对手方</h3>
+        <table class="w-full border-collapse bg-white rounded-xl overflow-hidden text-xs">
+          <thead>
+            <tr><th class="p-2 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">对手方</th><th class="p-2 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">类型</th><th class="p-2 text-right bg-bw-primary-100 text-bw-primary-700 font-bold">交易笔数</th><th class="p-2 text-right bg-bw-primary-100 text-bw-primary-700 font-bold">金额(万元)</th></tr>
+          </thead>
+          <tbody>
+            <tr v-for="(c,i) in ch4_counterparties" :key="i" class="border-b border-bw-border">
+              <td class="p-2 font-semibold">{{ c.name }}</td>
+              <td class="p-2"><span :class="c.typeClass">{{ c.type }}</span></td>
+              <td class="p-2 text-right">{{ c.txns }}</td>
+              <td class="p-2 text-right">{{ c.amount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="page-num text-bw-light">07</div>
+  </section>
+  <!-- /PLACEHOLDER-CH-04 -->
+
+  <!-- PLACEHOLDER-CH-05 -->
+  <!-- ===== 第5章：高风险案例详情 · 页码 08-09 ===== -->
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">四、高风险案例详情</h2>
+    <p class="section-sub">选取典型高风险案例进行深入剖析，揭示交易链路、资金去向和风险特征。</p>
+    <table class="w-full border-collapse bg-white rounded-xl overflow-hidden text-xs">
+      <thead>
+        <tr>
+          <th class="p-2 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">案例编号</th>
+          <th class="p-2 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">主体名称</th>
+          <th class="p-2 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">行业</th>
+          <th class="p-2 text-right bg-bw-primary-100 text-bw-primary-700 font-bold">交易笔数</th>
+          <th class="p-2 text-right bg-bw-primary-100 text-bw-primary-700 font-bold">金额(万元)</th>
+          <th class="p-2 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">风险指标</th>
+          <th class="p-2 text-center bg-bw-primary-100 text-bw-primary-700 font-bold">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(c,i) in ch5_cases" :key="i" class="border-b border-bw-border">
+          <td class="p-2 font-semibold">{{ c.id }}</td>
+          <td class="p-2">{{ c.name }}</td>
+          <td class="p-2">{{ c.industry }}</td>
+          <td class="p-2 text-right">{{ c.txns }}</td>
+          <td class="p-2 text-right">{{ c.amount }}</td>
+          <td class="p-2"><span :class="c.riskClass">{{ c.riskFlags }}</span></td>
+          <td class="p-2 text-center"><span :class="c.statusClass">{{ c.status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="page-num text-bw-light">08</div>
+  </section>
+
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">四、高风险案例详情（续）</h2>
+    <div class="grid grid-cols-3 gap-4">
+      <div v-for="(c,i) in ch5_deepdive" :key="i" class="bg-white rounded-2xl p-4 shadow-lg" :style="'border-top:4px solid '+c.color">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xs font-bold px-2 py-0.5 rounded-full" :style="'background:'+c.color+'20;color:'+c.color">{{ c.id }}</span>
+          <span class="text-sm font-semibold text-bw-text">{{ c.name }}</span>
+        </div>
+        <p class="text-xs text-bw-muted mb-2 leading-relaxed">{{ c.narrative }}</p>
+        <div class="flex flex-wrap gap-1">
+          <span v-for="t in c.tags" :key="t" class="text-xs px-2 py-0.5 rounded-full" style="background:var(--bw-primary-100);color:var(--bw-primary-800)">{{ t }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="page-num text-bw-light">09</div>
+  </section>
+  <!-- /PLACEHOLDER-CH-05 -->
+
+  <!-- PLACEHOLDER-CH-06 -->
+  <!-- ===== 第6章：审计流程与合规评估 · 页码 10 ===== -->
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">五、审计流程与合规评估</h2>
+    <p class="section-sub">说明本次审计的方法论和流程，并对照监管要求评估合规差距。</p>
+    <div class="grid grid-cols-5 gap-3 mb-5">
+      <div v-for="(s,i) in ch6_steps" :key="i" class="bg-white rounded-2xl p-3 shadow-lg text-center">
+        <div class="w-10 h-10 rounded-full bg-bw-primary-100 text-bw-primary-700 flex items-center justify-center text-lg font-bold mx-auto mb-2">{{ i+1 }}</div>
+        <div class="text-sm font-semibold text-bw-text mb-1">{{ s.title }}</div>
+        <div class="text-xs text-bw-muted leading-relaxed">{{ s.desc }}</div>
+      </div>
+    </div>
+    <table class="w-full border-collapse bg-white rounded-xl overflow-hidden text-sm">
+      <thead>
+        <tr>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">监管要求</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">具体要求</th>
+          <th class="p-3 text-center bg-bw-primary-100 text-bw-primary-700 font-bold w-16">现状</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">差距说明</th>
+          <th class="p-3 text-left bg-bw-primary-100 text-bw-primary-700 font-bold">整改措施</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(g,i) in ch6_gaps" :key="i" class="border-b border-bw-border">
+          <td class="p-3 font-semibold">{{ g.regulation }}</td>
+          <td class="p-3 text-sm">{{ g.requirement }}</td>
+          <td class="p-3 text-center"><span :class="g.statusClass">{{ g.status }}</span></td>
+          <td class="p-3 text-sm">{{ g.gap }}</td>
+          <td class="p-3 text-sm">{{ g.remediation }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="page-num text-bw-light">10</div>
+  </section>
+  <!-- /PLACEHOLDER-CH-06 -->
+
+  <!-- PLACEHOLDER-CH-07 -->
+  <!-- ===== 第7章：整改建议与后续行动 · 页码 11 ===== -->
+  <section class="a4-page bg-bw-alt">
+    <h2 class="section-title">六、整改建议与后续行动</h2>
+    <p class="section-sub">
+      基于审计发现，提出分阶段整改计划，明确责任部门、时间节点和预期成果。
+    </p>
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div v-for="(c,i) in ch7_priorities" :key="i" class="bg-white rounded-2xl p-4 shadow-lg text-center">
+        <div class="text-4xl font-bold text-bw-primary-500 mb-1">{{ i+1 }}</div>
+        <div class="text-sm font-semibold text-bw-text mb-1">{{ c.title }}</div>
+        <div class="text-xs text-bw-muted leading-relaxed">{{ c.desc }}</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <div v-for="(a,i) in ch7_actions" :key="i" class="bg-white rounded-2xl p-4 shadow-lg">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-12 h-12 rounded-full bg-bw-primary-100 flex items-center justify-center text-xl font-bold text-bw-primary-700">{{ i+1 }}</div>
+          <div>
+            <div class="text-sm font-semibold text-bw-text">{{ a.title }}</div>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-bw-primary-100 text-bw-primary-800">{{ a.timeline }}</span>
+          </div>
+        </div>
+        <p class="text-xs text-bw-muted leading-relaxed">{{ a.desc }}</p>
+      </div>
+    </div>
+    <div class="page-num text-bw-light">11</div>
+  </section>
+  <!-- /PLACEHOLDER-CH-07 -->
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        /* ---- 第2章 ---- */
+        ch2_kpis: [
+          { value: '847', label: '可疑交易总数（笔）' },
+          { value: '¥12.47亿', label: '涉及总金额' },
+          { value: '195', label: '高风险案例' },
+          { value: '42', label: 'STR 已报送' },
+        ],
+        ch2_findings: [
+          { id: 'F-001', item: '拆分交易规避大额监测阈值', severity: '高', sevClass: 'tag-high px-2 py-0.5 rounded-full text-xs font-semibold', scope: '个人及对公账户', action: '下调监测阈值，引入频率分析' },
+          { id: 'F-002', item: '快进快出资金识别延迟', severity: '高', sevClass: 'tag-high px-2 py-0.5 rounded-full text-xs font-semibold', scope: '56个高风险账户', action: '部署实时资金流速监测' },
+          { id: 'F-003', item: '壳公司关联网络识别不足', severity: '中', sevClass: 'tag-mid px-2 py-0.5 rounded-full text-xs font-semibold', scope: '对公客户', action: '引入受益所有人穿透核查' },
+          { id: 'F-004', item: '跨境交易监测覆盖不完整', severity: '中', sevClass: 'tag-mid px-2 py-0.5 rounded-full text-xs font-semibold', scope: '跨境业务', action: '补充高风险地区规则12条' },
+          { id: 'F-005', item: 'STR报送时效性不达标', severity: '低', sevClass: 'tag-low px-2 py-0.5 rounded-full text-xs font-semibold', scope: '合规部门', action: '优化审核流程，目标95%+' },
+        ],
+        /* ---- 第3章 ---- */
+        ch3_kpis: [
+          { value: '71', label: '月度平均交易（笔）' },
+          { value: '3月', label: '交易峰值月份' },
+          { value: '¥147万', label: '平均单笔金额' },
+          { value: '5.0%', label: '预警→STR转换率' },
+        ],
+        ch3_months: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+        ch3_txnCounts: [58, 62, 92, 71, 84, 73, 68, 79, 65, 70, 59, 66],
+        ch3_txnAmounts: [82, 95, 148, 105, 132, 110, 98, 118, 92, 108, 85, 96],
+        ch3_categories: ['拆分交易','快进快出','壳公司转账','贸易洗钱','PEP关联','跨境异常'],
+        ch3_catValues: [322, 229, 152, 102, 28, 14],
+        ch3_quarters: ['Q1','Q2','Q3','Q4'],
+        ch3_qGen: [285, 262, 248, 273],
+        ch3_qInv: [212, 198, 185, 205],
+        ch3_qStr: [11, 13, 8, 10],
+        /* ---- 第4章 ---- */
+        ch4_patterns: [
+          { pattern: '结构化拆分', count: 322, pct: '38%', avgAmt: '4.8', feature: '大额资金拆分为多笔接近阈值的小额交易，规避监测' },
+          { pattern: '快进快出', count: 229, pct: '27%', avgAmt: '35.2', feature: '资金到账后24小时内转出，账户余额趋于零' },
+          { pattern: '壳公司转账', count: 152, pct: '18%', avgAmt: '82.6', feature: '无实际经营的空壳公司间频繁资金划转' },
+          { pattern: '贸易洗钱', count: 102, pct: '12%', avgAmt: '156.3', feature: '虚构贸易背景，通过虚假发票进行跨境支付' },
+          { pattern: '其他', count: 42, pct: '5%', avgAmt: '28.7', feature: '包括PEP交易、虚拟货币兑换等新兴模式' },
+        ],
+        ch4_timeline: [
+          { date: '2025.02', title: '发现拆分交易网络', desc: '识别3组关联账户通过多银行渠道拆分交易', color: 'var(--accent-red)' },
+          { date: '2025.05', title: '壳公司集群预警', desc: '工商数据比对发现12家无实质经营壳公司', color: 'var(--accent-amber)' },
+          { date: '2025.08', title: '跨境异常资金流', desc: '监测到5笔大额跨境汇款至FATF高风险地区', color: 'var(--accent-red)' },
+          { date: '2025.10', title: '虚拟货币兑换链路', desc: '发现2个账户通过C2C平台频繁买入USDT并转出', color: 'var(--accent-amber)' },
+        ],
+        ch4_counterparties: [
+          { name: 'XX国际贸易有限公司', type: '壳公司', typeClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', txns: 87, amount: '2,350' },
+          { name: 'YY科技有限公司', type: '高风险行业', typeClass: 'tag-mid px-1.5 py-0.5 rounded-full text-xs', txns: 64, amount: '1,820' },
+          { name: 'ZZ投资咨询有限公司', type: '壳公司', typeClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', txns: 53, amount: '1,460' },
+          { name: 'AA商贸有限公司', type: '贸易洗钱嫌疑', typeClass: 'tag-mid px-1.5 py-0.5 rounded-full text-xs', txns: 41, amount: '3,120' },
+          { name: 'BB跨境电子商务', type: '高风险地区', typeClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', txns: 38, amount: '980' },
+        ],
+        /* ---- 第5章 ---- */
+        ch5_cases: [
+          { id: 'AML-001', name: '张某个人账户', industry: '个人', txns: 156, amount: '480', riskFlags: '拆分交易·快进快出', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '已报送', statusClass: 'tag-low px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-002', name: 'XX国际贸易有限公司', industry: '贸易', txns: 87, amount: '2,350', riskFlags: '壳公司·跨境', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '已报送', statusClass: 'tag-low px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-003', name: '李某个人账户', industry: '个人', txns: 72, amount: '320', riskFlags: 'PEP关联·大额现金', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '调查中', statusClass: 'tag-mid px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-004', name: 'YY科技有限公司', industry: '科技', txns: 64, amount: '1,820', riskFlags: '虚拟货币·快进快出', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '已报送', statusClass: 'tag-low px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-005', name: 'ZZ投资咨询有限公司', industry: '咨询', txns: 53, amount: '1,460', riskFlags: '壳公司·关联交易', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '调查中', statusClass: 'tag-mid px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-006', name: 'AA商贸有限公司', industry: '贸易', txns: 41, amount: '3,120', riskFlags: '虚假贸易·跨境', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '已报送', statusClass: 'tag-low px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-007', name: '王某个人账户', industry: '个人', txns: 38, amount: '210', riskFlags: '拆分交易·多人汇集', riskClass: 'tag-mid px-1.5 py-0.5 rounded-full text-xs', status: '监测中', statusClass: 'tag-info px-1.5 py-0.5 rounded-full text-xs' },
+          { id: 'AML-008', name: 'BB跨境电子商务', industry: '电商', txns: 38, amount: '980', riskFlags: '高风险地区·第三方支付', riskClass: 'tag-high px-1.5 py-0.5 rounded-full text-xs', status: '已报送', statusClass: 'tag-low px-1.5 py-0.5 rounded-full text-xs' },
+        ],
+        ch5_deepdive: [
+          { id: 'AML-001', name: '张某拆分交易案', color: 'var(--accent-red)', narrative: '张某在2025年3-6月期间，通过5个银行账户累计进行156笔交易，单笔金额控制在4.5-4.9万元（接近5万元大额报告阈值），呈现典型的结构化拆分特征。资金来源为多个不同地区个人账户转入，资金到账后1-2日内转出至第三方支付平台。', tags: ['结构化拆分', '多账户关联', '第三方支付'] },
+          { id: 'AML-002', name: 'XX国际虚假贸易案', color: 'var(--accent-red)', narrative: 'XX国际贸易有限公司注册资本50万元，但2025年累计发生跨境交易金额达2,350万元。工商信息显示该公司无实际经营场所，社保缴纳人数为零。资金以"预付款"名义汇至香港关联公司，与申报的贸易合同金额、货物类型不符。', tags: ['壳公司', '虚假贸易', '跨境洗钱'] },
+          { id: 'AML-004', name: 'YY科技虚拟货币洗钱案', color: 'var(--accent-amber)', narrative: 'YY科技以"技术服务费"名义接收多笔大额款项后，通过C2C平台分批买入USDT并提币至境外钱包地址。2025年累计涉及资金1,820万元，交易对手方多为新注册的个体户账户。区块链溯源显示最终资金流入多个混币器地址。', tags: ['虚拟货币', '混币器', '跨境转移'] },
+        ],
+        /* ---- 第6章 ---- */
+        ch6_steps: [
+          { title: '数据采集', desc: '提取全量交易数据、客户信息及历史预警记录' },
+          { title: '规则筛查', desc: '基于监测规则和阈值进行初步可疑交易识别' },
+          { title: '人工复核', desc: '分析师逐笔审核预警，排除误报并补充分析' },
+          { title: 'STR决策', desc: '确认可疑后起草可疑交易报告并内部审批' },
+          { title: '监管报送', desc: '在规定时限内向中国反洗钱监测分析中心报送' },
+        ],
+        ch6_gaps: [
+          { regulation: '19号令第11条', requirement: '建立健全大额交易和可疑交易监测系统', status: '达标', statusClass: 'tag-low px-2 py-0.5 rounded-full text-xs', gap: '—', remediation: '—' },
+          { regulation: '19号令第12条', requirement: '监测标准应覆盖所有业务品种和渠道', status: '部分达标', statusClass: 'tag-mid px-2 py-0.5 rounded-full text-xs', gap: '第三方支付渠道覆盖不足', remediation: '补充聚合支付、数字货币渠道规则' },
+          { regulation: '反洗钱法第15条', requirement: '客户身份识别与受益所有人穿透', status: '部分达标', statusClass: 'tag-mid px-2 py-0.5 rounded-full text-xs', gap: '非自然人客户受益所有人识别率82%', remediation: '建立工商数据自动比对，目标95%' },
+          { regulation: '19号令第16条', requirement: '可疑交易应在5个工作日内报送', status: '未达标', statusClass: 'tag-high px-2 py-0.5 rounded-full text-xs', gap: '当前按时报送率88%，12%超期', remediation: '优化审核流程，引入预审机制' },
+          { regulation: 'FATF建议第19条', requirement: '对高风险国家/地区实施强化措施', status: '部分达标', statusClass: 'tag-mid px-2 py-0.5 rounded-full text-xs', gap: '仅覆盖FATF名单60%地区', remediation: '扩展至FATF+NCA全量名单' },
+        ],
+        /* ---- 第7章 ---- */
+        ch7_priorities: [
+          { title: '强化规则引擎', desc: '下调监测阈值，增加频率分析和行为序列规则' },
+          { title: '完善客户尽调', desc: '实现受益所有人自动穿透，高风险客户季度复核' },
+          { title: '提升报送时效', desc: '优化STR审批流程，确保5个工作日内报送' },
+          { title: '全员合规培训', desc: '分层培训：高管政策解读、操作层实务技能' },
+        ],
+        ch7_actions: [
+          { title: '规则优化与系统升级', timeline: '30天内', desc: '新增12条跨境高风险地区规则，下调拆分交易监测阈值至3万元，部署实时资金流速监测模块。' },
+          { title: '客户风险分类重检', timeline: '60天内', desc: '完成全量对公客户受益所有人穿透核查，对高风险客户实施强化尽职调查（EDD）季度复核机制。' },
+          { title: '流程再造与制度修订', timeline: '90天内', desc: '修订可疑交易报告内部操作规程，引入预审-复核-批准三级审批，目标报送时效达标率≥95%。' },
+        ],
+      };
+    },
+    mounted() {
+      this._charts = [];
+      this.$nextTick(() => this.buildCharts());
+    },
+    methods: {
+      buildCharts() {
+        const C = this.getChartColors();
+        /* 图表1：月度趋势·双轴 */
+        const ct = echarts.init(document.getElementById('chart-ch3-trend'));
+        ct.setOption({
+          tooltip: { trigger: 'axis' },
+          legend: { data: ['交易笔数','涉及金额(万元)'], bottom: 0, textStyle: { color: C.text, fontSize: 11 } },
+          grid: { left: 48, right: 48, top: 16, bottom: 30 },
+          xAxis: { type: 'category', data: this.ch3_months, axisLabel: { color: C.muted, fontSize: 10 } },
+          yAxis: [
+            { type: 'value', name: '笔数', nameTextStyle: { color: C.muted, fontSize: 10 }, axisLabel: { color: C.muted, fontSize: 10 }, splitLine: { lineStyle: { color: C.border } } },
+            { type: 'value', name: '万元', nameTextStyle: { color: C.muted, fontSize: 10 }, axisLabel: { color: C.muted, fontSize: 10 }, splitLine: { show: false } },
+          ],
+          series: [
+            { name: '交易笔数', type: 'bar', data: this.ch3_txnCounts, itemStyle: { color: C.primary, borderRadius: [4,4,0,0] }, barWidth: 16 },
+            { name: '涉及金额(万元)', type: 'line', yAxisIndex: 1, data: this.ch3_txnAmounts, itemStyle: { color: C.red }, lineStyle: { width: 2 }, symbol: 'circle', symbolSize: 6 },
+          ],
+        });
+        this._charts.push(ct);
+        /* 图表2：风险类别分布 */
+        const cc = echarts.init(document.getElementById('chart-ch3-category'));
+        cc.setOption({
+          tooltip: { trigger: 'axis' },
+          grid: { left: 80, right: 20, top: 10, bottom: 20 },
+          xAxis: { type: 'value', axisLabel: { color: C.muted, fontSize: 10 }, splitLine: { lineStyle: { color: C.border } } },
+          yAxis: { type: 'category', data: this.ch3_categories, axisLabel: { color: C.text, fontSize: 10 }, inverse: true },
+          series: [{
+            type: 'bar', data: this.ch3_catValues.map((v,i) => ({ value: v, itemStyle: { color: [C.red, C.amber, C.amber, C.primary, C.primaryLight, C.muted][i], borderRadius: [0,4,4,0] } })),
+            barWidth: 14, label: { show: true, position: 'right', color: C.text, fontSize: 10, formatter: '{c}笔' },
+          }],
+        });
+        this._charts.push(cc);
+        /* 图表3：季度预警统计 */
+        const cq = echarts.init(document.getElementById('chart-ch3-quarter'));
+        cq.setOption({
+          tooltip: { trigger: 'axis' },
+          legend: { data: ['预警生成','人工核查','STR报送'], bottom: 0, textStyle: { color: C.text, fontSize: 10 } },
+          grid: { left: 44, right: 16, top: 14, bottom: 30 },
+          xAxis: { type: 'category', data: this.ch3_quarters, axisLabel: { color: C.muted, fontSize: 10 } },
+          yAxis: { type: 'value', axisLabel: { color: C.muted, fontSize: 10 }, splitLine: { lineStyle: { color: C.border } } },
+          series: [
+            { name: '预警生成', type: 'bar', data: this.ch3_qGen, itemStyle: { color: C.primaryLight }, barWidth: 14 },
+            { name: '人工核查', type: 'bar', data: this.ch3_qInv, itemStyle: { color: C.primary }, barWidth: 14 },
+            { name: 'STR报送', type: 'bar', data: this.ch3_qStr, itemStyle: { color: C.red }, barWidth: 14 },
+          ],
+        });
+        this._charts.push(cq);
+      },
+      getChartColors() {
+        const style = getComputedStyle(document.documentElement);
+        return {
+          primary: style.getPropertyValue('--bw-primary-500').trim(),
+          primaryLight: style.getPropertyValue('--bw-primary-300').trim(),
+          red: style.getPropertyValue('--accent-red').trim(),
+          amber: style.getPropertyValue('--accent-amber').trim(),
+          green: style.getPropertyValue('--accent-green').trim(),
+          text: style.getPropertyValue('--bw-text').trim(),
+          muted: style.getPropertyValue('--bw-text-muted').trim(),
+          border: style.getPropertyValue('--bw-border').trim(),
+        };
+      },
+    },
+    beforeUnmount() {
+      this._charts.forEach(c => c.dispose());
+    },
+  }).mount('#app');
+</script>
+</body>
+</html>

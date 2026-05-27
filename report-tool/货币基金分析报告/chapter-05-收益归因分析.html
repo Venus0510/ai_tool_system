@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>货币基金分析报告 · 收益归因分析</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bw: {
+              primary: {
+                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                500: '#2563eb', 700: '#1e3a8a', 800: '#1e40af', 900: '#0f172a',
+              },
+              surface: '#ffffff', alt: '#f8fafc', bg: '#f3f6fb',
+              text: '#1f2937', muted: '#64748b', light: '#94a3b8',
+              border: '#e5e7eb',
+            }
+          },
+          fontFamily: {
+            bw: ['"Microsoft YaHei"', '"PingFang SC"', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style id="token-css">
+    :root {
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
+      --bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;--bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;--bw-text-inverse:#ffffff;
+      --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg:#dbeafe;--bw-table-th-text:#1e3a8a;
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+      --font:var(--bw-font);--radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
+    }
+  </style>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm;
+      padding: 18mm 22mm;
+      page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { margin: 0; box-shadow: none; }
+    }
+    @media screen {
+      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+    }
+    .process-item {
+      border-left: 4px solid var(--primary-500);
+      background: var(--surface);
+      padding: 14px 18px; border-radius: 0 12px 12px 0;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+    .process-item h3 { font-size: 16px; color: var(--primary-700); font-weight: 700; margin: 0 0 4px; }
+    .process-item p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+    .contrib-bar {
+      height: 8px; border-radius: 4px; background: var(--border-light);
+      margin-top: 6px; overflow: hidden;
+    }
+    .contrib-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+    }
+  </style>
+</head>
+<body class="font-bw" style="background: var(--bg);">
+
+<div id="app">
+
+  <!-- ===== 第1页：五维度归因流程 + 贡献度表 ===== -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">四、收益归因分析</h2>
+    <p class="text-sm mb-4" style="color: var(--text-muted);">归因区间：2026年1月—4月 | 总超额收益 16.3bp（相对业绩基准）</p>
+
+    <div class="grid grid-cols-2 gap-5">
+      <div>
+        <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">收益贡献维度</h3>
+
+        <div class="process-item" v-for="(item, i) in attributions" :key="i">
+          <div class="flex justify-between items-start">
+            <h3>{{ i+1 }}. {{ item.title }}</h3>
+            <span class="text-sm font-bold" :style="{ color: item.bp > 0 ? 'var(--accent-green)' : 'var(--accent-red)' }">
+              {{ item.bp > 0 ? '+' : '' }}{{ item.bp }}bp
+            </span>
+          </div>
+          <p>{{ item.desc }}</p>
+          <div class="contrib-bar">
+            <div class="contrib-fill" :style="{ width: (item.bp / 16.3 * 100) + '%' }"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">归因量化明细</h3>
+        <table class="w-full rounded-xl overflow-hidden text-sm" style="background: var(--surface);">
+          <thead>
+            <tr>
+              <th class="p-2.5 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">归因维度</th>
+              <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">贡献(bp)</th>
+              <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">占比</th>
+              <th class="p-2.5 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">主因判断</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, i) in tableData" :key="i" class="border-b" style="border-color: var(--border-light);">
+              <td class="p-2.5 font-semibold" style="color: var(--text);">{{ row.dim }}</td>
+              <td class="p-2.5 text-center font-bold" :style="{ color: row.bp > 0 ? 'var(--accent-green)' : 'var(--accent-red)' }">
+                {{ row.bp > 0 ? '+' : '' }}{{ row.bp }}</td>
+              <td class="p-2.5 text-center" style="color: var(--text);">{{ row.pct }}</td>
+              <td class="p-2.5 text-sm" style="color: var(--text-muted);">{{ row.cause }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="rounded-2xl p-4 mt-4 shadow-lg" style="background: var(--surface); border: 1px solid var(--border-light);">
+          <h3 class="text-base font-bold mb-2" style="color: var(--primary-700);">归因结论</h3>
+          <p class="text-sm leading-relaxed" style="color: var(--text);">
+            目标基金超额收益<strong style="color:var(--accent-green);">+16.3bp</strong>，主要来源于<strong>杠杆套息</strong>（+8.2bp，贡献50%）
+            与<strong>交易骑乘策略</strong>（+4.1bp，贡献25%）。票息收益与久期管理贡献稳定，费用调整对收益形成小幅拖累（-1.2bp），
+            主因为管理费率较同类均值略高3bp。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">06</div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        attributions: [
+          { title: '票息收益', bp: 3.5, desc: '同业存单、短债、存款等底层资产的加权票息收入，是货基收益的基本盘。一季度持仓加权票息率1.82%。' },
+          { title: '杠杆套息', bp: 8.2, desc: '通过回购融资加杠杆，套取资产收益率与融资成本之间的利差。季均杠杆率108%，利差约65bp。' },
+          { title: '久期管理', bp: 1.7, desc: '在收益率下行周期适度拉长久期至65天（同类均值58天），获取期限利差增厚。' },
+          { title: '交易与骑乘策略', bp: 4.1, desc: '利用收益率曲线陡峭段进行骑乘操作，以及存单二级市场波段交易实现资本利得。' },
+          { title: '费用调整', bp: -1.2, desc: '管理费与托管费合计0.28%，略高于同类均值0.25%，对净收益形成3bp左右的拖累。' },
+        ],
+        tableData: [
+          { dim: '票息收益', bp: 3.5, pct: '21.5%', cause: '底层资产票息率稳定' },
+          { dim: '杠杆套息', bp: 8.2, pct: '50.3%', cause: '利差空间充裕，杠杆运用积极' },
+          { dim: '久期管理', bp: 1.7, pct: '10.4%', cause: '久期高于均值，获益有限' },
+          { dim: '交易/骑乘', bp: 4.1, pct: '25.2%', cause: '主动交易能力突出' },
+          { dim: '费用调整', bp: -1.2, pct: '-7.4%', cause: '管理费率略高于同类' },
+        ],
+      };
+    }
+  }).mount('#app');
+</script>
+
+</body>
+</html>

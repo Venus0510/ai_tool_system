@@ -1,0 +1,115 @@
+{
+  "projectName": "货币基金分析报告",
+  "createdAt": "2026-05-26T07:18:59.683Z",
+  "updatedAt": "2026-05-26T08:00:06.078Z",
+  "layout": "a4-landscape",
+  "theme": "business-bluewhite",
+  "mode": "chapter",
+  "audience": "",
+  "purpose": "",
+  "tags": [
+    "正式交付",
+    "客户展示"
+  ],
+  "chapterOutline": "",
+  "chapters": [
+    {
+      "id": "ch-mmf-001",
+      "order": 1,
+      "title": "封面",
+      "desc": "报告标题：货币基金分析报告；副标题：收益归因与投资策略评估；展示三大核心分析维度",
+      "components": [
+        "hero-card"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "done",
+      "_open": false
+    },
+    {
+      "id": "ch-mmf-002",
+      "order": 2,
+      "title": "报告摘要",
+      "desc": "核心观点：概括当前货币市场核心逻辑；关键结论：推荐/维持/减持的核心理由；主要指标预测：未来1-3个月7日年化收益率区间、万份收益波动预期",
+      "components": [
+        "stat-card"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "draft",
+      "_open": true
+    },
+    {
+      "id": "ch-mmf-003",
+      "order": 3,
+      "title": "宏观与流动性背景分析",
+      "desc": "货币政策展望：央行OMO/MLF净投放、LPR/存款利率走势；资金面松紧：DR007与R007走势、季末年末资金脉冲效应",
+      "components": [
+        "stat-card",
+        "data-table",
+        "line-chart"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "pending",
+      "_open": true
+    },
+    {
+      "id": "ch-mmf-004",
+      "order": 4,
+      "title": "基金产品表现概览",
+      "desc": "七日年化收益率走势、万份收益均值、产品规模变化、同类排名及业绩基准对比",
+      "components": [
+        "stat-card",
+        "bar-chart",
+        "data-table"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "pending",
+      "_open": false
+    },
+    {
+      "id": "ch-mmf-005",
+      "order": 5,
+      "title": "收益归因分析",
+      "desc": "五维度收益拆解：票息收益、杠杆套息、久期管理、交易与骑乘策略、费用调整的贡献度量化分析",
+      "components": [
+        "process-step",
+        "data-table"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "pending",
+      "_open": false
+    },
+    {
+      "id": "ch-mmf-006",
+      "order": 6,
+      "title": "风险与流动性展望",
+      "desc": "正偏离储备现状、申赎波动压力测试、流动性覆盖率评估、未来1-3个月市场展望",
+      "components": [
+        "stat-card",
+        "badge-tag"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "pending",
+      "_open": false
+    },
+    {
+      "id": "ch-mmf-007",
+      "order": 7,
+      "title": "投资策略建议",
+      "desc": "久期调整建议、杠杆策略优化、资产配置方向、下月管理关注事项",
+      "components": [
+        "process-step",
+        "stat-card"
+      ],
+      "customLayout": "",
+      "dataFile": "",
+      "status": "pending",
+      "_open": false
+    }
+  ]
+}

@@ -71,10 +71,10 @@
           "theme": "follow"
         },
         {
-          "id": "timeline-chart",
-          "label": "时间线图",
-          "path": "charts/timeline-chart/timeline-chart.html",
-          "meta": "charts/timeline-chart/timeline-chart.meta.json",
+          "id": "line-chart",
+          "label": "折线图",
+          "path": "charts/line-chart/line-chart.html",
+          "meta": "charts/line-chart/line-chart.meta.json",
           "theme": "follow"
         }
       ]

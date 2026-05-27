@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>货币基金分析报告 · 投资策略建议</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bw: {
+              primary: {
+                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                500: '#2563eb', 700: '#1e3a8a', 800: '#1e40af', 900: '#0f172a',
+              },
+              surface: '#ffffff', alt: '#f8fafc', bg: '#f3f6fb',
+              text: '#1f2937', muted: '#64748b', light: '#94a3b8',
+              border: '#e5e7eb',
+            }
+          },
+          fontFamily: {
+            bw: ['"Microsoft YaHei"', '"PingFang SC"', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style id="token-css">
+    :root {
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
+      --bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;--bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;--bw-text-inverse:#ffffff;
+      --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+      --font:var(--bw-font);--radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+    }
+  </style>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm;
+      padding: 18mm 22mm;
+      page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { margin: 0; box-shadow: none; }
+    }
+    @media screen {
+      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+    }
+    .advice-step {
+      border-left: 4px solid var(--primary-500);
+      background: var(--surface);
+      padding: 14px 18px; border-radius: 0 12px 12px 0;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+    .advice-step.priority { border-left-color: var(--accent-green); }
+    .advice-step h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--primary-700); }
+    .advice-step.priority h3 { color: var(--accent-green); }
+    .advice-step p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+    .action-card {
+      background: var(--surface); border-radius: var(--radius-card);
+      padding: 18px 20px; box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+    }
+    .action-card h3 { font-size: 16px; color: var(--primary-700); font-weight: 700; margin: 0 0 8px; }
+    .action-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+  </style>
+</head>
+<body class="font-bw" style="background: var(--bg);">
+
+<div id="app">
+
+  <!-- ===== 第1页：核心策略建议 ===== -->
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">六、投资策略建议</h2>
+    <p class="text-sm mb-4" style="color: var(--text-muted);">基于归因分析结论与市场展望，提出下阶段管理优化建议</p>
+
+    <div class="grid grid-cols-2 gap-5">
+      <div>
+        <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">策略优先级</h3>
+
+        <div class="advice-step priority" v-for="(item, i) in priorities" :key="'p'+i">
+          <div class="flex justify-between items-start">
+            <h3>{{ item.title }}</h3>
+            <span class="text-xs px-2 py-0.5 rounded-full font-semibold" style="background: #dcfce7; color: #166534;">高优先</span>
+          </div>
+          <p>{{ item.desc }}</p>
+        </div>
+
+        <div class="advice-step" v-for="(item, i) in normals" :key="'n'+i">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.desc }}</p>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-bold mb-3" style="color: var(--primary-700);">下月管理关注事项</h3>
+
+        <div class="action-card mb-3">
+          <h3>久期管理</h3>
+          <p>当前久期65天已高于同类均值（58天），在收益率下行空间有限的背景下，建议将久期<strong style="color:var(--accent-green);">逐步回调至60天左右</strong>，降低利率反弹时的净值回撤风险。</p>
+        </div>
+
+        <div class="action-card mb-3">
+          <h3>杠杆策略</h3>
+          <p>维持108%左右的杠杆率，利差空间仍有利可图。重点关注回购利率季节性波动，<strong style="color:var(--accent-amber);">6月季末前适度降杠杆至105%</strong>以应对资金面收紧。</p>
+        </div>
+
+        <div class="action-card mb-3">
+          <h3>资产配置</h3>
+          <p>二季度存单供给放量期，<strong style="color:var(--accent-green);">逢高增配AAA级1年期存单</strong>，锁定较高票息。适度降低AA+及以下存单占比至6%以内，优化信用风险结构。</p>
+        </div>
+
+        <div class="action-card">
+          <h3>流动性储备</h3>
+          <p>保持T+0变现资产不低于40亿，为6月末MPA考核提前储备流动性。<strong style="color:var(--primary-700);">适时释放部分正偏离</strong>以平滑收益曲线并刺激规模增长。</p>
+        </div>
+
+        <div class="rounded-2xl p-4 mt-4 shadow-lg" style="background: var(--primary-900); color: #fff;">
+          <h3 class="text-base font-bold mb-2" style="color: var(--primary-300);">总体评级：维持配置</h3>
+          <p class="text-sm leading-relaxed" style="color: rgba(255,255,255,0.75);">
+            目标基金在收益能力、风险控制与流动性管理三个维度均表现稳健。建议维持当前配置比例，
+            重点关注信用风险结构与季末流动性管理，月度复盘归因变化。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">08</div>
+  </section>
+
+</div>
+
+<script>
+  const { createApp } = Vue;
+  createApp({
+    data() {
+      return {
+        priorities: [
+          { title: '久期回调至60天', desc: '当前久期略偏高，利率下行空间收窄后反弹风险上升，建议逐步减持长端存单，将组合久期回调至同类均值附近。' },
+          { title: '优化信用结构', desc: 'AA+及以下存单占比升至8.2%，建议在二季度存单供给放量期置换为AAA级，将低评级占比压降至6%以内。' },
+        ],
+        normals: [
+          { title: '杠杆维持，季末前微调', desc: '利差空间仍充裕（~65bp），维持108%杠杆率运作，6月中下旬适度降至105%应对季末资金脉冲。' },
+          { title: '逢高增配存单', desc: '利用二季度存单到期续发窗口，在利率上行时点分批增配，锁定较高票息收益。' },
+          { title: '正偏离释放节奏', desc: '当前储备18.5bp充裕，建议在6-7月分批释放8-10bp，平滑收益曲线的同时观察规模刺激效果。' },
+        ],
+      };
+    }
+  }).mount('#app');
+</script>
+
+</body>
+</html>
