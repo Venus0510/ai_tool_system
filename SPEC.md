@@ -90,8 +90,7 @@ AIProject/
 │           ├── chapter-03-attribution.html
 │           ├── chapter-04-comparison.html
 │           ├── chapter-05-team.html
-│           └── output/
-│               └── <projectName>.html     # 最终组装成品，以项目名称命名
+│           └── <projectName>.html         # 最终组装成品，以项目名称命名（直接放在项目根目录下）
 │
 ├── SPEC.md                               # 本文件
 └── landing.html                          # 首页
@@ -390,7 +389,7 @@ Claude 读取所有 status=done 的章节
   → 按 order 合并所有 chapter HTML
   → 提取每个 chapter 的 <body> 内容
   → 统一内联主题 CSS、页面编号
-  → 输出 <项目路径>/output/<projectName>.html（以 config.json 中的 projectName 命名）
+  → 输出 <项目路径>/<projectName>.html（以 config.json 中的 projectName 命名，放在项目根目录下）
 ```
 
 ### 5.5 数据文件处理
@@ -766,7 +765,7 @@ Claude 读取 config.json
 1. Claude 会读取所有 done 章节
 2. 按 order 顺序合并所有 chapter HTML
 3. 统一内联主题 CSS、页面编号
-4. 输出到 `项目文件夹/output/<projectName>.html`（以项目名称命名）
+4. 输出到 `项目文件夹/<projectName>.html`（以项目名称命名，放在项目根目录下）
 
 **组装后的完整报告**包含：
 - 统一的 CSS 样式和主题变量
@@ -794,8 +793,8 @@ Claude 读取 config.json
 │ 骨架       │ 项目         │ 生成报告"     │ 输出最终 HTML        │
 │ 主题       │              │               │                      │
 │ 组件       │ 配置         │ Claude        │ 输出                 │
-│ 模板       │ 版式/主题    │ 逐章生成       │ output/              │
-│            │ 章节/组件    │               │ <projectName>.html   │
+│ 模板       │ 版式/主题    │ 逐章生成       │ <projectName>.html  │
+│            │ 章节/组件    │               │ （项目根目录）       │
 │ 了解       │ 数据绑定     │ 用户确认      │                      │
 │ 可用资源    │              │ 逐章修改       │ 完成！               │
 │            │ 自动保存     │ 直到全部      │                      │
