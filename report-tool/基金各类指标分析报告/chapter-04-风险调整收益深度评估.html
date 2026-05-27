@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>风险调整收益深度评估 · 基金各类指标深度分析报告</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style id="token-css">
+    :root {
+      --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
+      --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
+      --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
+      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
+      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
+      --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
+      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
+      --bw-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
+      --bw-big-number-color: var(--bw-primary-500);
+      --bw-tag-bg: var(--bw-primary-100); --bw-tag-text: var(--bw-primary-800);
+      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
+      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
+      --primary-500: var(--bw-primary-500); --primary-700: var(--bw-primary-700);
+      --primary-800: var(--bw-primary-800); --primary-900: var(--bw-primary-900);
+      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
+      --text: var(--bw-text); --text-muted: var(--bw-text-muted); --text-light: var(--bw-text-light);
+      --border: var(--bw-border); --border-light: var(--bw-border-light);
+      --radius-card: var(--bw-radius-card); --shadow-card: var(--bw-shadow-card);
+      --font: var(--bw-font); --accent-green: var(--bw-accent-green);
+      --accent-red: var(--bw-accent-red); --accent-amber: var(--bw-accent-amber);
+      --big-number: 44px; --big-number-color: var(--bw-big-number-color);
+      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
+      --tag-bg: var(--bw-tag-bg); --tag-text: var(--bw-tag-text);
+    }
+  </style>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      box-sizing: border-box; page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media screen {
+      html, body { background: #e5e7eb; margin: 0; padding: 0; }
+      .a4-page {
+        width: min(297mm, calc(100vw - 32px)); height: auto;
+        aspect-ratio: 297 / 210; margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px;
+      }
+    }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
+    }
+    .chart-container { width: 100%; height: 255px; }
+  </style>
+</head>
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
+
+<!-- ===== 第1页：夏普比率排名 + 波动率分组 ===== -->
+<section class="a4-page" style="background: var(--surface-alt);">
+  <div class="flex items-center gap-3 mb-3">
+    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+    <div>
+      <h2 class="text-2xl font-bold" style="color: var(--text);">风险调整收益深度评估</h2>
+      <p class="text-xs" style="color: var(--text-muted);">夏普比率排名 · 波动率分层 · 风险定价效率</p>
+    </div>
+  </div>
+
+  <!-- KPI 行 (4列) -->
+  <div class="grid grid-cols-4 gap-3 mb-3">
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">夏普最高</div>
+      <div class="text-3xl font-bold" style="color: var(--accent-green);">3.45</div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">星辰增货币F</div>
+    </div>
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">夏普均值</div>
+      <div class="text-3xl font-bold" style="color: var(--big-number-color);">1.96</div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">10只≥2.5，13只≥2.0</div>
+    </div>
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">夏普最低</div>
+      <div class="text-3xl font-bold" style="color: var(--accent-red);">0.81</div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">朱雀货币B</div>
+    </div>
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">波动率均值</div>
+      <div class="text-3xl font-bold" style="color: var(--big-number-color);">0.089<span class="text-base">%</span></div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">区间 0.026%–0.175%</div>
+    </div>
+  </div>
+
+  <!-- 夏普比率柱状图 -->
+  <div class="rounded-xl p-3 shadow-sm mb-3" style="background: var(--surface);">
+    <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">夏普比率 Top 10</h4>
+    <div id="chart-sharpe-top10" class="chart-container"></div>
+  </div>
+
+  <!-- 波动率分层洞察 -->
+  <div class="grid grid-cols-3 gap-3">
+    <div class="rounded-xl p-3 shadow-sm text-center" style="background: #f0fdf4;">
+      <div class="text-xs font-bold mb-1" style="color: #16a34a;">低波动（<0.05%）</div>
+      <div class="text-2xl font-bold mb-0.5" style="color: #16a34a;">9 只</div>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">夏普均值 <b>1.77</b>，收益稳定但弹性不足</p>
+    </div>
+    <div class="rounded-xl p-3 shadow-sm text-center" style="background: #eff6ff;">
+      <div class="text-xs font-bold mb-1" style="color: var(--primary-500);">中波动（0.05%–0.10%）</div>
+      <div class="text-2xl font-bold mb-0.5" style="color: var(--primary-500);">13 只</div>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">夏普均值 <b>2.27</b>，风险收益比最优区间</p>
+    </div>
+    <div class="rounded-xl p-3 shadow-sm text-center" style="background: #fff5f5;">
+      <div class="text-xs font-bold mb-1" style="color: var(--accent-red);">高波动（≥0.10%）</div>
+      <div class="text-2xl font-bold mb-0.5" style="color: var(--accent-red);">11 只</div>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">夏普均值 <b>1.78</b>，高风险未换来高回报</p>
+    </div>
+  </div>
+
+  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">05</div>
+</section>
+
+<!-- ===== 第2页：最大回撤 + 风险等级对比 ===== -->
+<section class="a4-page" style="background: var(--surface-alt);">
+  <div class="flex items-center gap-3 mb-3">
+    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+    <div>
+      <h2 class="text-2xl font-bold" style="color: var(--text);">回撤分析与风险等级对比</h2>
+      <p class="text-xs" style="color: var(--text-muted);">最大回撤分布 · R1 vs R2 分组实证</p>
+    </div>
+  </div>
+
+  <!-- 回撤对比表 -->
+  <div class="grid grid-cols-2 gap-4 mb-3">
+    <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
+      <table class="w-full text-xs">
+        <thead>
+          <tr><th colspan="3" class="p-2.5 text-center text-sm font-bold" style="background: #dcfce7; color: #16a34a;">回撤控制最佳 Top 5</th></tr>
+          <tr>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">最大回撤</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">夏普比率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">开阳宝货币E</td><td class="p-2 text-center font-bold" style="color: var(--accent-green);">-0.0003%</td><td class="p-2 text-center" style="color: var(--text);">2.45</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">毕月利货币B</td><td class="p-2 text-center font-bold" style="color: var(--accent-green);">-0.0010%</td><td class="p-2 text-center" style="color: var(--text);">0.87</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">玉衡盈货币C</td><td class="p-2 text-center font-bold" style="color: var(--accent-green);">-0.0011%</td><td class="p-2 text-center" style="color: var(--text);">1.36</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">朱雀盈货币E</td><td class="p-2 text-center font-bold" style="color: var(--accent-green);">-0.0023%</td><td class="p-2 text-center" style="color: var(--text);">0.99</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">天璇利货币C</td><td class="p-2 text-center font-bold" style="color: var(--accent-green);">-0.0047%</td><td class="p-2 text-center" style="color: var(--text);">1.77</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
+      <table class="w-full text-xs">
+        <thead>
+          <tr><th colspan="3" class="p-2.5 text-center text-sm font-bold" style="background: #fee2e2; color: #dc2626;">回撤较大需关注 Top 5</th></tr>
+          <tr>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">最大回撤</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">夏普比率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">开阳鑫货币B</td><td class="p-2 text-center font-bold" style="color: var(--accent-red);">-0.0478%</td><td class="p-2 text-center" style="color: var(--text);">1.49</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">摇光鑫货币E</td><td class="p-2 text-center font-bold" style="color: var(--accent-red);">-0.0462%</td><td class="p-2 text-center" style="color: var(--text);">2.36</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">玉衡稳货币E</td><td class="p-2 text-center font-bold" style="color: var(--accent-red);">-0.0405%</td><td class="p-2 text-center" style="color: var(--text);">2.61</td></tr>
+          <tr class="border-b" style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">荧惑增货币E</td><td class="p-2 text-center font-bold" style="color: var(--accent-red);">-0.0385%</td><td class="p-2 text-center" style="color: var(--text);">2.71</td></tr>
+          <tr style="border-color: var(--border-light);"><td class="p-2 font-bold" style="color: var(--text);">岁星货币B</td><td class="p-2 text-center font-bold" style="color: var(--accent-red);">-0.0375%</td><td class="p-2 text-center" style="color: var(--text);">3.31</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- R1 vs R2 分组对比 -->
+  <div class="rounded-xl p-4 shadow-sm mb-3" style="background: var(--surface);">
+    <h4 class="text-sm font-bold mb-2.5" style="color: var(--primary-700);">风险等级分组对比：R1（28只） vs R2（5只）</h4>
+    <div class="grid grid-cols-4 gap-3">
+      <div class="text-center">
+        <div class="text-xs mb-1" style="color: var(--text-muted);">7日年化均值</div>
+        <div class="text-lg font-bold" style="color: var(--text);">R1: 1.86%</div>
+        <div class="text-lg" style="color: var(--text-muted);">R2: 1.86%</div>
+        <div class="text-xs mt-1 px-2 py-0.5 rounded-full inline-block" style="background: var(--primary-50); color: var(--primary-700);">无差异</div>
+      </div>
+      <div class="text-center">
+        <div class="text-xs mb-1" style="color: var(--text-muted);">夏普比率均值</div>
+        <div class="text-lg font-bold" style="color: var(--accent-green);">R1: 2.02</div>
+        <div class="text-lg" style="color: var(--accent-red);">R2: 1.58</div>
+        <div class="text-xs mt-1 px-2 py-0.5 rounded-full inline-block" style="background: #fee2e2; color: #dc2626;">R1领先28%</div>
+      </div>
+      <div class="text-center">
+        <div class="text-xs mb-1" style="color: var(--text-muted);">波动率均值</div>
+        <div class="text-lg font-bold" style="color: var(--accent-red);">R1: 0.093%</div>
+        <div class="text-lg" style="color: var(--accent-green);">R2: 0.065%</div>
+        <div class="text-xs mt-1 px-2 py-0.5 rounded-full inline-block" style="background: var(--primary-50); color: var(--primary-700);">R2更低</div>
+      </div>
+      <div class="text-center">
+        <div class="text-xs mb-1" style="color: var(--text-muted);">最大回撤均值</div>
+        <div class="text-lg font-bold" style="color: var(--accent-red);">R1: -0.022%</div>
+        <div class="text-lg" style="color: var(--accent-red);">R2: -0.027%</div>
+        <div class="text-xs mt-1 px-2 py-0.5 rounded-full inline-block" style="background: #fee2e2; color: #dc2626;">R2差23%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 关键结论 -->
+  <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface); border-left: 4px solid var(--primary-500);">
+    <h4 class="text-sm font-bold mb-1" style="color: var(--primary-700);">核心发现</h4>
+    <p class="text-xs leading-relaxed" style="color: var(--text);">
+      <b>R2标签≠更优风险收益比：</b>R2基金的收益与R1持平（1.86%），但夏普比率低28%、回撤高23%。R2标签更多反映持仓结构差异（如信用债占比），而非必然的风险补偿。<b>投资者不应仅凭风险标签选基，须穿透看夏普比率和回撤数据。</b>值得关注的是，回撤较大的基金中不乏高夏普产品（如岁星货币B夏普3.31但回撤-0.038%），说明高夏普并不保证低回撤——两者衡量不同维度的风险。
+    </p>
+  </div>
+
+  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">06</div>
+</section>
+
+<script>
+(function() {
+  var chartDom = document.getElementById('chart-sharpe-top10');
+  if (!chartDom) return;
+  var myChart = echarts.init(chartDom);
+  var names = ['星辰增货币F','岁星货币B','太白惠货币E','镇星通货币B','天市增货币A','岁星利货币A','荧惑增货币E','天璇增货币E','玉衡稳货币E','启明利货币E'];
+  var values = [3.45, 3.31, 3.19, 3.12, 3.09, 3.07, 2.71, 2.61, 2.61, 2.50];
+  var option = {
+    grid: { left: '3%', right: '8%', top: '8%', bottom: '8%', containLabel: true },
+    xAxis: { type: 'value', min: 2.2, max: 3.7, axisLabel: { fontSize: 10 }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
+    yAxis: { type: 'category', data: names.reverse(), axisLabel: { fontSize: 10, color: '#1f2937' }, inverse: true, axisLine: { show: false }, axisTick: { show: false } },
+    visualMap: { show: false, min: 2.5, max: 3.5, inRange: { color: ['#3b82f6', '#2563eb', '#1e3a8a'] } },
+    series: [{
+      type: 'bar', data: values.reverse().map(function(v) { return {value: v, itemStyle: {borderRadius: [0,4,4,0]} }; }),
+      barWidth: 16, label: { show: true, position: 'right', fontSize: 10, formatter: '{c}', color: '#64748b' },
+      markLine: { silent: true, symbol: 'none', lineStyle: { type: 'dashed', color: '#16a34a', width: 1.5 },
+        label: { fontSize: 9, color: '#16a34a', formatter: '优秀线 2.5' }, data: [{ xAxis: 2.5 }] }
+    }]
+  };
+  myChart.setOption(option);
+  window.addEventListener('resize', function() { myChart.resize(); });
+})();
+</script>
+
+</body>
+</html>

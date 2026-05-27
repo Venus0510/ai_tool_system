@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>收益能力全景分析 · 基金各类指标深度分析报告</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style id="token-css">
+    :root {
+      --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
+      --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
+      --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
+      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
+      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
+      --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
+      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
+      --bw-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
+      --bw-big-number-color: var(--bw-primary-500);
+      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
+      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
+      --primary-500: var(--bw-primary-500); --primary-700: var(--bw-primary-700);
+      --primary-800: var(--bw-primary-800); --primary-900: var(--bw-primary-900);
+      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
+      --text: var(--bw-text); --text-muted: var(--bw-text-muted); --text-light: var(--bw-text-light);
+      --border: var(--bw-border); --border-light: var(--bw-border-light);
+      --radius-card: var(--bw-radius-card); --shadow-card: var(--bw-shadow-card);
+      --font: var(--bw-font); --accent-green: var(--bw-accent-green);
+      --accent-red: var(--bw-accent-red); --accent-amber: var(--bw-accent-amber);
+      --big-number: 48px; --big-number-color: var(--bw-big-number-color);
+      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
+    }
+  </style>
+  <style>
+    @page { size: A4 landscape; margin: 0; }
+    .a4-page {
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      box-sizing: border-box; page-break-after: always; break-after: page;
+      position: relative; overflow: hidden;
+    }
+    .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media screen {
+      html, body { background: #e5e7eb; margin: 0; padding: 0; }
+      .a4-page {
+        width: min(297mm, calc(100vw - 32px)); height: auto;
+        aspect-ratio: 297 / 210; margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px;
+      }
+    }
+    @media print {
+      html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
+    }
+    .chart-container { width: 100%; height: 260px; }
+  </style>
+</head>
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
+
+<!-- ===== 第1页：7日年化排名 + KPI卡 + 柱状图 ===== -->
+<section class="a4-page" style="background: var(--surface-alt);">
+  <div class="flex items-center gap-3 mb-3">
+    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+    <div>
+      <h2 class="text-2xl font-bold" style="color: var(--text);">收益能力全景分析</h2>
+      <p class="text-xs" style="color: var(--text-muted);">7日年化收益率排名 · KPI速览 · 收益分布</p>
+    </div>
+  </div>
+
+  <!-- KPI 卡片行 (4列) -->
+  <div class="grid grid-cols-4 gap-3 mb-3">
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold tracking-wider uppercase mb-1" style="color: var(--text-muted);">最高</div>
+      <div class="text-3xl font-bold" style="color: var(--accent-green);">2.32<span class="text-base">%</span></div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">岁星利货币A</div>
+    </div>
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold tracking-wider uppercase mb-1" style="color: var(--text-muted);">均值</div>
+      <div class="text-3xl font-bold" style="color: var(--big-number-color);">1.86<span class="text-base">%</span></div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">33只基金平均</div>
+    </div>
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold tracking-wider uppercase mb-1" style="color: var(--text-muted);">中位数</div>
+      <div class="text-3xl font-bold" style="color: var(--big-number-color);">1.92<span class="text-base">%</span></div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">第17名水平</div>
+    </div>
+    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+      <div class="text-xs font-bold tracking-wider uppercase mb-1" style="color: var(--text-muted);">最低</div>
+      <div class="text-3xl font-bold" style="color: var(--accent-red);">1.31<span class="text-base">%</span></div>
+      <div class="text-xs mt-0.5" style="color: var(--text-light);">荧惑富货币A</div>
+    </div>
+  </div>
+
+  <!-- 柱状图 -->
+  <div class="rounded-xl p-3 shadow-sm mb-3" style="background: var(--surface);">
+    <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">7日年化收益率 Top 10</h4>
+    <div id="chart-yield-top10" class="chart-container"></div>
+  </div>
+
+  <!-- 底部洞察 -->
+  <div class="grid grid-cols-2 gap-3">
+    <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface);">
+      <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">
+        <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--accent-green);"></span>头部集中度
+      </h4>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">
+        Top 10基金7日年化均超过<b>2.05%</b>，领先均值约<b>0.2pp</b>。排名第一的岁星利货币A（2.32%）与第10名开阳宝货币E（2.05%）之间仍有<b>0.27pp</b>差距，头部内部也存在梯队分化。
+      </p>
+    </div>
+    <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface);">
+      <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">
+        <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--accent-amber);"></span>万份收益特征
+      </h4>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">
+        万份收益均值<b>0.52元</b>，最高0.65元（毕月宝货币B），最低0.36元（太白惠货币E）。万份收益与7日年化排名高度相关，但也存在背离案例——个别基金万份收益高但年化偏低，需关注收益确认方式。
+      </p>
+    </div>
+  </div>
+
+  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">03</div>
+</section>
+
+<!-- ===== 第2页：多期限收益对比 ===== -->
+<section class="a4-page" style="background: var(--surface-alt);">
+  <div class="flex items-center gap-3 mb-3">
+    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+    <div>
+      <h2 class="text-2xl font-bold" style="color: var(--text);">多期限收益对比</h2>
+      <p class="text-xs" style="color: var(--text-muted);">近1月 · 近3月 · 近1年 — 短期动能 vs 长期稳定性</p>
+    </div>
+  </div>
+
+  <!-- 多期限对比表格 -->
+  <div class="rounded-xl overflow-hidden shadow-sm mb-3" style="background: var(--surface);">
+    <table class="w-full text-xs">
+      <thead>
+        <tr>
+          <th class="p-2.5 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">排名</th>
+          <th class="p-2.5 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
+          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">7日年化</th>
+          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">近1月</th>
+          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">近3月</th>
+          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">近1年</th>
+          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">稳定性</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b" style="border-color: var(--border-light); background: #f0fdf4;">
+          <td class="p-2.5 font-bold" style="color: var(--accent-green);">1</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">岁星利货币A</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.32%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.13%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.37%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.50%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">稳定领先</span></td>
+        </tr>
+        <tr class="border-b" style="border-color: var(--border-light); background: #f0fdf4;">
+          <td class="p-2.5 font-bold" style="color: var(--accent-green);">2</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">天璇增货币E</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">1.92%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.10%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.40%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.48%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">长跑型</span></td>
+        </tr>
+        <tr class="border-b" style="border-color: var(--border-light);">
+          <td class="p-2.5 font-bold" style="color: var(--big-number-color);">3</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">紫微通货币E</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-red);">1.59%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.11%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.48%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.48%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #fef3c7; color: #d97706;">近期反弹</span></td>
+        </tr>
+        <tr class="border-b" style="border-color: var(--border-light); background: #f0fdf4;">
+          <td class="p-2.5 font-bold" style="color: var(--accent-green);">4</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">镇星通货币B</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.19%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.16%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.46%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.47%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">稳定领先</span></td>
+        </tr>
+        <tr class="border-b" style="border-color: var(--border-light);">
+          <td class="p-2.5 font-bold" style="color: var(--big-number-color);">5</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">朱雀货币B</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">1.94%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">0.16%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">0.56%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.44%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">全面优秀</span></td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr><th colspan="7" class="p-2 text-xs font-bold text-center" style="background: #fee2e2; color: #dc2626;">—— 近1年收益排名靠后的基金 ——</th></tr>
+      </thead>
+      <tbody>
+        <tr class="border-b" style="border-color: var(--border-light); background: #fff5f5;">
+          <td class="p-2.5 font-bold" style="color: var(--accent-red);">29</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">太白惠货币E</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-red);">1.40%</td>
+          <td class="p-2.5 text-center" style="color: var(--text);">0.15%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-red);">0.36%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-red);">1.71%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #fee2e2; color: #dc2626;">全面落后</span></td>
+        </tr>
+        <tr class="border-b" style="border-color: var(--border-light);">
+          <td class="p-2.5 font-bold" style="color: var(--accent-red);">33</td>
+          <td class="p-2.5 font-bold" style="color: var(--text);">岁星鑫货币B</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">2.13%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">0.19%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-green);">0.56%</td>
+          <td class="p-2.5 text-center" style="color: var(--accent-red);">1.60%</td>
+          <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #fef3c7; color: #d97706;">短期虚高</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 一致性分析 -->
+  <div class="grid grid-cols-2 gap-3">
+    <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface);">
+      <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">
+        <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--primary-500);"></span>期限一致性分析
+      </h4>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">
+        仅<b>4只</b>基金（岁星利货币A、镇星通货币B、井木利货币C、朱雀盈货币E）同时进入7日年化和近1年收益Top10，占比<b>12%</b>。其余6只7日年化Top10基金的近1年排名显著下滑，提示短期高收益不具备可持续性。
+      </p>
+    </div>
+    <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface);">
+      <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">
+        <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--accent-red);"></span>警惕案例：岁星鑫货币B
+      </h4>
+      <p class="text-xs leading-relaxed" style="color: var(--text);">
+        7日年化<b>2.13%</b>（排名第8）、近1月<b>0.19%</b>（排名第1），但近1年仅<b>1.60%</b>（排名垫底）。短期爆发力强但长期业绩堪忧，属于典型的"高波动、不可持续"型产品。
+      </p>
+    </div>
+  </div>
+
+  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">04</div>
+</section>
+
+<script>
+(function() {
+  var chartDom = document.getElementById('chart-yield-top10');
+  if (!chartDom) return;
+  var myChart = echarts.init(chartDom);
+  var names = ['岁星利货币A','天璇利货币C','启明利货币E','朱雀盈货币E','毕月宝货币B','镇星通货币B','岁星货币B','岁星鑫货币B','井木利货币C','开阳宝货币E'];
+  var values = [2.3203, 2.3135, 2.2726, 2.2607, 2.1925, 2.1914, 2.1868, 2.1297, 2.0847, 2.0469];
+  var colors = ['#2563eb','#2563eb','#2563eb','#2563eb','#2563eb','#2563eb','#2563eb','#3b82f6','#3b82f6','#3b82f6'];
+  var option = {
+    grid: { left: '3%', right: '8%', top: '8%', bottom: '8%', containLabel: true },
+    xAxis: { type: 'value', min: 1.95, max: 2.40, axisLabel: { fontSize: 10, formatter: '{value}%' }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
+    yAxis: { type: 'category', data: names.reverse(), axisLabel: { fontSize: 10, color: '#1f2937' }, inverse: true, axisLine: { show: false }, axisTick: { show: false } },
+    series: [{
+      type: 'bar', data: values.reverse().map(function(v,i) { return {value: v, itemStyle: {color: colors.reverse()[i], borderRadius: [0,4,4,0]} }; }),
+      barWidth: 16, label: { show: true, position: 'right', fontSize: 10, formatter: '{c}%', color: '#64748b' },
+      markLine: { silent: true, symbol: 'none', lineStyle: { type: 'dashed', color: '#dc2626', width: 1.5 },
+        label: { fontSize: 9, color: '#dc2626', formatter: '均值 1.86%' }, data: [{ xAxis: 1.8632 }] }
+    }]
+  };
+  myChart.setOption(option);
+  window.addEventListener('resize', function() { myChart.resize(); });
+})();
+</script>
+
+</body>
+</html>
