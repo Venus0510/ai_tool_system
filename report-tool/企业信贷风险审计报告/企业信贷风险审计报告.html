@@ -231,16 +231,6 @@
     .stat-mini .val { font-size: 28px; font-weight: 700; line-height: 1; }
     .stat-mini .lbl { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 
-    /* ====== 页脚 ====== */
-    .page-footer {
-      position: absolute; bottom: 10mm; left: 22mm; right: 22mm;
-      display: flex; justify-content: space-between;
-      font-size: 12px; color: var(--text-light);
-    }
-    .page-footer-inverse {
-      position: absolute; bottom: 10mm; right: 22mm;
-      font-size: 12px; color: rgba(255,255,255,0.4);
-    }
   </style>
 </head>
 <body class="bg-bw-bg font-bw">
@@ -280,7 +270,7 @@
         <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
       </div>
     </div>
-    <div class="page-footer-inverse">01</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.4);">01</div>
   </section>
 
   <!-- 02 · 审计摘要 -->
@@ -340,7 +330,7 @@
         </div>
       </div>
     </div>
-    <div class="page-footer" style="justify-content:flex-end;"><span>02</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">02</div>
   </section>
 
   <!-- ============================================================ -->
@@ -374,7 +364,7 @@
       <h3>核心财务指标 · 近三年趋势对比</h3>
       <div id="trendChart" style="width:100%;height:280px;"></div>
     </div>
-    <div class="page-footer" style="justify-content:flex-end;"><span>03</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">03</div>
   </section>
 
   <!-- 04 · 现金流与债务覆盖 -->
@@ -416,7 +406,7 @@
         <p>应收账款周转天数从45天延长至<span style="color:var(--accent-amber);font-weight:700;">68天</span>，回款效率下降明显。短期借款占比从32%升至<span style="color:var(--accent-amber);font-weight:700;">47%</span>，融资结构短期化趋势值得关注，建议增加中长期融资比例。</p>
       </div>
     </div>
-    <div class="page-footer" style="justify-content:flex-end;"><span>04</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">04</div>
   </section>
 
   <!-- ============================================================ -->
@@ -469,7 +459,7 @@
         </tbody>
       </table>
     </div>
-    <div class="page-footer" style="justify-content:flex-end;"><span>05</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">05</div>
   </section>
 
   <!-- 06 · 违规行为标注与资金链路 -->
@@ -510,7 +500,7 @@
         </div>
       </div>
     </div>
-    <div class="page-footer" style="justify-content:flex-end;"><span>06</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">06</div>
   </section>
 
   <!-- 07 · 审计结论与整改建议 -->
@@ -565,7 +555,7 @@
         </div>
       </div>
     </div>
-    <div class="page-footer" style="justify-content:flex-end;"><span>07</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">07</div>
   </section>
 
 </div>

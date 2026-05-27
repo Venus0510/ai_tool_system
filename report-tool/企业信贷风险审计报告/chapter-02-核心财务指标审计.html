@@ -197,14 +197,6 @@
     .data-table tbody tr { background: var(--surface); }
     .cell-warn { color: var(--accent-red) !important; font-weight: 700; }
     .cell-ok { color: var(--accent-green) !important; }
-
-    /* 底部标记 */
-    .page-footer {
-      position: absolute; bottom: 10mm; left: 22mm; right: 22mm;
-      display: flex; justify-content: space-between;
-      font-size: 12px; color: var(--text-light);
-    }
-  </style>
 </head>
 <body class="bg-bw-bg font-bw">
 
@@ -242,7 +234,7 @@
       <div class="chart" id="trendChart" style="height:280px;"></div>
     </div>
 
-    <div class="page-footer"><span>核心财务指标审计</span><span>03</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">03</div>
   </section>
 
   <!-- ===== 第2页：现金流与债务覆盖 + 表格 ===== -->
@@ -295,7 +287,7 @@
       </div>
     </div>
 
-    <div class="page-footer"><span>现金流与债务覆盖能力</span><span>04</span></div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">04</div>
   </section>
 
 </div>

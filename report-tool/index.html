@@ -1919,7 +1919,6 @@
             const parentHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
             const projHandle = await parentHandle.getDirectoryHandle(name, { create: true });
             await projHandle.getDirectoryHandle('data', { create: true });
-            await projHandle.getDirectoryHandle('output', { create: true });
             const initialConfig = makeInitialConfig(name);
             await writeConfigToHandle(projHandle, initialConfig);
             projectHandle.value = projHandle;
