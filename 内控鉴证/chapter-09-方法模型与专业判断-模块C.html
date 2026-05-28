@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
   <style id="token-css">
     :root {
       --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
@@ -20,19 +19,16 @@
       --bw-process-border:4px solid var(--bw-primary-500);
       --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
       --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
-      --primary-300:var(--bw-primary-300);--primary-400:#3b82f6;--primary-500:var(--bw-primary-500);
-      --primary-700:var(--bw-primary-700);--primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
       --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
       --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
       --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
-      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);
-      --font:var(--bw-font);--font-display:var(--bw-font);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
       --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
-      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);
-      --table-th-text:var(--bw-table-th-text);
+      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
     }
   </style>
-
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
@@ -53,11 +49,7 @@
       html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
     }
-    body { font-family: var(--font); }
-    .badge {
-      display: inline-block; padding: 3px 12px; border-radius: 999px;
-      font-size: 12px; font-weight: 700;
-    }
+    .badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
     .ctrl-card {
       background: var(--surface); border-radius: var(--radius-card);
       padding: 16px 20px; box-shadow: var(--shadow-card);
@@ -72,10 +64,9 @@
     .ctrl-card li { font-size: 12px; color: var(--text-muted); line-height: 1.55; margin-bottom: 2px; }
   </style>
 </head>
-<body>
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
 <div id="app">
-
   <!-- ===== 模块C · 页码 13 ===== -->
   <section class="a4-page flex flex-col" style="background: var(--surface-alt);">
     <div class="flex items-center gap-3 mb-1">
@@ -87,77 +78,21 @@
       解决"用什么方法、模型是否适用、判断是否可复核"的问题。
     </p>
 
-    <!-- 控制05 -->
-    <div class="ctrl-card">
+    <div v-for="ctrl in moduleCPage1" :key="ctrl.id" class="ctrl-card">
       <div class="flex items-center gap-2 mb-2">
-        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">05</span>
-        <h3>估值方法论体系</h3>
+        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">{{ ctrl.id }}</span>
+        <h3>{{ ctrl.title }}</h3>
       </div>
       <div class="grid grid-cols-3 gap-3">
-        <div>
-          <span class="section-label" style="background:var(--primary-100);color:var(--primary-700);">内控建设建议</span>
+        <div v-for="col in ctrl.columns" :key="col.label">
+          <span class="section-label" :style="{background: col.labelBg, color: col.labelColor}">{{ col.label }}</span>
           <ul>
-            <li>针对不同金融工具和估值场景建立方法论体系，明确适用条件、关键假设、输入要求、方法切换条件和局限性</li>
-            <li>对收益率曲线、信用利差、含权结构、证券化产品、违约债等重点领域建立专门方法和处理规则</li>
-            <li>对方法论新增、修订和重大调整设置评审、审批、市场意见征求和版本管理机制</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--accent-green);color:#fff;">应形成的制度/记录</span>
-          <ul>
-            <li>估值方法论文件，覆盖不同金融工具和估值场景的方法适用条件、关键假设、输入要求和局限性</li>
-            <li>重点方法专项规则，包括收益率曲线、信用利差、含权结构、证券化产品和违约债等处理规则</li>
-            <li>方法论治理记录，包括新增、修订、评审、审批、市场意见征求和版本管理记录</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--primary-900);color:#fff;">主要依据</span>
-          <ul>
-            <li>IVS 103：估值方法应与价值基础、估值用途、资产特征和可用数据相匹配</li>
-            <li>PBOC：估值方法应科学、可比、可校验、可回溯，考虑条款、信用、流动性等因素</li>
-            <li>NAFMII：收益率曲线编制规则（样本券选择、补点规则、曲线平滑性和稳定性）</li>
-            <li>NAFMII：含权债、证券化产品、浮息债、违约债等分品种估值专项要求</li>
+            <li v-for="(item, idx) in col.items" :key="idx">{{ item }}</li>
           </ul>
         </div>
       </div>
     </div>
 
-    <!-- 控制06 -->
-    <div class="ctrl-card">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">06</span>
-        <h3>估值模型管理</h3>
-      </div>
-      <div class="grid grid-cols-3 gap-3">
-        <div>
-          <span class="section-label" style="background:var(--primary-100);color:var(--primary-700);">内控建设建议</span>
-          <ul>
-            <li>建立模型全生命周期管理机制，覆盖设计、开发、测试、验证、审批上线、变更、监控和退役</li>
-            <li>模型使用前应完成概念合理性审查、行业一致性比对、用户验收测试、市场校准和独立验证</li>
-            <li>模型运行后应持续开展回测、敏感性分析、基准比较和性能监控，对缺陷和变更进行闭环管理</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--accent-green);color:#fff;">应形成的制度/记录</span>
-          <ul>
-            <li>模型管理制度和模型台账，覆盖模型说明、适用范围、关键假设、限制条件和责任人</li>
-            <li>模型测试、验证和上线审批材料，包括合理性审查、用户验收、市场校准、独立验证和上线批准</li>
-            <li>模型持续监控和变更记录，包括回测、敏感性分析、基准比较、性能监控、缺陷整改和版本变更</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--primary-900);color:#fff;">主要依据</span>
-          <ul>
-            <li>IVS 105：估值模型应服务于估值方法，并支持估值结论形成</li>
-            <li>IVS 500：模型使用场景、适当模型特征、模型选择、测试、变更控制和模型文档要求</li>
-            <li>PBOC：估值方法和模型应经过事前分析、事中监控和事后检验，重大修订需内部评审和市场意见</li>
-            <li>NAFMII：模型有效性持续评估和评估周期管理要求</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">13</div>
   </section>
 
@@ -171,58 +106,105 @@
       参数选择、假设设定和专业判断是估值方法论落地的关键环节，直接影响估值结论的合理性与可复核性。
     </p>
 
-    <!-- 控制07 -->
-    <div class="ctrl-card">
+    <div v-for="ctrl in moduleCPage2" :key="ctrl.id" class="ctrl-card">
       <div class="flex items-center gap-2 mb-2">
-        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">07</span>
-        <h3>参数、假设与专业判断</h3>
+        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">{{ ctrl.id }}</span>
+        <h3>{{ ctrl.title }}</h3>
       </div>
       <div class="grid grid-cols-3 gap-3">
-        <div>
-          <span class="section-label" style="background:var(--primary-100);color:var(--primary-700);">内控建设建议</span>
+        <div v-for="col in ctrl.columns" :key="col.label">
+          <span class="section-label" :style="{background: col.labelBg, color: col.labelColor}">{{ col.label }}</span>
           <ul>
-            <li>对关键参数、重大假设和专业判断建立管理台账，明确来源、依据、适用条件和更新机制</li>
-            <li>人工调整、模型覆盖调整和专家判断使用应经过审批，并记录理由、影响分析和最终结论</li>
-            <li>对关键参数和假设开展敏感性分析，确保重大判断具备合理性、可解释性和可复核性</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--accent-green);color:#fff;">应形成的制度/记录</span>
-          <ul>
-            <li>参数和假设管理资料，包括关键参数台账、假设清单、来源依据、更新机制和适用条件</li>
-            <li>专业判断和人工调整记录，包括Override审批、调整理由、影响分析、专家观点消化和最终结论</li>
-            <li>敏感性分析和复核材料，用于支持重大参数、假设和专业判断的合理性与可复核性</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--primary-900);color:#fff;">主要依据</span>
-          <ul>
-            <li>IVS 102：重大假设和特殊假设应合理，并有充分证据支持</li>
-            <li>IVS 500：重大输入、代理数据、模型限制、人工干预和Override应受控并记录</li>
-            <li>PBOC：估值应考虑债券条款、信用、流动性等关键因素；专家报价适用条件需披露</li>
-            <li>NAFMII：外部专家观点不应直接使用，应经内部讨论、消化和决策并保留记录</li>
+            <li v-for="(item, idx) in col.items" :key="idx">{{ item }}</li>
           </ul>
         </div>
       </div>
     </div>
 
-    <!-- 模块C小结 -->
     <div class="mt-auto p-4 rounded-xl" style="background: var(--primary-50); border-left: 4px solid var(--primary-500);">
-      <p class="text-xs leading-relaxed" style="color: var(--primary-700);">
-        <strong>模块C小结：</strong>方法论体系定义"用什么方法估"，模型管理确保"工具可靠且持续验证"，参数与假设管理让"专业判断有据可查"——
-        三者构成估值内控的核心技术层，上承数据输入（模块B），下接质量控制和独立制衡（模块D）。
-      </p>
+      <p class="text-xs leading-relaxed" style="color: var(--primary-700);" v-html="moduleCSummary"></p>
     </div>
 
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">14</div>
   </section>
-
 </div>
 
 <script>
-  const { createApp } = Vue;
-  createApp({}).mount('#app');
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      moduleCPage1: [
+        {
+          id: '05', title: '估值方法论体系',
+          columns: [
+            { label: '内控建设建议', labelBg: 'var(--primary-100)', labelColor: 'var(--primary-700)', items: [
+              '针对不同金融工具和估值场景建立方法论体系，明确适用条件、关键假设、输入要求、方法切换条件和局限性',
+              '对收益率曲线、信用利差、含权结构、证券化产品、违约债等重点领域建立专门方法和处理规则',
+              '对方法论新增、修订和重大调整设置评审、审批、市场意见征求和版本管理机制',
+            ]},
+            { label: '应形成的制度/记录', labelBg: 'var(--accent-green)', labelColor: '#fff', items: [
+              '估值方法论文件，覆盖不同金融工具和估值场景的方法适用条件、关键假设、输入要求和局限性',
+              '重点方法专项规则，包括收益率曲线、信用利差、含权结构、证券化产品和违约债等处理规则',
+              '方法论治理记录，包括新增、修订、评审、审批、市场意见征求和版本管理记录',
+            ]},
+            { label: '主要依据', labelBg: 'var(--primary-900)', labelColor: '#fff', items: [
+              'IVS 103：估值方法应与价值基础、估值用途、资产特征和可用数据相匹配',
+              'PBOC：估值方法应科学、可比、可校验、可回溯，考虑条款、信用、流动性等因素',
+              'NAFMII：收益率曲线编制规则（样本券选择、补点规则、曲线平滑性和稳定性）',
+              'NAFMII：含权债、证券化产品、浮息债、违约债等分品种估值专项要求',
+            ]},
+          ],
+        },
+        {
+          id: '06', title: '估值模型管理',
+          columns: [
+            { label: '内控建设建议', labelBg: 'var(--primary-100)', labelColor: 'var(--primary-700)', items: [
+              '建立模型全生命周期管理机制，覆盖设计、开发、测试、验证、审批上线、变更、监控和退役',
+              '模型使用前应完成概念合理性审查、行业一致性比对、用户验收测试、市场校准和独立验证',
+              '模型运行后应持续开展回测、敏感性分析、基准比较和性能监控，对缺陷和变更进行闭环管理',
+            ]},
+            { label: '应形成的制度/记录', labelBg: 'var(--accent-green)', labelColor: '#fff', items: [
+              '模型管理制度和模型台账，覆盖模型说明、适用范围、关键假设、限制条件和责任人',
+              '模型测试、验证和上线审批材料，包括合理性审查、用户验收、市场校准、独立验证和上线批准',
+              '模型持续监控和变更记录，包括回测、敏感性分析、基准比较、性能监控、缺陷整改和版本变更',
+            ]},
+            { label: '主要依据', labelBg: 'var(--primary-900)', labelColor: '#fff', items: [
+              'IVS 105：估值模型应服务于估值方法，并支持估值结论形成',
+              'IVS 500：模型使用场景、适当模型特征、模型选择、测试、变更控制和模型文档要求',
+              'PBOC：估值方法和模型应经过事前分析、事中监控和事后检验，重大修订需内部评审和市场意见',
+              'NAFMII：模型有效性持续评估和评估周期管理要求',
+            ]},
+          ],
+        },
+      ],
+      moduleCPage2: [
+        {
+          id: '07', title: '参数、假设与专业判断',
+          columns: [
+            { label: '内控建设建议', labelBg: 'var(--primary-100)', labelColor: 'var(--primary-700)', items: [
+              '对关键参数、重大假设和专业判断建立管理台账，明确来源、依据、适用条件和更新机制',
+              '人工调整、模型覆盖调整和专家判断使用应经过审批，并记录理由、影响分析和最终结论',
+              '对关键参数和假设开展敏感性分析，确保重大判断具备合理性、可解释性和可复核性',
+            ]},
+            { label: '应形成的制度/记录', labelBg: 'var(--accent-green)', labelColor: '#fff', items: [
+              '参数和假设管理资料，包括关键参数台账、假设清单、来源依据、更新机制和适用条件',
+              '专业判断和人工调整记录，包括Override审批、调整理由、影响分析、专家观点消化和最终结论',
+              '敏感性分析和复核材料，用于支持重大参数、假设和专业判断的合理性与可复核性',
+            ]},
+            { label: '主要依据', labelBg: 'var(--primary-900)', labelColor: '#fff', items: [
+              'IVS 102：重大假设和特殊假设应合理，并有充分证据支持',
+              'IVS 500：重大输入、代理数据、模型限制、人工干预和Override应受控并记录',
+              'PBOC：估值应考虑债券条款、信用、流动性等关键因素；专家报价适用条件需披露',
+              'NAFMII：外部专家观点不应直接使用，应经内部讨论、消化和决策并保留记录',
+            ]},
+          ],
+        },
+      ],
+      moduleCSummary: '<strong>模块C小结：</strong>方法论体系定义"用什么方法估"，模型管理确保"工具可靠且持续验证"，参数与假设管理让"专业判断有据可查"——三者构成估值内控的核心技术层，上承数据输入（模块B），下接质量控制和独立制衡（模块D）。',
+    };
+  }
+}).mount('#app');
 </script>
 
 </body>

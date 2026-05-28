@@ -8,77 +8,41 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style id="token-css">
     :root {
-      --bw-primary-50:  #eff6ff;
-      --bw-primary-100: #dbeafe;
-      --bw-primary-200: #bfdbfe;
-      --bw-primary-300: #93c5fd;
-      --bw-primary-500: #2563eb;
-      --bw-primary-700: #1e3a8a;
-      --bw-primary-800: #1e40af;
-      --bw-primary-900: #0f172a;
-      --bw-surface:       #ffffff;
-      --bw-surface-alt:   #f8fafc;
-      --bw-bg:            #f3f6fb;
-      --bw-text:          #1f2937;
-      --bw-text-muted:    #64748b;
-      --bw-text-light:    #94a3b8;
-      --bw-text-inverse:  #ffffff;
-      --bw-border:        #e5e7eb;
-      --bw-border-light:  #f1f5f9;
-      --bw-accent-green:  #16a34a;
-      --bw-accent-red:    #dc2626;
-      --bw-accent-amber:  #d97706;
-      --bw-font:          "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      --bw-font-mono:     "SF Mono", "Cascadia Code", monospace;
-      --bw-radius-card:    14px;
-      --bw-shadow-card:    0 8px 24px rgba(15, 23, 42, 0.08);
+      --bw-primary-50:  #eff6ff;--bw-primary-100: #dbeafe;--bw-primary-200: #bfdbfe;
+      --bw-primary-300: #93c5fd;--bw-primary-500: #2563eb;--bw-primary-700: #1e3a8a;
+      --bw-primary-800: #1e40af;--bw-primary-900: #0f172a;
+      --bw-surface:       #ffffff;--bw-surface-alt:   #f8fafc;--bw-bg: #f3f6fb;
+      --bw-text:          #1f2937;--bw-text-muted:    #64748b;--bw-text-light: #94a3b8;
+      --bw-text-inverse:  #ffffff;--bw-border:        #e5e7eb;--bw-border-light: #f1f5f9;
+      --bw-accent-green:  #16a34a;--bw-accent-red:    #dc2626;--bw-accent-amber: #d97706;
+      --bw-font:          "Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:    14px;--bw-shadow-card:    0 8px 24px rgba(15,23,42,0.08);
       --bw-cover-bg:       linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
-      --primary-50:      var(--bw-primary-50);
-      --primary-100:     var(--bw-primary-100);
-      --primary-200:     var(--bw-primary-200);
-      --primary-300:     var(--bw-primary-300);
-      --primary-400:     #3b82f6;
-      --primary-500:     var(--bw-primary-500);
-      --primary-700:     var(--bw-primary-700);
-      --primary-800:     var(--bw-primary-800);
-      --primary-900:     var(--bw-primary-900);
-      --surface:         var(--bw-surface);
-      --surface-alt:     var(--bw-surface-alt);
-      --bg:              var(--bw-bg);
-      --text:            var(--bw-text);
-      --text-muted:      var(--bw-text-muted);
-      --text-light:      var(--bw-text-light);
-      --text-inverse:    var(--bw-text-inverse);
-      --border:          var(--bw-border);
-      --border-light:    var(--bw-border-light);
-      --radius-card:     var(--bw-radius-card);
-      --radius-tag:      999px;
-      --shadow-card:     var(--bw-shadow-card);
-      --font:            var(--bw-font);
-      --accent-green:    var(--bw-accent-green);
-      --accent-red:      var(--bw-accent-red);
-      --accent-amber:    var(--bw-accent-amber);
-      --cover-bg:        var(--bw-cover-bg);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);
+      --primary-200:var(--bw-primary-200);--primary-300:var(--bw-primary-300);
+      --primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);
+      --accent-amber:var(--bw-accent-amber);--cover-bg:var(--bw-cover-bg);
     }
   </style>
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
-      width: 297mm; height: 210mm;
-      padding: 18mm 22mm;
-      box-sizing: border-box;
-      page-break-after: always; break-after: page;
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      box-sizing: border-box; page-break-after: always; break-after: page;
       position: relative; overflow: hidden;
     }
     @media screen {
       html, body { background: #e5e7eb; margin: 0; padding: 0; }
       .a4-page {
-        width: min(297mm, calc(100vw - 32px));
-        height: auto;
-        aspect-ratio: 297 / 210;
-        margin: 20px auto;
-        box-shadow: 0 0 30px rgba(0,0,0,.12);
-        border-radius: 4px;
+        width: min(297mm, calc(100vw - 32px)); height: auto;
+        aspect-ratio: 297 / 210; margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px;
       }
     }
     @media print {
@@ -91,47 +55,25 @@
 
 <div id="app">
   <section class="a4-page flex flex-col justify-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%); color: var(--text-inverse);">
-    <!-- 顶部标签 -->
     <div class="mb-6">
       <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider" style="background: rgba(255,255,255,0.18); color: #bfdbfe;">PROFESSIONAL INVESTOR REPORT</span>
       <span class="ml-3 inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider" style="background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.85);">2026.05</span>
     </div>
 
-    <!-- 主标题 -->
     <h1 class="text-5xl font-bold mb-3 leading-tight" style="color: #ffffff; font-size: 46px; text-shadow: 0 2px 12px rgba(0,0,0,0.3);">
       基金各类指标<br/>深度分析报告
     </h1>
-    <p class="text-xl mb-2 font-medium" style="color: #e2e8f0;">
-      33只货币基金 · 多维指标量化评估
-    </p>
+    <p class="text-xl mb-2 font-medium" style="color: #e2e8f0;">{{ cover.subtitle }}</p>
     <div class="w-24 h-0.5 mb-8" style="background: #60a5fa;"></div>
 
-    <!-- 三大维度 -->
     <div class="grid grid-cols-3 gap-5 max-w-4xl">
-      <div class="rounded-2xl p-5" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);">
-        <div class="text-3xl font-bold mb-2" style="color: #93c5fd;">01</div>
-        <h3 class="text-lg font-bold mb-2" style="color: #ffffff;">收益能力评估</h3>
-        <p class="text-sm leading-relaxed" style="color: #cbd5e1;">
-          7日年化、万份收益、多期限收益对比，全维度衡量基金回报水平
-        </p>
-      </div>
-      <div class="rounded-2xl p-5" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);">
-        <div class="text-3xl font-bold mb-2" style="color: #93c5fd;">02</div>
-        <h3 class="text-lg font-bold mb-2" style="color: #ffffff;">风险调整收益</h3>
-        <p class="text-sm leading-relaxed" style="color: #cbd5e1;">
-          夏普比率、波动率、最大回撤，揭示风险调整后的真实投资效率
-        </p>
-      </div>
-      <div class="rounded-2xl p-5" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);">
-        <div class="text-3xl font-bold mb-2" style="color: #93c5fd;">03</div>
-        <h3 class="text-lg font-bold mb-2" style="color: #ffffff;">费率结构透视</h3>
-        <p class="text-sm leading-relaxed" style="color: #cbd5e1;">
-          管理费+托管费+销售服务费，费后真实收益重新排名，揭示隐性成本
-        </p>
+      <div v-for="d in cover.dimensions" :key="d.num" class="rounded-2xl p-5" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);">
+        <div class="text-3xl font-bold mb-2" style="color: #93c5fd;">{{ d.num }}</div>
+        <h3 class="text-lg font-bold mb-2" style="color: #ffffff;">{{ d.title }}</h3>
+        <p class="text-sm leading-relaxed" style="color: #cbd5e1;">{{ d.desc }}</p>
       </div>
     </div>
 
-    <!-- 底部信息 -->
     <div class="mt-10 flex items-center gap-8 text-sm" style="color: rgba(255,255,255,0.65);">
       <span>数据来源：fund_info.xlsx</span>
       <span>|</span>
@@ -143,6 +85,24 @@
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.45);">01</div>
   </section>
 </div>
+
+<script>
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      cover: {
+        subtitle: '33只货币基金 · 多维指标量化评估',
+        dimensions: [
+          { num: '01', title: '收益能力评估', desc: '7日年化、万份收益、多期限收益对比，全维度衡量基金回报水平' },
+          { num: '02', title: '风险调整收益', desc: '夏普比率、波动率、最大回撤，揭示风险调整后的真实投资效率' },
+          { num: '03', title: '费率结构透视', desc: '管理费+托管费+销售服务费，费后真实收益重新排名，揭示隐性成本' },
+        ],
+      },
+    };
+  }
+}).mount('#app');
+</script>
 
 </body>
 </html>

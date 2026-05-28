@@ -5,34 +5,33 @@
   <title>费率结构与费后真实收益 · 基金各类指标深度分析报告</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <style id="token-css">
     :root {
-      --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
-      --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
-      --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
-      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
-      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
-      --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
-      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
-      --bw-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
-      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
-      --bw-big-number-color: var(--bw-primary-500);
-      --bw-process-border: 4px solid var(--bw-primary-500);
-      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
-      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
-      --primary-500: var(--bw-primary-500); --primary-700: var(--bw-primary-700);
-      --primary-800: var(--bw-primary-800); --primary-900: var(--bw-primary-900);
-      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
-      --text: var(--bw-text); --text-muted: var(--bw-text-muted); --text-light: var(--bw-text-light);
-      --border: var(--bw-border); --border-light: var(--bw-border-light);
-      --radius-card: var(--bw-radius-card); --shadow-card: var(--bw-shadow-card);
-      --font: var(--bw-font); --accent-green: var(--bw-accent-green);
-      --accent-red: var(--bw-accent-red); --accent-amber: var(--bw-accent-amber);
-      --big-number: 42px; --big-number-color: var(--bw-big-number-color);
-      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
-      --process-border: var(--bw-process-border);
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;
+      --bw-primary-300:#93c5fd;--bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;
+      --bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;
+      --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+      --bw-big-number-color:var(--bw-primary-500);
+      --bw-process-border:4px solid var(--bw-primary-500);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --big-number:42px;--big-number-color:var(--bw-big-number-color);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
+      --process-border:var(--bw-process-border);
     }
   </style>
   <style>
@@ -59,145 +58,131 @@
 </head>
 <body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
-<section class="a4-page" style="background: var(--surface-alt);">
-  <div class="flex items-center gap-3 mb-3">
-    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
-    <div>
-      <h2 class="text-2xl font-bold" style="color: var(--text);">费率结构与费后真实收益</h2>
-      <p class="text-xs" style="color: var(--text-muted);">管理费 + 托管费 + 销售服务费 → 费后收益重排</p>
-    </div>
-  </div>
-
-  <!-- KPI 行 (4列) -->
-  <div class="grid grid-cols-4 gap-3 mb-3">
-    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
-      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">综合费率最低</div>
-      <div class="text-2xl font-bold" style="color: var(--accent-green);">0.33<span class="text-sm">%</span></div>
-      <div class="text-xs mt-0.5" style="color: var(--text-light);">毕月利货币B</div>
-    </div>
-    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
-      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">综合费率最高</div>
-      <div class="text-2xl font-bold" style="color: var(--accent-red);">0.67<span class="text-sm">%</span></div>
-      <div class="text-xs mt-0.5" style="color: var(--text-light);">天市增货币A</div>
-    </div>
-    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
-      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">最大费率拖累</div>
-      <div class="text-2xl font-bold" style="color: var(--accent-red);">0.67<span class="text-sm">pp</span></div>
-      <div class="text-xs mt-0.5" style="color: var(--text-light);">年化收益被侵蚀</div>
-    </div>
-    <div class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
-      <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">费后收益均值</div>
-      <div class="text-2xl font-bold" style="color: var(--big-number-color);">1.31<span class="text-sm">%</span></div>
-      <div class="text-xs mt-0.5" style="color: var(--text-light);">vs 费前 1.86%</div>
-    </div>
-  </div>
-
-  <!-- 左：销售服务费柱状图 + 右：分析逻辑链 -->
-  <div class="grid grid-cols-2 gap-4 mb-3">
-    <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface);">
-      <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">三费分布对比（均值）</h4>
-      <div id="chart-fee-breakdown" class="chart-container"></div>
-    </div>
-    <div>
-      <!-- process-step 分析逻辑链 -->
-      <h4 class="text-sm font-bold mb-2" style="color: var(--primary-700);">费率分析逻辑</h4>
-      <div class="py-2.5 px-4 rounded-r-xl mb-2 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <h5 class="text-sm font-bold mb-0.5" style="color: var(--primary-700);">1. 三费拆解</h5>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">管理费差异最小（0.23%-0.34%），销售服务费差异最大（0.01%-0.26%），是总费率分化的主因</p>
-      </div>
-      <div class="py-2.5 px-4 rounded-r-xl mb-2 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <h5 class="text-sm font-bold mb-0.5" style="color: var(--primary-700);">2. 费后收益折算</h5>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">费后年化 = 7日年化 - 年化总费率。均值从1.86%降至1.31%，实际到手收益缩水约30%</p>
-      </div>
-      <div class="py-2.5 px-4 rounded-r-xl mb-2 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <h5 class="text-sm font-bold mb-0.5" style="color: var(--primary-700);">3. 排名重算</h5>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">岁星货币B从费前第7跃升至费后第1——低费率优势使其在费后维度脱颖而出，是费后冠军</p>
-      </div>
-      <div class="py-2.5 px-4 rounded-r-xl shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <h5 class="text-sm font-bold mb-0.5" style="color: var(--primary-700);">4. 费率合理性判断</h5>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">天市增货币A费率最高（0.67%）但7日年化仅1.47%，高费率未换来高收益，性价比最低</p>
+<div id="app">
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+      <div>
+        <h2 class="text-2xl font-bold" style="color: var(--text);">费率结构与费后真实收益</h2>
+        <p class="text-xs" style="color: var(--text-muted);">管理费 + 托管费 + 销售服务费 → 费后收益重排</p>
       </div>
     </div>
-  </div>
 
-  <!-- 费前vs费后排名对比表 -->
-  <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
-    <table class="w-full text-xs">
-      <thead>
-        <tr>
-          <th class="p-2.5 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
-          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">7日年化(费前)</th>
-          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">总费率</th>
-          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费后收益</th>
-          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费前排名</th>
-          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费后排名</th>
-          <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">排名变化</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b" style="border-color: var(--border-light); background: #f0fdf4;">
-          <td class="p-2 font-bold" style="color: var(--text);">岁星货币B</td>
-          <td class="p-2 text-center" style="color: var(--text);">2.19%</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-green);">0.35%</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-green);">1.84%</td>
-          <td class="p-2 text-center" style="color: var(--text-muted);">#7</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-green);">#1</td>
-          <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">↑6</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light);">
-          <td class="p-2 font-bold" style="color: var(--text);">启明利货币E</td>
-          <td class="p-2 text-center" style="color: var(--text);">2.27%</td>
-          <td class="p-2 text-center" style="color: var(--accent-green);">0.54%</td>
-          <td class="p-2 text-center" style="color: var(--accent-green);">1.73%</td>
-          <td class="p-2 text-center" style="color: var(--text-muted);">#3</td>
-          <td class="p-2 text-center" style="color: var(--accent-green);">#2</td>
-          <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">↑1</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light); background: #fff5f5;">
-          <td class="p-2 font-bold" style="color: var(--text);">岁星利货币A</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-green);">2.32%</td>
-          <td class="p-2 text-center" style="color: var(--accent-red);">0.62%</td>
-          <td class="p-2 text-center" style="color: var(--text);">1.70%</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-green);">#1</td>
-          <td class="p-2 text-center" style="color: var(--text-muted);">#5</td>
-          <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #fee2e2; color: #dc2626;">↓4</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light); background: #fff5f5;">
-          <td class="p-2 font-bold" style="color: var(--text);">天市增货币A</td>
-          <td class="p-2 text-center" style="color: var(--accent-red);">1.47%</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-red);">0.67%</td>
-          <td class="p-2 text-center" style="color: var(--accent-red);">0.80%</td>
-          <td class="p-2 text-center" style="color: var(--text-muted);">#29</td>
-          <td class="p-2 text-center" style="color: var(--accent-red);">#33</td>
-          <td class="p-2 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #fee2e2; color: #dc2626;">↓4</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- KPI 行 (4列) -->
+    <div class="grid grid-cols-4 gap-3 mb-3">
+      <div v-for="k in kpiFee" :key="k.label" class="rounded-xl p-3 text-center shadow-sm" style="background: var(--surface);">
+        <div class="text-xs font-bold mb-1" style="color: var(--text-muted);">{{ k.label }}</div>
+        <div class="text-2xl font-bold" :style="{color: k.color}">{{ k.value }}</div>
+        <div class="text-xs mt-0.5" style="color: var(--text-light);">{{ k.note }}</div>
+      </div>
+    </div>
 
-  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">07</div>
-</section>
+    <!-- 左：销售服务费柱状图 + 右：分析逻辑链 -->
+    <div class="grid grid-cols-2 gap-4 mb-3">
+      <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface);">
+        <h4 class="text-sm font-bold mb-1.5" style="color: var(--primary-700);">三费分布对比（均值）</h4>
+        <div id="chart-fee-breakdown" class="chart-container"></div>
+      </div>
+      <div>
+        <h4 class="text-sm font-bold mb-2" style="color: var(--primary-700);">费率分析逻辑</h4>
+        <div v-for="s in feeSteps" :key="s.num" class="py-2.5 px-4 rounded-r-xl mb-2 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
+          <h5 class="text-sm font-bold mb-0.5" style="color: var(--primary-700);">{{ s.num }}. {{ s.title }}</h5>
+          <p class="text-xs leading-relaxed" style="color: var(--text);">{{ s.desc }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 费前vs费后排名对比表 -->
+    <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
+      <table class="w-full text-xs">
+        <thead>
+          <tr>
+            <th class="p-2.5 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
+            <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">7日年化(费前)</th>
+            <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">总费率</th>
+            <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费后收益</th>
+            <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费前排名</th>
+            <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费后排名</th>
+            <th class="p-2.5 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">排名变化</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="r in feeTableRows" :key="r.name" class="border-b" :style="{borderColor: 'var(--border-light)', background: r.rowBg || 'transparent'}">
+            <td class="p-2 font-bold" style="color: var(--text);">{{ r.name }}</td>
+            <td class="p-2 text-center" :style="{color: r.yieldColor || 'var(--text)'}">{{ r.yield }}</td>
+            <td class="p-2 text-center font-bold" :style="{color: r.feeColor || 'var(--text)'}">{{ r.fee }}</td>
+            <td class="p-2 text-center font-bold" :style="{color: r.netColor || 'var(--text)'}">{{ r.net }}</td>
+            <td class="p-2 text-center" style="color: var(--text-muted);">{{ r.rankBefore }}</td>
+            <td class="p-2 text-center font-bold" :style="{color: r.rankAfterColor || 'var(--text-muted)'}">{{ r.rankAfter }}</td>
+            <td class="p-2 text-center">
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold" :style="{background: r.changeBg, color: r.changeColor}">{{ r.change }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">07</div>
+  </section>
+</div>
 
 <script>
-(function() {
-  var chartDom = document.getElementById('chart-fee-breakdown');
-  if (!chartDom) return;
-  var myChart = echarts.init(chartDom);
-  var option = {
-    tooltip: { trigger: 'axis' },
-    legend: { data: ['管理费','托管费','销售服务费'], bottom: 0, textStyle: { fontSize: 10 } },
-    grid: { left: '3%', right: '4%', top: '8%', bottom: '14%' },
-    xAxis: { type: 'category', data: ['最低', '25分位', '均值', '75分位', '最高'], axisLabel: { fontSize: 10 } },
-    yAxis: { type: 'value', name: '%', axisLabel: { fontSize: 9 }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
-    series: [
-      { name: '管理费', type: 'bar', data: [0.2339, 0.2644, 0.2836, 0.3015, 0.3423], barWidth: 18, itemStyle: { color: '#2563eb', borderRadius: [4,4,0,0] } },
-      { name: '托管费', type: 'bar', data: [0.0401, 0.0448, 0.0534, 0.0586, 0.1032], barWidth: 18, itemStyle: { color: '#93c5fd', borderRadius: [4,4,0,0] } },
-      { name: '销售服务费', type: 'bar', data: [0.0074, 0.2415, 0.2206, 0.2533, 0.2600], barWidth: 18, itemStyle: { color: '#f59e0b', borderRadius: [4,4,0,0] } }
-    ]
-  };
-  myChart.setOption(option);
-  window.addEventListener('resize', function() { myChart.resize(); });
-})();
+const { createApp, nextTick } = Vue;
+createApp({
+  data() {
+    return {
+      kpiFee: [
+        { label: '综合费率最低', value: '0.33%', color: 'var(--accent-green)', note: '毕月利货币B' },
+        { label: '综合费率最高', value: '0.67%', color: 'var(--accent-red)', note: '天市增货币A' },
+        { label: '最大费率拖累', value: '0.67pp', color: 'var(--accent-red)', note: '年化收益被侵蚀' },
+        { label: '费后收益均值', value: '1.31%', color: 'var(--big-number-color)', note: 'vs 费前 1.86%' },
+      ],
+      feeSteps: [
+        { num: '1', title: '三费拆解', desc: '管理费差异最小（0.23%-0.34%），销售服务费差异最大（0.01%-0.26%），是总费率分化的主因' },
+        { num: '2', title: '费后收益折算', desc: '费后年化 = 7日年化 - 年化总费率。均值从1.86%降至1.31%，实际到手收益缩水约30%' },
+        { num: '3', title: '排名重算', desc: '岁星货币B从费前第7跃升至费后第1——低费率优势使其在费后维度脱颖而出，是费后冠军' },
+        { num: '4', title: '费率合理性判断', desc: '天市增货币A费率最高（0.67%）但7日年化仅1.47%，高费率未换来高收益，性价比最低' },
+      ],
+      feeTableRows: [
+        { name: '岁星货币B', yield: '2.19%', fee: '0.35%', feeColor: 'var(--accent-green)', net: '1.84%', netColor: 'var(--accent-green)', rankBefore: '#7', rankAfter: '#1', rankAfterColor: 'var(--accent-green)', change: '↑6', changeBg: '#dcfce7', changeColor: '#16a34a', rowBg: '#f0fdf4' },
+        { name: '启明利货币E', yield: '2.27%', fee: '0.54%', feeColor: 'var(--accent-green)', net: '1.73%', netColor: 'var(--accent-green)', rankBefore: '#3', rankAfter: '#2', rankAfterColor: 'var(--accent-green)', change: '↑1', changeBg: '#dcfce7', changeColor: '#16a34a' },
+        { name: '岁星利货币A', yield: '2.32%', yieldColor: 'var(--accent-green)', fee: '0.62%', feeColor: 'var(--accent-red)', net: '1.70%', rankBefore: '#1', rankBeforeColor: 'var(--accent-green)', rankAfter: '#5', change: '↓4', changeBg: '#fee2e2', changeColor: '#dc2626', rowBg: '#fff5f5' },
+        { name: '天市增货币A', yield: '1.47%', yieldColor: 'var(--accent-red)', fee: '0.67%', feeColor: 'var(--accent-red)', net: '0.80%', netColor: 'var(--accent-red)', rankBefore: '#29', rankAfter: '#33', rankAfterColor: 'var(--accent-red)', change: '↓4', changeBg: '#fee2e2', changeColor: '#dc2626', rowBg: '#fff5f5' },
+      ],
+      chartFeeData: {
+        categories: ['最低', '25分位', '均值', '75分位', '最高'],
+        mgmtFee: [0.2339, 0.2644, 0.2836, 0.3015, 0.3423],
+        custodyFee: [0.0401, 0.0448, 0.0534, 0.0586, 0.1032],
+        svcFee: [0.0074, 0.2415, 0.2206, 0.2533, 0.2600],
+      },
+    };
+  },
+  mounted() {
+    nextTick(() => { this.renderFeeChart(); });
+  },
+  methods: {
+    renderFeeChart() {
+      const chartDom = document.getElementById('chart-fee-breakdown');
+      if (!chartDom) return;
+      const myChart = echarts.init(chartDom);
+      const d = this.chartFeeData;
+      const option = {
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['管理费','托管费','销售服务费'], bottom: 0, textStyle: { fontSize: 10 } },
+        grid: { left: '3%', right: '4%', top: '8%', bottom: '14%' },
+        xAxis: { type: 'category', data: d.categories, axisLabel: { fontSize: 10 } },
+        yAxis: { type: 'value', name: '%', axisLabel: { fontSize: 9 }, splitLine: { lineStyle: { color: '#f1f5f9' } } },
+        series: [
+          { name: '管理费', type: 'bar', data: d.mgmtFee, barWidth: 18, itemStyle: { color: '#2563eb', borderRadius: [4,4,0,0] } },
+          { name: '托管费', type: 'bar', data: d.custodyFee, barWidth: 18, itemStyle: { color: '#93c5fd', borderRadius: [4,4,0,0] } },
+          { name: '销售服务费', type: 'bar', data: d.svcFee, barWidth: 18, itemStyle: { color: '#f59e0b', borderRadius: [4,4,0,0] } },
+        ]
+      };
+      myChart.setOption(option);
+      window.addEventListener('resize', () => myChart.resize());
+    },
+  },
+}).mount('#app');
 </script>
 
 </body>

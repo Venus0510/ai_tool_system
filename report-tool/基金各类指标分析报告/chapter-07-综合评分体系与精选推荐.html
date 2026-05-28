@@ -5,34 +5,33 @@
   <title>综合评分体系与精选推荐 · 基金各类指标深度分析报告</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style id="token-css">
     :root {
-      --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
-      --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
-      --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
-      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
-      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
-      --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
-      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
-      --bw-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
-      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
-      --bw-big-number-color: var(--bw-primary-500);
-      --bw-process-border: 4px solid var(--bw-primary-500);
-      --bw-tag-bg: var(--bw-primary-100); --bw-tag-text: var(--bw-primary-800);
-      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
-      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
-      --primary-500: var(--bw-primary-500); --primary-700: var(--bw-primary-700);
-      --primary-800: var(--bw-primary-800); --primary-900: var(--bw-primary-900);
-      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
-      --text: var(--bw-text); --text-muted: var(--bw-text-muted); --text-light: var(--bw-text-light);
-      --border: var(--bw-border); --border-light: var(--bw-border-light);
-      --radius-card: var(--bw-radius-card); --shadow-card: var(--bw-shadow-card);
-      --font: var(--bw-font); --accent-green: var(--bw-accent-green);
-      --accent-red: var(--bw-accent-red); --accent-amber: var(--bw-accent-amber);
-      --big-number: 48px; --big-number-color: var(--bw-big-number-color);
-      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
-      --process-border: var(--bw-process-border); --tag-bg: var(--bw-tag-bg); --tag-text: var(--bw-tag-text);
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;
+      --bw-primary-300:#93c5fd;--bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;
+      --bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;
+      --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+      --bw-big-number-color:var(--bw-primary-500);
+      --bw-process-border:4px solid var(--bw-primary-500);
+      --bw-tag-bg:var(--bw-primary-100);--bw-tag-text:var(--bw-primary-800);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --big-number:48px;--big-number-color:var(--bw-big-number-color);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
+      --process-border:var(--bw-process-border);--tag-bg:var(--bw-tag-bg);--tag-text:var(--bw-tag-text);
     }
   </style>
   <style>
@@ -58,155 +57,141 @@
 </head>
 <body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
-<section class="a4-page" style="background: var(--surface-alt);">
-  <div class="flex items-center gap-3 mb-3">
-    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
-    <div>
-      <h2 class="text-2xl font-bold" style="color: var(--text);">综合评分体系与精选推荐</h2>
-      <p class="text-xs" style="color: var(--text-muted);">5维度加权评分 · 全维度量化排名 · 精选推荐</p>
-    </div>
-  </div>
-
-  <!-- 评分方法论 + Top3卡片 -->
-  <div class="grid grid-cols-5 gap-3 mb-3">
-    <!-- 左侧评分方法 (占2列) -->
-    <div class="col-span-2">
-      <h4 class="text-sm font-bold mb-2" style="color: var(--primary-700);">评分方法论</h4>
-      <div class="py-2 px-3 rounded-r-xl mb-1.5 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <span class="text-xs font-bold" style="color: var(--primary-500);">收益能力 30%</span>
-        <span class="text-xs ml-2" style="color: var(--text-muted);">yield_7d + return_1y min-max归一化</span>
-      </div>
-      <div class="py-2 px-3 rounded-r-xl mb-1.5 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <span class="text-xs font-bold" style="color: var(--primary-500);">风险调整收益 30%</span>
-        <span class="text-xs ml-2" style="color: var(--text-muted);">sharpe_ratio min-max归一化</span>
-      </div>
-      <div class="py-2 px-3 rounded-r-xl mb-1.5 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <span class="text-xs font-bold" style="color: var(--primary-500);">费率友好度 15%</span>
-        <span class="text-xs ml-2" style="color: var(--text-muted);">总费率逆向归一化（费率越低分越高）</span>
-      </div>
-      <div class="py-2 px-3 rounded-r-xl mb-1.5 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <span class="text-xs font-bold" style="color: var(--primary-500);">流动性便利 10%</span>
-        <span class="text-xs ml-2" style="color: var(--text-muted);">T+0=满分, T+1=半数</span>
-      </div>
-      <div class="py-2 px-3 rounded-r-xl shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
-        <span class="text-xs font-bold" style="color: var(--primary-500);">规模稳定性 15%</span>
-        <span class="text-xs ml-2" style="color: var(--text-muted);">fund_size_billion min-max归一化</span>
+<div id="app">
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+      <div>
+        <h2 class="text-2xl font-bold" style="color: var(--text);">综合评分体系与精选推荐</h2>
+        <p class="text-xs" style="color: var(--text-muted);">5维度加权评分 · 全维度量化排名 · 精选推荐</p>
       </div>
     </div>
-    <!-- 右侧Top3 (占3列) -->
-    <div class="col-span-3 grid grid-cols-3 gap-2">
-      <div class="rounded-xl p-3 shadow-lg text-center" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
-        <div class="text-2xl mb-1">🥇</div>
-        <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold mb-1.5" style="background: #f59e0b; color: #fff;">综合第1名</span>
-        <h4 class="text-sm font-bold mb-0.5" style="color: var(--text);">岁星货币B</h4>
-        <div class="text-3xl font-bold mb-1" style="color: #d97706;">73.9<span class="text-sm">分</span></div>
-        <div class="text-xs mb-1.5" style="color: var(--text-muted);">费后收益 1.84% · 夏普 3.31</div>
-        <div class="flex gap-1 justify-center flex-wrap">
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">T+0</span>
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">费率最低</span>
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #eff6ff; color: #2563eb;">夏普3.31</span>
+
+    <!-- 评分方法论 + Top3卡片 -->
+    <div class="grid grid-cols-5 gap-3 mb-3">
+      <!-- 左侧评分方法 (占2列) -->
+      <div class="col-span-2">
+        <h4 class="text-sm font-bold mb-2" style="color: var(--primary-700);">评分方法论</h4>
+        <div v-for="m in methods" :key="m.label" class="py-2 px-3 rounded-r-xl mb-1.5 shadow-sm" style="border-left: var(--process-border); background: var(--surface);">
+          <span class="text-xs font-bold" style="color: var(--primary-500);">{{ m.label }}</span>
+          <span class="text-xs ml-2" style="color: var(--text-muted);">{{ m.desc }}</span>
         </div>
-        <p class="text-xs mt-1.5 leading-relaxed" style="color: var(--text-muted);">全能冠军：低费率+高夏普+T+0，各维度均衡领先</p>
       </div>
-      <div class="rounded-xl p-3 shadow-lg text-center" style="background: linear-gradient(135deg, #e5e7eb, #d1d5db);">
-        <div class="text-2xl mb-1">🥈</div>
-        <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold mb-1.5" style="background: #64748b; color: #fff;">综合第2名</span>
-        <h4 class="text-sm font-bold mb-0.5" style="color: var(--text);">岁星利货币A</h4>
-        <div class="text-3xl font-bold mb-1" style="color: #64748b;">65.1<span class="text-sm">分</span></div>
-        <div class="text-xs mb-1.5" style="color: var(--text-muted);">费后收益 1.70% · 夏普 3.07</div>
-        <div class="flex gap-1 justify-center flex-wrap">
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">收益最高</span>
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #fee2e2; color: #dc2626;">费率高</span>
+      <!-- 右侧Top3 (占3列) -->
+      <div class="col-span-3 grid grid-cols-3 gap-2">
+        <div v-for="t in top3" :key="t.rank" class="rounded-xl p-3 shadow-lg text-center" :style="{background: t.bg}">
+          <div class="text-2xl mb-1">{{ t.medal }}</div>
+          <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold mb-1.5" :style="{background: t.medalBg, color: '#fff'}">{{ t.rankLabel }}</span>
+          <h4 class="text-sm font-bold mb-0.5" style="color: var(--text);">{{ t.name }}</h4>
+          <div class="text-3xl font-bold mb-1" :style="{color: t.scoreColor}">{{ t.score }}<span class="text-sm">分</span></div>
+          <div class="text-xs mb-1.5" style="color: var(--text-muted);">{{ t.subtitle }}</div>
+          <div class="flex gap-1 justify-center flex-wrap">
+            <span v-for="tag in t.tags" :key="tag.text" class="px-1.5 py-0.5 rounded-full text-xs" :style="{background: tag.bg, color: tag.color}">{{ tag.text }}</span>
+          </div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color: var(--text-muted);">{{ t.desc }}</p>
         </div>
-        <p class="text-xs mt-1.5 leading-relaxed" style="color: var(--text-muted);">收益冠军但费率拖累，费后排名从#1降至#5</p>
-      </div>
-      <div class="rounded-xl p-3 shadow-lg text-center" style="background: linear-gradient(135deg, #fef2f2, #fecaca);">
-        <div class="text-2xl mb-1">🥉</div>
-        <span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold mb-1.5" style="background: #dc2626; color: #fff;">综合第3名</span>
-        <h4 class="text-sm font-bold mb-0.5" style="color: var(--text);">镇星通货币B</h4>
-        <div class="text-3xl font-bold mb-1" style="color: #dc2626;">64.3<span class="text-sm">分</span></div>
-        <div class="text-xs mb-1.5" style="color: var(--text-muted);">费后收益 1.63% · 夏普 3.12</div>
-        <div class="flex gap-1 justify-center flex-wrap">
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">回撤极小</span>
-          <span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #eff6ff; color: #2563eb;">夏普3.12</span>
-        </div>
-        <p class="text-xs mt-1.5 leading-relaxed" style="color: var(--text-muted);">回撤仅-0.008%，高夏普+低回撤的稳健之选</p>
       </div>
     </div>
-  </div>
 
-  <!-- 综合排名Top10表格 -->
-  <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
-    <table class="w-full text-xs">
-      <thead>
-        <tr>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">排名</th>
-          <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">总分</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">收益<br/>(30)</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">夏普<br/>(30)</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费率<br/>(15)</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">流动性<br/>(10)</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">规模<br/>(15)</th>
-          <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">亮点</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b" style="border-color: var(--border-light); background: #fffbeb;">
-          <td class="p-2 text-center font-bold" style="color: #d97706;">1</td>
-          <td class="p-2 font-bold" style="color: var(--text);">岁星货币B</td>
-          <td class="p-2 text-center font-bold" style="color: var(--accent-green);">73.9</td>
-          <td class="p-2 text-center">51.5</td><td class="p-2 text-center">94.7</td><td class="p-2 text-center">96.5</td><td class="p-2 text-center">100</td><td class="p-2 text-center">37.3</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">全维度领先</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light); background: #fafafa;">
-          <td class="p-2 text-center font-bold" style="color: var(--text-muted);">2</td>
-          <td class="p-2 font-bold" style="color: var(--text);">岁星利货币A</td>
-          <td class="p-2 text-center font-bold" style="color: var(--text);">65.1</td>
-          <td class="p-2 text-center">100</td><td class="p-2 text-center">85.6</td><td class="p-2 text-center">13.6</td><td class="p-2 text-center">50</td><td class="p-2 text-center">15.8</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #fee2e2; color: #dc2626;">费率短板</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light);">
-          <td class="p-2 text-center font-bold" style="color: var(--text-muted);">3</td>
-          <td class="p-2 font-bold" style="color: var(--text);">镇星通货币B</td>
-          <td class="p-2 text-center font-bold" style="color: var(--text);">64.3</td>
-          <td class="p-2 text-center">91.9</td><td class="p-2 text-center">87.5</td><td class="p-2 text-center">31.6</td><td class="p-2 text-center">50</td><td class="p-2 text-center">4.7</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">回撤极低</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light);">
-          <td class="p-2 text-center" style="color: var(--text-muted);">4</td>
-          <td class="p-2 font-bold" style="color: var(--text);">天璇增货币E</td>
-          <td class="p-2 text-center" style="color: var(--text);">60.8</td>
-          <td class="p-2 text-center">79.2</td><td class="p-2 text-center">68.2</td><td class="p-2 text-center">16.3</td><td class="p-2 text-center">50</td><td class="p-2 text-center">60.9</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #eff6ff; color: #2563eb;">长跑型</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light);">
-          <td class="p-2 text-center" style="color: var(--text-muted);">5</td>
-          <td class="p-2 font-bold" style="color: var(--text);">摇光鑫货币E</td>
-          <td class="p-2 text-center" style="color: var(--text);">59.3</td>
-          <td class="p-2 text-center">67.5</td><td class="p-2 text-center">58.7</td><td class="p-2 text-center">29.2</td><td class="p-2 text-center">50</td><td class="p-2 text-center">80.5</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #eff6ff; color: #2563eb;">规模优势</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light);">
-          <td class="p-2 text-center" style="color: var(--text-muted);">6</td>
-          <td class="p-2 font-bold" style="color: var(--text);">星辰增货币F</td>
-          <td class="p-2 text-center" style="color: var(--text);">56.9</td>
-          <td class="p-2 text-center">28.4</td><td class="p-2 text-center">100</td><td class="p-2 text-center">27.0</td><td class="p-2 text-center">50</td><td class="p-2 text-center">61.8</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #dcfce7; color: #16a34a;">夏普冠军</span></td>
-        </tr>
-        <tr class="border-b" style="border-color: var(--border-light);">
-          <td class="p-2 text-center" style="color: var(--text-muted);">7</td>
-          <td class="p-2 font-bold" style="color: var(--text);">启明利货币E</td>
-          <td class="p-2 text-center" style="color: var(--text);">55.8</td>
-          <td class="p-2 text-center">64.4</td><td class="p-2 text-center">64.0</td><td class="p-2 text-center">38.7</td><td class="p-2 text-center">50</td><td class="p-2 text-center">43.3</td>
-          <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded-full text-xs" style="background: #eff6ff; color: #2563eb;">均衡型</span></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- 综合排名Top10表格 -->
+    <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
+      <table class="w-full text-xs">
+        <thead>
+          <tr>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">排名</th>
+            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">基金名称</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">总分</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">收益<br/>(30)</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">夏普<br/>(30)</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">费率<br/>(15)</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">流动性<br/>(10)</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">规模<br/>(15)</th>
+            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">亮点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="r in rankingRows" :key="r.name" class="border-b" :style="{borderColor: 'var(--border-light)', background: r.rowBg || 'transparent'}">
+            <td class="p-2 text-center font-bold" :style="{color: r.rankColor || 'var(--text-muted)'}">{{ r.rank }}</td>
+            <td class="p-2 font-bold" style="color: var(--text);">{{ r.name }}</td>
+            <td class="p-2 text-center font-bold" :style="{color: r.totalColor || 'var(--text)'}">{{ r.total }}</td>
+            <td class="p-2 text-center">{{ r.sYield }}</td>
+            <td class="p-2 text-center">{{ r.sSharpe }}</td>
+            <td class="p-2 text-center">{{ r.sFee }}</td>
+            <td class="p-2 text-center">{{ r.sLiquidity }}</td>
+            <td class="p-2 text-center">{{ r.sSize }}</td>
+            <td class="p-2 text-center">
+              <span class="px-1.5 py-0.5 rounded-full text-xs" :style="{background: r.highlightBg, color: r.highlightColor}">{{ r.highlight }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">09</div>
-</section>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">09</div>
+  </section>
+</div>
+
+<script>
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      methods: [
+        { label: '收益能力 30%', desc: 'yield_7d + return_1y min-max归一化' },
+        { label: '风险调整收益 30%', desc: 'sharpe_ratio min-max归一化' },
+        { label: '费率友好度 15%', desc: '总费率逆向归一化（费率越低分越高）' },
+        { label: '流动性便利 10%', desc: 'T+0=满分, T+1=半数' },
+        { label: '规模稳定性 15%', desc: 'fund_size_billion min-max归一化' },
+      ],
+      top3: [
+        {
+          rank: 1, medal: '🥇', rankLabel: '综合第1名', medalBg: '#f59e0b',
+          name: '岁星货币B', score: '73.9', scoreColor: '#d97706',
+          subtitle: '费后收益 1.84% · 夏普 3.31',
+          bg: 'linear-gradient(135deg, #fef3c7, #fde68a)',
+          tags: [
+            { text: 'T+0', bg: '#dcfce7', color: '#16a34a' },
+            { text: '费率最低', bg: '#dcfce7', color: '#16a34a' },
+            { text: '夏普3.31', bg: '#eff6ff', color: '#2563eb' },
+          ],
+          desc: '全能冠军：低费率+高夏普+T+0，各维度均衡领先',
+        },
+        {
+          rank: 2, medal: '🥈', rankLabel: '综合第2名', medalBg: '#64748b',
+          name: '岁星利货币A', score: '65.1', scoreColor: '#64748b',
+          subtitle: '费后收益 1.70% · 夏普 3.07',
+          bg: 'linear-gradient(135deg, #e5e7eb, #d1d5db)',
+          tags: [
+            { text: '收益最高', bg: '#dcfce7', color: '#16a34a' },
+            { text: '费率高', bg: '#fee2e2', color: '#dc2626' },
+          ],
+          desc: '收益冠军但费率拖累，费后排名从#1降至#5',
+        },
+        {
+          rank: 3, medal: '🥉', rankLabel: '综合第3名', medalBg: '#dc2626',
+          name: '镇星通货币B', score: '64.3', scoreColor: '#dc2626',
+          subtitle: '费后收益 1.63% · 夏普 3.12',
+          bg: 'linear-gradient(135deg, #fef2f2, #fecaca)',
+          tags: [
+            { text: '回撤极小', bg: '#dcfce7', color: '#16a34a' },
+            { text: '夏普3.12', bg: '#eff6ff', color: '#2563eb' },
+          ],
+          desc: '回撤仅-0.008%，高夏普+低回撤的稳健之选',
+        },
+      ],
+      rankingRows: [
+        { rank: '1', rankColor: '#d97706', name: '岁星货币B', total: '73.9', totalColor: 'var(--accent-green)', sYield: '51.5', sSharpe: '94.7', sFee: '96.5', sLiquidity: '100', sSize: '37.3', highlight: '全维度领先', highlightBg: '#dcfce7', highlightColor: '#16a34a', rowBg: '#fffbeb' },
+        { rank: '2', rankColor: 'var(--text-muted)', name: '岁星利货币A', total: '65.1', totalColor: 'var(--text)', sYield: '100', sSharpe: '85.6', sFee: '13.6', sLiquidity: '50', sSize: '15.8', highlight: '费率短板', highlightBg: '#fee2e2', highlightColor: '#dc2626', rowBg: '#fafafa' },
+        { rank: '3', rankColor: 'var(--text-muted)', name: '镇星通货币B', total: '64.3', totalColor: 'var(--text)', sYield: '91.9', sSharpe: '87.5', sFee: '31.6', sLiquidity: '50', sSize: '4.7', highlight: '回撤极低', highlightBg: '#dcfce7', highlightColor: '#16a34a' },
+        { rank: '4', name: '天璇增货币E', total: '60.8', totalColor: 'var(--text)', sYield: '79.2', sSharpe: '68.2', sFee: '16.3', sLiquidity: '50', sSize: '60.9', highlight: '长跑型', highlightBg: '#eff6ff', highlightColor: '#2563eb' },
+        { rank: '5', name: '摇光鑫货币E', total: '59.3', totalColor: 'var(--text)', sYield: '67.5', sSharpe: '58.7', sFee: '29.2', sLiquidity: '50', sSize: '80.5', highlight: '规模优势', highlightBg: '#eff6ff', highlightColor: '#2563eb' },
+        { rank: '6', name: '星辰增货币F', total: '56.9', totalColor: 'var(--text)', sYield: '28.4', sSharpe: '100', sFee: '27.0', sLiquidity: '50', sSize: '61.8', highlight: '夏普冠军', highlightBg: '#dcfce7', highlightColor: '#16a34a' },
+        { rank: '7', name: '启明利货币E', total: '55.8', totalColor: 'var(--text)', sYield: '64.4', sSharpe: '64.0', sFee: '38.7', sLiquidity: '50', sSize: '43.3', highlight: '均衡型', highlightBg: '#eff6ff', highlightColor: '#2563eb' },
+      ],
+    };
+  }
+}).mount('#app');
+</script>
 
 </body>
 </html>

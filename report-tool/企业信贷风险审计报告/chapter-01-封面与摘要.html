@@ -7,161 +7,51 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style id="token-css">
-/* ========================================
-   Design Token: 商务蓝白风格 (Business Blue-White)
-   提取自: A4.html - 货币基金月度收益归因分析
-   适用场景: A4打印报告、正式商务文档、金融分析报告
-   ======================================== */
-
-:root {
-  /* ---- 色板 ---- */
-  --bw-primary-50:  #eff6ff;
-  --bw-primary-100: #dbeafe;
-  --bw-primary-200: #bfdbfe;
-  --bw-primary-300: #93c5fd;
-  --bw-primary-500: #2563eb;
-  --bw-primary-700: #1e3a8a;
-  --bw-primary-800: #1e40af;
-  --bw-primary-900: #0f172a;
-
-  --bw-surface:       #ffffff;
-  --bw-surface-alt:   #f8fafc;
-  --bw-bg:            #f3f6fb;
-
-  --bw-text:          #1f2937;
-  --bw-text-muted:    #64748b;
-  --bw-text-light:    #94a3b8;
-  --bw-text-inverse:  #ffffff;
-
-  --bw-border:        #e5e7eb;
-  --bw-border-light:  #f1f5f9;
-
-  --bw-accent-green:  #16a34a;
-  --bw-accent-red:    #dc2626;
-  --bw-accent-amber:  #d97706;
-
-  /* ---- 排版 ---- */
-  --bw-font:          "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-  --bw-font-mono:     "SF Mono", "Cascadia Code", monospace;
-
-  --bw-text-h1:       40px;
-  --bw-text-h2:       30px;
-  --bw-text-h3:       18px;
-  --bw-text-body:     15px;
-  --bw-text-sm:       13px;
-  --bw-text-xs:       12px;
-
-  --bw-leading:       1.7;
-  --bw-leading-head:  1.25;
-
-  /* ---- 间距 ---- */
-  --bw-page-padding-x: 22mm;
-  --bw-page-padding-y: 18mm;
-  --bw-card-padding:   18px;
-  --bw-grid-gap:       16px;
-  --bw-section-gap:    24px;
-
-  /* ---- 圆角 ---- */
-  --bw-radius-card:    14px;
-  --bw-radius-table:   12px;
-  --bw-radius-tag:     999px;
-  --bw-radius-process: 0 12px 12px 0;
-
-  /* ---- 阴影 ---- */
-  --bw-shadow-card:    0 8px 24px rgba(15, 23, 42, 0.08);
-  --bw-shadow-process: 0 6px 18px rgba(15, 23, 42, 0.06);
-
-  /* ---- 页面 ---- */
-  --bw-page-width:     297mm;
-  --bw-page-height:    210mm;
-
-  /* ---- 组件 Token ---- */
-  --bw-cover-bg:       linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
-  --bw-table-th-bg:    var(--bw-primary-100);
-  --bw-table-th-text:  var(--bw-primary-700);
-  --bw-tag-bg:         var(--bw-primary-100);
-  --bw-tag-text:       var(--bw-primary-800);
-  --bw-big-number:     48px;
-  --bw-big-number-color: var(--bw-primary-500);
-  --bw-process-border: 4px solid var(--bw-primary-500);
-  --bw-footer-text:    var(--bw-text-light);
-
-  /* === 通用变量别名（组件使用这些变量，适配所有主题） === */
-  --primary-50:      var(--bw-primary-50);
-  --primary-100:     var(--bw-primary-100);
-  --primary-200:     var(--bw-primary-200);
-  --primary-300:     var(--bw-primary-300);
-  --primary-400:     #3b82f6;
-  --primary-500:     var(--bw-primary-500);
-  --primary-700:     var(--bw-primary-700);
-  --primary-800:     var(--bw-primary-800);
-  --primary-900:     var(--bw-primary-900);
-  --surface:         var(--bw-surface);
-  --surface-alt:     var(--bw-surface-alt);
-  --bg:              var(--bw-bg);
-  --text:            var(--bw-text);
-  --text-muted:      var(--bw-text-muted);
-  --text-light:      var(--bw-text-light);
-  --text-inverse:    var(--bw-text-inverse);
-  --border:          var(--bw-border);
-  --border-light:    var(--bw-border-light);
-  --radius-card:     var(--bw-radius-card);
-  --radius-tag:      var(--bw-radius-tag);
-  --radius-circle:   999px;
-  --shadow-card:     var(--bw-shadow-card);
-  --font:            var(--bw-font);
-  --font-display:    var(--bw-font);
-  --accent-green:    var(--bw-accent-green);
-  --accent-red:      var(--bw-accent-red);
-  --accent-amber:    var(--bw-accent-amber);
-  --big-number:      var(--bw-big-number);
-  --big-number-color: var(--bw-big-number-color);
-  --process-border:  var(--bw-process-border);
-  --table-th-bg:     var(--bw-table-th-bg);
-  --table-th-text:   var(--bw-table-th-text);
-  --tag-bg:          var(--bw-tag-bg);
-  --tag-text:        var(--bw-tag-text);
-  --cover-bg:        var(--bw-cover-bg);
-}
+    :root {
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;
+      --bw-primary-300:#93c5fd;--bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;
+      --bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;
+      --bw-text-inverse:#ffffff;--bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+      --bw-big-number:48px;--bw-big-number-color:var(--bw-primary-500);
+      --bw-cover-bg:linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --big-number:var(--bw-big-number);--big-number-color:var(--bw-big-number-color);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
+      --cover-bg:var(--bw-cover-bg);
+    }
   </style>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            bw: {
-              primary: {
-                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
-                500: '#2563eb', 700: '#1e3a8a', 800: '#1e40af', 900: '#0f172a',
-              },
-              surface: '#ffffff', alt: '#f8fafc', bg: '#f3f6fb',
-              text: '#1f2937', muted: '#64748b', light: '#94a3b8', border: '#e5e7eb',
-            }
-          },
-          fontFamily: {
-            bw: ['"Microsoft YaHei"', '"PingFang SC"', 'Arial', 'sans-serif'],
-          }
-        }
-      }
-    };
-  </script>
-
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
-      width: 297mm; height: 210mm;
-      padding: 18mm 22mm;
-      page-break-after: always; break-after: page;
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      box-sizing: border-box; page-break-after: always; break-after: page;
       position: relative; overflow: hidden;
     }
     .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media screen {
+      html, body { background: #e5e7eb; margin: 0; padding: 0; }
+      .a4-page {
+        width: min(297mm, calc(100vw - 32px)); height: auto;
+        aspect-ratio: 297 / 210; margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px;
+      }
+    }
     @media print {
       html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .a4-page { margin: 0; box-shadow: none; }
-    }
-    @media screen {
-      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
+      .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
     }
     .risk-badge-high { background: var(--accent-red); }
     .risk-badge-mid { background: var(--accent-amber); }
@@ -169,23 +59,16 @@
     .divider-line { width: 60px; height: 3px; border-radius: 2px; background: var(--primary-300); }
   </style>
 </head>
-<body class="bg-bw-bg font-bw">
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
 <div id="app">
-
   <!-- ===== 封面页 ===== -->
-  <section class="a4-page flex flex-col justify-center"
-           style="background: var(--cover-bg); color: var(--text-inverse);">
-
-    <!-- 主标题 -->
+  <section class="a4-page flex flex-col justify-center" style="background: var(--cover-bg); color: var(--text-inverse);">
     <h1 class="text-5xl font-bold leading-tight mb-4" style="color: var(--text-inverse);">
       企业信贷风险审计报告
     </h1>
-
-    <!-- 装饰线 -->
     <div class="divider-line mb-5" style="background: var(--primary-300);"></div>
 
-    <!-- 报告元信息 -->
     <div class="grid grid-cols-3 gap-6 mb-8 max-w-3xl">
       <div>
         <div class="text-xs tracking-wide mb-1" style="color: rgba(255,255,255,0.5);">报告编号</div>
@@ -201,35 +84,28 @@
       </div>
     </div>
 
-    <!-- 核心结论卡片 -->
     <div class="grid grid-cols-3 gap-4">
-      <div v-for="card in coverCards" :key="card.title"
-           class="rounded-2xl p-5 shadow-lg"
-           style="background: var(--surface); color: var(--text);">
+      <div v-for="card in coverCards" :key="card.title" class="rounded-2xl p-5 shadow-lg" style="background: var(--surface); color: var(--text);">
         <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ card.title }}</h3>
         <p class="text-sm leading-relaxed" style="color: var(--text);">{{ card.desc }}</p>
       </div>
     </div>
 
-    <!-- 页码 -->
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.4);">01</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: rgba(255,255,255,0.45);">01</div>
   </section>
 
   <!-- ===== 摘要页 ===== -->
   <section class="a4-page" style="background: var(--surface-alt);">
     <h2 class="text-3xl font-bold mb-3.5" style="color: var(--text);">审计摘要</h2>
     <p class="text-lg max-w-3xl mb-6" style="color: var(--text-muted);">
-      本报告对{{ meta.entity }}在{{ meta.auditPeriod }}期间的信贷风险状况进行全面审计，
-      涵盖核心财务指标、贷款用途与资金流向等关键维度，形成综合风险评估与授信建议。
+      本报告对{{ meta.entity }}在{{ meta.auditPeriod }}期间的信贷风险状况进行全面审计，涵盖核心财务指标、贷款用途与资金流向等关键维度，形成综合风险评估与授信建议。
     </p>
 
-    <!-- 综合风险评级 -->
     <div class="grid grid-cols-2 gap-5 mb-5">
       <div class="rounded-2xl p-6 shadow-lg" style="background: var(--surface);">
         <h3 class="text-lg font-bold mb-4" style="color: var(--primary-700);">综合风险评级</h3>
         <div class="flex items-center gap-4 mb-4">
-          <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold"
-               :class="riskRating.class">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold" :class="riskRating.class">
             {{ riskRating.level }}
           </div>
           <div>
@@ -238,9 +114,8 @@
           </div>
         </div>
         <div class="grid grid-cols-3 gap-3">
-          <div v-for="item in riskBreakdown" :key="item.label"
-               class="text-center p-3 rounded-xl" style="background: var(--surface-alt);">
-            <div class="text-2xl font-bold" :style="{ color: item.color }">{{ item.score }}</div>
+          <div v-for="item in riskBreakdown" :key="item.label" class="text-center p-3 rounded-xl" style="background: var(--surface-alt);">
+            <div class="text-2xl font-bold" :style="{color: item.color}">{{ item.score }}</div>
             <div class="text-xs mt-1" style="color: var(--text-muted);">{{ item.label }}</div>
           </div>
         </div>
@@ -265,14 +140,11 @@
       </div>
     </div>
 
-    <!-- 关键审计发现 -->
     <div class="rounded-2xl p-6 shadow-lg" style="background: var(--surface);">
       <h3 class="text-lg font-bold mb-4" style="color: var(--primary-700);">关键审计发现</h3>
       <div class="grid grid-cols-3 gap-4">
-        <div v-for="(finding, i) in keyFindings" :key="i"
-             class="flex gap-3">
-          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-               style="background: var(--primary-100); color: var(--primary-700);">
+        <div v-for="(finding, i) in keyFindings" :key="i" class="flex gap-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style="background: var(--primary-100); color: var(--primary-700);">
             {{ i + 1 }}
           </div>
           <div>
@@ -283,51 +155,46 @@
       </div>
     </div>
 
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">02</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">02</div>
   </section>
-
 </div>
 
 <script>
-  const { createApp } = Vue;
-  createApp({
-    data() {
-      return {
-        meta: {
-          reportNo: 'CR-2026-05001',
-          auditPeriod: '2023.01 — 2025.12',
-          entity: 'XX集团有限公司（样本池）',
-        },
-        coverCards: [
-          { title: '财务健康度审计', desc: '基于近三年资产负债率、流动比率、利息保障倍数等核心指标趋势，评估企业偿债能力与财务稳健性。' },
-          { title: '资金流向合规性', desc: '逐笔核对贷款合同约定用途与实际资金去向，识别资金回流、短期拆借等潜在违规行为。' },
-          { title: '综合授信建议', desc: '结合定量指标与定性判断，输出综合风险评级（高/中/低）及建议授信额度区间。' },
-        ],
-        riskRating: {
-          level: '中',
-          class: 'risk-badge-mid',
-          label: '中等风险',
-          desc: '企业整体偿债能力尚可，部分财务指标存在波动，资金用途基本合规，建议审慎授信。',
-        },
-        riskBreakdown: [
-          { label: '财务风险', score: 'B+', color: 'var(--accent-amber)' },
-          { label: '合规风险', score: 'A-', color: 'var(--accent-green)' },
-          { label: '经营风险', score: 'B', color: 'var(--accent-amber)' },
-        ],
-        creditLimit: {
-          amount: '5,000 — 8,000',
-          note: '万元，具体金额视担保条件浮动',
-          guarantee: '不动产抵押 + 第三方保证',
-          tenor: '1年，可循环授信',
-        },
-        keyFindings: [
-          { title: '资产负债率偏高', desc: '近三年资产负债率在62%-68%区间波动，高于行业均值58%，需关注长期偿债压力。' },
-          { title: '现金流覆盖不足', desc: '经营活动现金流对短期债务的覆盖倍数仅为1.2倍，存在一定流动性风险。' },
-          { title: '资金用途基本合规', desc: '贷款资金流向与合同约定用途匹配度约85%，存在少量关联方资金拆借行为，已标注。' },
-        ],
-      };
-    }
-  }).mount('#app');
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      meta: {
+        reportNo: 'CR-2026-05001',
+        auditPeriod: '2023.01 — 2025.12',
+        entity: 'XX集团有限公司（样本池）',
+      },
+      coverCards: [
+        { title: '财务健康度审计', desc: '基于近三年资产负债率、流动比率、利息保障倍数等核心指标趋势，评估企业偿债能力与财务稳健性。' },
+        { title: '资金流向合规性', desc: '逐笔核对贷款合同约定用途与实际资金去向，识别资金回流、短期拆借等潜在违规行为。' },
+        { title: '综合授信建议', desc: '结合定量指标与定性判断，输出综合风险评级（高/中/低）及建议授信额度区间。' },
+      ],
+      riskRating: {
+        level: '中', class: 'risk-badge-mid', label: '中等风险',
+        desc: '企业整体偿债能力尚可，部分财务指标存在波动，资金用途基本合规，建议审慎授信。',
+      },
+      riskBreakdown: [
+        { label: '财务风险', score: 'B+', color: 'var(--accent-amber)' },
+        { label: '合规风险', score: 'A-', color: 'var(--accent-green)' },
+        { label: '经营风险', score: 'B', color: 'var(--accent-amber)' },
+      ],
+      creditLimit: {
+        amount: '5,000 — 8,000', note: '万元，具体金额视担保条件浮动',
+        guarantee: '不动产抵押 + 第三方保证', tenor: '1年，可循环授信',
+      },
+      keyFindings: [
+        { title: '资产负债率偏高', desc: '近三年资产负债率在62%-68%区间波动，高于行业均值58%，需关注长期偿债压力。' },
+        { title: '现金流覆盖不足', desc: '经营活动现金流对短期债务的覆盖倍数仅为1.2倍，存在一定流动性风险。' },
+        { title: '资金用途基本合规', desc: '贷款资金流向与合同约定用途匹配度约85%，存在少量关联方资金拆借行为，已标注。' },
+      ],
+    };
+  }
+}).mount('#app');
 </script>
 
 </body>

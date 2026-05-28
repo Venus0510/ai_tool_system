@@ -6,40 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
   <style id="token-css">
     :root {
-      --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
-      --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
-      --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
-      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
-      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
-      --bw-text-inverse: #ffffff; --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
-      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
-      --bw-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
-      --bw-big-number: 48px; --bw-big-number-color: var(--bw-primary-500);
-      --bw-process-border: 4px solid var(--bw-primary-500);
-      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
-      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
-      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
-      --primary-400: #3b82f6; --primary-500: var(--bw-primary-500);
-      --primary-700: var(--bw-primary-700); --primary-800: var(--bw-primary-800);
-      --primary-900: var(--bw-primary-900);
-      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
-      --text: var(--bw-text); --text-muted: var(--bw-text-muted);
-      --text-light: var(--bw-text-light); --text-inverse: var(--bw-text-inverse);
-      --border: var(--bw-border); --border-light: var(--bw-border-light);
-      --radius-card: var(--bw-radius-card); --shadow-card: var(--bw-shadow-card);
-      --font: var(--bw-font); --font-display: var(--bw-font);
-      --accent-green: var(--bw-accent-green); --accent-red: var(--bw-accent-red);
-      --accent-amber: var(--bw-accent-amber);
-      --big-number: var(--bw-big-number); --big-number-color: var(--bw-big-number-color);
-      --process-border: var(--bw-process-border);
-      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
+      --bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;--bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;
+      --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-process-border:4px solid var(--bw-primary-500);
+      --bw-big-number:48px;--bw-big-number-color:var(--bw-primary-500);
+      --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --big-number:var(--bw-big-number);--big-number-color:var(--bw-big-number-color);
+      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
     }
   </style>
-
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
@@ -60,13 +51,12 @@
       html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
     }
-    body { font-family: var(--font); }
     .stat-card {
       background: var(--surface); border-radius: var(--radius-card);
       padding: 18px 20px; box-shadow: var(--shadow-card);
       border: 1px solid var(--border-light);
     }
-    .stat-card .num { font-size: var(--big-number); color: var(--big-number-color); font-weight: 700; line-height: 1; margin-bottom: 6px; }
+    .stat-card .num { font-size: 32px; color: var(--big-number-color); font-weight: 700; line-height: 1; margin-bottom: 6px; }
     .stat-card h3 { font-size: 16px; color: var(--primary-700); font-weight: 700; margin: 0 0 6px; }
     .stat-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0; }
     .process-item {
@@ -78,11 +68,9 @@
     .process-item p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0; }
   </style>
 </head>
-<body>
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
 <div id="app">
-
-  <!-- ===== 项目背景与建设必要性 · 页码 03 ===== -->
   <section class="a4-page flex flex-col" style="background: var(--surface-alt);">
     <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">第3章 项目背景与建设必要性</h2>
     <p class="text-base mb-5 max-w-3xl leading-relaxed" style="color: var(--text-muted);">
@@ -90,63 +78,45 @@
     </p>
 
     <div class="flex-1">
-      <div class="process-item">
+      <div v-for="(d, i) in drivers" :key="i" class="process-item">
         <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-sm font-bold"
-                style="background: var(--primary-500); color: #fff;">1</span>
-          <h3>市场影响 — 第三方估值已成为定价基础设施</h3>
+          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-sm font-bold" style="background: var(--primary-500); color: #fff;">{{ i + 1 }}</span>
+          <h3>{{ d.title }}</h3>
         </div>
-        <p>第三方估值机构已成为金融市场定价基础设施的重要组成部分，其估值结果被广泛应用于资管产品净值计量、公允价值计量、风险管理、业绩评价及审计支持，具有较强的市场普适性和外部依赖性。</p>
-      </div>
-
-      <div class="process-item">
-        <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-sm font-bold"
-                style="background: var(--primary-500); color: #fff;">2</span>
-          <h3>监管导向 — 从自我管理走向外部可验证</h3>
-        </div>
-        <p>人民银行和交易商协会已明确鼓励估值机构聘请独立审计机构，对估值业务内控机制、估值产品编制流程及相关规则遵循情况进行定期评估，推动估值业务从自我管理走向外部可验证。</p>
-      </div>
-
-      <div class="process-item">
-        <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-sm font-bold"
-                style="background: var(--primary-500); color: #fff;">3</span>
-          <h3>行业升级 — 从「形成结果」到「可解释、可复核、可追溯、可挑战」</h3>
-        </div>
-        <p>行业竞争和监管关注正在从"是否能够形成估值结果"，转向"估值结果是否可解释、可复核、可追溯、可挑战"。头部估值机构开展高质量内控建设，有助于提升市场公信力并形成行业示范。</p>
+        <p>{{ d.desc }}</p>
       </div>
     </div>
 
     <div class="grid grid-cols-3 gap-4 mt-4">
-      <div class="stat-card flex flex-col justify-center">
-        <div class="num" style="font-size:32px;">广泛</div>
-        <h3>市场普适性</h3>
-        <p>估值结果覆盖资管净值、公允计量、风控、业绩评价、审计支持等核心场景</p>
-      </div>
-      <div class="stat-card flex flex-col justify-center">
-        <div class="num" style="font-size:32px;">明确</div>
-        <h3>监管信号</h3>
-        <p>PBOC + NAFMII 鼓励独立审计机构定期评估估值内控机制与编制流程</p>
-      </div>
-      <div class="stat-card flex flex-col justify-center">
-        <div class="num" style="font-size:32px;">升级</div>
-        <h3>竞争力重构</h3>
-        <p>高质量内控成为头部机构市场公信力与行业示范的核心壁垒</p>
+      <div v-for="s in strengthCards" :key="s.title" class="stat-card flex flex-col justify-center">
+        <div class="num">{{ s.label }}</div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.desc }}</p>
       </div>
     </div>
 
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color: var(--text-light);">
-      金融工具估值内控建设与鉴证 · 培训材料
-    </div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">03</div>
   </section>
-
 </div>
 
 <script>
-  const { createApp } = Vue;
-  createApp({}).mount('#app');
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      drivers: [
+        { title: '市场影响 — 第三方估值已成为定价基础设施', desc: '第三方估值机构已成为金融市场定价基础设施的重要组成部分，其估值结果被广泛应用于资管产品净值计量、公允价值计量、风险管理、业绩评价及审计支持，具有较强的市场普适性和外部依赖性。' },
+        { title: '监管导向 — 从自我管理走向外部可验证', desc: '人民银行和交易商协会已明确鼓励估值机构聘请独立审计机构，对估值业务内控机制、估值产品编制流程及相关规则遵循情况进行定期评估，推动估值业务从自我管理走向外部可验证。' },
+        { title: '行业升级 — 从「形成结果」到「可解释、可复核、可追溯、可挑战」', desc: '行业竞争和监管关注正在从"是否能够形成估值结果"，转向"估值结果是否可解释、可复核、可追溯、可挑战"。头部估值机构开展高质量内控建设，有助于提升市场公信力并形成行业示范。' },
+      ],
+      strengthCards: [
+        { label: '广泛', title: '市场普适性', desc: '估值结果覆盖资管净值、公允计量、风控、业绩评价、审计支持等核心场景' },
+        { label: '明确', title: '监管信号', desc: 'PBOC + NAFMII 鼓励独立审计机构定期评估估值内控机制与编制流程' },
+        { label: '升级', title: '竞争力重构', desc: '高质量内控成为头部机构市场公信力与行业示范的核心壁垒' },
+      ],
+    };
+  }
+}).mount('#app');
 </script>
 
 </body>

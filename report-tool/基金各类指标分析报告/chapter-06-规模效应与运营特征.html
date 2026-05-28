@@ -5,33 +5,32 @@
   <title>规模效应与运营特征 · 基金各类指标深度分析报告</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style id="token-css">
     :root {
-      --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
-      --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
-      --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
-      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
-      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
-      --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
-      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
-      --bw-font: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
-      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
-      --bw-big-number-color: var(--bw-primary-500);
-      --bw-tag-bg: var(--bw-primary-100); --bw-tag-text: var(--bw-primary-800);
-      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
-      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
-      --primary-500: var(--bw-primary-500); --primary-700: var(--bw-primary-700);
-      --primary-800: var(--bw-primary-800); --primary-900: var(--bw-primary-900);
-      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
-      --text: var(--bw-text); --text-muted: var(--bw-text-muted); --text-light: var(--bw-text-light);
-      --border: var(--bw-border); --border-light: var(--bw-border-light);
-      --radius-card: var(--bw-radius-card); --shadow-card: var(--bw-shadow-card);
-      --font: var(--bw-font); --accent-green: var(--bw-accent-green);
-      --accent-red: var(--bw-accent-red); --accent-amber: var(--bw-accent-amber);
-      --big-number: 38px; --big-number-color: var(--bw-big-number-color);
-      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
-      --tag-bg: var(--bw-tag-bg); --tag-text: var(--bw-tag-text);
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;
+      --bw-primary-300:#93c5fd;--bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;
+      --bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;
+      --bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+      --bw-big-number-color:var(--bw-primary-500);
+      --bw-tag-bg:var(--bw-primary-100);--bw-tag-text:var(--bw-primary-800);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --big-number:38px;--big-number-color:var(--bw-big-number-color);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
+      --tag-bg:var(--bw-tag-bg);--tag-text:var(--bw-tag-text);
     }
   </style>
   <style>
@@ -57,137 +56,121 @@
 </head>
 <body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
-<section class="a4-page" style="background: var(--surface-alt);">
-  <div class="flex items-center gap-3 mb-3">
-    <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
-    <div>
-      <h2 class="text-2xl font-bold" style="color: var(--text);">规模效应与运营特征</h2>
-      <p class="text-xs" style="color: var(--text-muted);">规模分层 · 年代对比 · T+0/T+1流动性 · 申购门槛</p>
-    </div>
-  </div>
-
-  <!-- 规模分层分析 (3列) -->
-  <div class="grid grid-cols-3 gap-3 mb-3">
-    <div class="rounded-xl p-4 shadow-sm text-center" style="background: #fff5f5; border-top: 3px solid var(--accent-red);">
-      <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2" style="background: #fee2e2; color: #dc2626;">大型 ≥1500亿 · 12只</span>
-      <div class="text-3xl font-bold mb-1" style="color: var(--accent-red);">1.76<span class="text-base">%</span></div>
-      <div class="text-xs mb-2" style="color: var(--text-muted);">7日年化均值</div>
-      <div class="flex justify-center gap-4 text-xs">
-        <span style="color: var(--text);">夏普 <b>1.94</b></span>
-        <span style="color: var(--text);">波动 <b>0.10%</b></span>
-      </div>
-      <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-muted);">规模最大、收益最低——存在明显规模不经济</p>
-    </div>
-    <div class="rounded-xl p-4 shadow-sm text-center" style="background: #eff6ff; border-top: 3px solid var(--primary-500);">
-      <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2" style="background: var(--primary-100); color: var(--primary-800);">中型 500-1500亿 · 13只</span>
-      <div class="text-3xl font-bold mb-1" style="color: var(--primary-500);">1.86<span class="text-base">%</span></div>
-      <div class="text-xs mb-2" style="color: var(--text-muted);">7日年化均值</div>
-      <div class="flex justify-center gap-4 text-xs">
-        <span style="color: var(--text);">夏普 <b>1.88</b></span>
-        <span style="color: var(--text);">波动 <b>0.08%</b></span>
-      </div>
-      <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-muted);">收益居中、波动最低——风险调整后性价比均衡</p>
-    </div>
-    <div class="rounded-xl p-4 shadow-sm text-center" style="background: #f0fdf4; border-top: 3px solid var(--accent-green);">
-      <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2" style="background: #dcfce7; color: #16a34a;">小型 <500亿 · 8只</span>
-      <div class="text-3xl font-bold mb-1" style="color: var(--accent-green);">2.02<span class="text-base">%</span></div>
-      <div class="text-xs mb-2" style="color: var(--text-muted);">7日年化均值</div>
-      <div class="flex justify-center gap-4 text-xs">
-        <span style="color: var(--text);">夏普 <b>2.11</b></span>
-        <span style="color: var(--text);">波动 <b>0.08%</b></span>
-      </div>
-      <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-muted);">规模最小、收益最高、夏普最优——边际优势显著</p>
-    </div>
-  </div>
-
-  <!-- 年代分组 + 流动性对比 (左右) -->
-  <div class="grid grid-cols-2 gap-4 mb-3">
-    <!-- 年代分组 -->
-    <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
-      <table class="w-full text-xs">
-        <thead>
-          <tr><th colspan="4" class="p-2.5 text-center text-sm font-bold" style="background: var(--primary-50); color: var(--primary-700);">成立年代分组对比</th></tr>
-          <tr>
-            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">分组</th>
-            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">数量</th>
-            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">7日年化均值</th>
-            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">夏普均值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b" style="border-color: var(--border-light); background: #f0fdf4;">
-            <td class="p-2"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #dcfce7; color: #16a34a;">老基金 2006-2010</span></td>
-            <td class="p-2 text-center font-bold" style="color: var(--text);">10只</td>
-            <td class="p-2 text-center font-bold" style="color: var(--accent-green);">1.98%</td>
-            <td class="p-2 text-center" style="color: var(--text);">1.82</td>
-          </tr>
-          <tr class="border-b" style="border-color: var(--border-light); background: #eff6ff;">
-            <td class="p-2"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: var(--primary-100); color: var(--primary-800);">中期 2011-2018</span></td>
-            <td class="p-2 text-center font-bold" style="color: var(--text);">14只</td>
-            <td class="p-2 text-center" style="color: var(--text);">1.85%</td>
-            <td class="p-2 text-center font-bold" style="color: var(--accent-green);">2.21</td>
-          </tr>
-          <tr style="border-color: var(--border-light); background: #fff5f5;">
-            <td class="p-2"><span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background: #fee2e2; color: #dc2626;">新基金 2019-2024</span></td>
-            <td class="p-2 text-center font-bold" style="color: var(--text);">9只</td>
-            <td class="p-2 text-center" style="color: var(--accent-red);">1.75%</td>
-            <td class="p-2 text-center" style="color: var(--accent-red);">1.71</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- 流动性对比 -->
-    <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
-      <table class="w-full text-xs">
-        <thead>
-          <tr><th colspan="4" class="p-2.5 text-center text-sm font-bold" style="background: var(--primary-50); color: var(--primary-700);">T+0 vs T+1 流动性溢价分析</th></tr>
-          <tr>
-            <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">指标</th>
-            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">T+0 (12只)</th>
-            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">T+1 (21只)</th>
-            <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">差异</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b" style="border-color: var(--border-light);">
-            <td class="p-2 font-bold" style="color: var(--text);">7日年化均值</td>
-            <td class="p-2 text-center" style="color: var(--text);">1.83%</td>
-            <td class="p-2 text-center" style="color: var(--text);">1.88%</td>
-            <td class="p-2 text-center" style="color: var(--text-muted);">-0.06pp</td>
-          </tr>
-          <tr class="border-b" style="border-color: var(--border-light);">
-            <td class="p-2 font-bold" style="color: var(--text);">夏普比率均值</td>
-            <td class="p-2 text-center font-bold" style="color: var(--accent-green);">2.19</td>
-            <td class="p-2 text-center" style="color: var(--text);">1.82</td>
-            <td class="p-2 text-center" style="color: var(--accent-green);">+0.36</td>
-          </tr>
-          <tr style="border-color: var(--border-light);">
-            <td class="p-2 font-bold" style="color: var(--text);">综合费率均值</td>
-            <td class="p-2 text-center" style="color: var(--accent-red);">0.57%</td>
-            <td class="p-2 text-center" style="color: var(--accent-green);">0.55%</td>
-            <td class="p-2 text-center" style="color: var(--text-muted);">+0.02pp</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="p-3">
-        <h4 class="text-xs font-bold mb-1" style="color: var(--primary-700);">关键发现</h4>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">
-          T+0基金<b>夏普比率显著高于T+1</b>（2.19 vs 1.82），且费率并未更高——高流动性并非以牺牲收益质量为代价。申购起点从<b>0.01元到1000元</b>不等，8只基金1分钱起购、9只1元起购，低门槛产品占据主流。
-        </p>
+<div id="app">
+  <section class="a4-page" style="background: var(--surface-alt);">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-1.5 h-7 rounded-full" style="background: var(--primary-500);"></div>
+      <div>
+        <h2 class="text-2xl font-bold" style="color: var(--text);">规模效应与运营特征</h2>
+        <p class="text-xs" style="color: var(--text-muted);">规模分层 · 年代对比 · T+0/T+1流动性 · 申购门槛</p>
       </div>
     </div>
-  </div>
 
-  <!-- 底部洞察 -->
-  <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface); border-left: 4px solid var(--primary-500);">
-    <h4 class="text-sm font-bold mb-1" style="color: var(--primary-700);">综合洞察：规模-收益-成立年代的三角关系</h4>
-    <p class="text-xs leading-relaxed" style="color: var(--text);">
-      <b>1. 规模不经济确实存在：</b>小型基金7日年化领先大型基金0.26pp，夏普领先0.17，验证了货币基金管理规模对收益的边际侵蚀效应。<b>2. 老基金≠低收益：</b>2006-2010年成立的老基金收益最高（1.98%），中期基金夏普最优（2.21），新基金在收益和夏普上均落后——老基金管理人的经验优势和规模壁垒具有长期价值。<b>3. T+0是优质信号：</b>支持T+0赎回的基金平均夏普更高，说明流动性管理能力强是综合风控水平的正向指标。
-    </p>
-  </div>
+    <!-- 规模分层分析 (3列) -->
+    <div class="grid grid-cols-3 gap-3 mb-3">
+      <div v-for="t in sizeTiers" :key="t.label" class="rounded-xl p-4 shadow-sm text-center" :style="{background: t.bg, borderTop: '3px solid ' + t.borderColor}">
+        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2" :style="{background: t.tagBg, color: t.tagColor}">{{ t.label }}</span>
+        <div class="text-3xl font-bold mb-1" :style="{color: t.yieldColor}">{{ t.yield }}<span class="text-base">%</span></div>
+        <div class="text-xs mb-2" style="color: var(--text-muted);">7日年化均值</div>
+        <div class="flex justify-center gap-4 text-xs">
+          <span style="color: var(--text);">夏普 <b>{{ t.sharpe }}</b></span>
+          <span style="color: var(--text);">波动 <b>{{ t.vol }}</b></span>
+        </div>
+        <p class="text-xs mt-2 leading-relaxed" style="color: var(--text-muted);">{{ t.desc }}</p>
+      </div>
+    </div>
 
-  <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">08</div>
-</section>
+    <!-- 年代分组 + 流动性对比 (左右) -->
+    <div class="grid grid-cols-2 gap-4 mb-3">
+      <!-- 年代分组 -->
+      <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
+        <table class="w-full text-xs">
+          <thead>
+            <tr><th colspan="4" class="p-2.5 text-center text-sm font-bold" style="background: var(--primary-50); color: var(--primary-700);">成立年代分组对比</th></tr>
+            <tr>
+              <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">分组</th>
+              <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">数量</th>
+              <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">7日年化均值</th>
+              <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">夏普均值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="e in eraGroups" :key="e.label" class="border-b" :style="{borderColor: 'var(--border-light)', background: e.rowBg}">
+              <td class="p-2"><span class="px-2 py-0.5 rounded-full text-xs font-bold" :style="{background: e.tagBg, color: e.tagColor}">{{ e.label }}</span></td>
+              <td class="p-2 text-center font-bold" style="color: var(--text);">{{ e.count }}</td>
+              <td class="p-2 text-center font-bold" :style="{color: e.yieldColor}">{{ e.yield }}</td>
+              <td class="p-2 text-center" :style="{color: e.sharpeColor}">{{ e.sharpe }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 流动性对比 -->
+      <div class="rounded-xl overflow-hidden shadow-sm" style="background: var(--surface);">
+        <table class="w-full text-xs">
+          <thead>
+            <tr><th colspan="4" class="p-2.5 text-center text-sm font-bold" style="background: var(--primary-50); color: var(--primary-700);">T+0 vs T+1 流动性溢价分析</th></tr>
+            <tr>
+              <th class="p-2 text-left font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">指标</th>
+              <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">T+0 (12只)</th>
+              <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">T+1 (21只)</th>
+              <th class="p-2 text-center font-bold" style="background: var(--table-th-bg); color: var(--table-th-text);">差异</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="l in liquidityRows" :key="l.label" class="border-b" style="border-color: var(--border-light);">
+              <td class="p-2 font-bold" style="color: var(--text);">{{ l.label }}</td>
+              <td class="p-2 text-center" :style="{color: l.t0Color || 'var(--text)'}">{{ l.t0 }}</td>
+              <td class="p-2 text-center" :style="{color: l.t1Color || 'var(--text)'}">{{ l.t1 }}</td>
+              <td class="p-2 text-center" :style="{color: l.diffColor || 'var(--text-muted)'}">{{ l.diff }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="p-3">
+          <h4 class="text-xs font-bold mb-1" style="color: var(--primary-700);">关键发现</h4>
+          <p class="text-xs leading-relaxed" style="color: var(--text);" v-html="liquidityFinding"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部洞察 -->
+    <div class="rounded-xl p-3 shadow-sm" style="background: var(--surface); border-left: 4px solid var(--primary-500);">
+      <h4 class="text-sm font-bold mb-1" style="color: var(--primary-700);">{{ bottomInsight.title }}</h4>
+      <p class="text-xs leading-relaxed" style="color: var(--text);" v-html="bottomInsight.body"></p>
+    </div>
+
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">08</div>
+  </section>
+</div>
+
+<script>
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      sizeTiers: [
+        { label: '大型 ≥1500亿 · 12只', bg: '#fff5f5', borderColor: 'var(--accent-red)', tagBg: '#fee2e2', tagColor: '#dc2626', yield: '1.76', yieldColor: 'var(--accent-red)', sharpe: '1.94', vol: '0.10%', desc: '规模最大、收益最低——存在明显规模不经济' },
+        { label: '中型 500-1500亿 · 13只', bg: '#eff6ff', borderColor: 'var(--primary-500)', tagBg: 'var(--primary-100)', tagColor: 'var(--primary-800)', yield: '1.86', yieldColor: 'var(--primary-500)', sharpe: '1.88', vol: '0.08%', desc: '收益居中、波动最低——风险调整后性价比均衡' },
+        { label: '小型 <500亿 · 8只', bg: '#f0fdf4', borderColor: 'var(--accent-green)', tagBg: '#dcfce7', tagColor: '#16a34a', yield: '2.02', yieldColor: 'var(--accent-green)', sharpe: '2.11', vol: '0.08%', desc: '规模最小、收益最高、夏普最优——边际优势显著' },
+      ],
+      eraGroups: [
+        { label: '老基金 2006-2010', tagBg: '#dcfce7', tagColor: '#16a34a', rowBg: '#f0fdf4', count: '10只', yield: '1.98%', yieldColor: 'var(--accent-green)', sharpe: '1.82', sharpeColor: 'var(--text)' },
+        { label: '中期 2011-2018', tagBg: 'var(--primary-100)', tagColor: 'var(--primary-800)', rowBg: '#eff6ff', count: '14只', yield: '1.85%', yieldColor: 'var(--text)', sharpe: '2.21', sharpeColor: 'var(--accent-green)' },
+        { label: '新基金 2019-2024', tagBg: '#fee2e2', tagColor: '#dc2626', rowBg: '#fff5f5', count: '9只', yield: '1.75%', yieldColor: 'var(--accent-red)', sharpe: '1.71', sharpeColor: 'var(--accent-red)' },
+      ],
+      liquidityRows: [
+        { label: '7日年化均值', t0: '1.83%', t0Color: 'var(--text)', t1: '1.88%', t1Color: 'var(--text)', diff: '-0.06pp', diffColor: 'var(--text-muted)' },
+        { label: '夏普比率均值', t0: '2.19', t0Color: 'var(--accent-green)', t1: '1.82', t1Color: 'var(--text)', diff: '+0.36', diffColor: 'var(--accent-green)' },
+        { label: '综合费率均值', t0: '0.57%', t0Color: 'var(--accent-red)', t1: '0.55%', t1Color: 'var(--accent-green)', diff: '+0.02pp', diffColor: 'var(--text-muted)' },
+      ],
+      liquidityFinding: 'T+0基金<b>夏普比率显著高于T+1</b>（2.19 vs 1.82），且费率并未更高——高流动性并非以牺牲收益质量为代价。申购起点从<b>0.01元到1000元</b>不等，8只基金1分钱起购、9只1元起购，低门槛产品占据主流。',
+      bottomInsight: {
+        title: '综合洞察：规模-收益-成立年代的三角关系',
+        body: '<b>1. 规模不经济确实存在：</b>小型基金7日年化领先大型基金0.26pp，夏普领先0.17，验证了货币基金管理规模对收益的边际侵蚀效应。<b>2. 老基金≠低收益：</b>2006-2010年成立的老基金收益最高（1.98%），中期基金夏普最优（2.21），新基金在收益和夏普上均落后——老基金管理人的经验优势和规模壁垒具有长期价值。<b>3. T+0是优质信号：</b>支持T+0赎回的基金平均夏普更高，说明流动性管理能力强是综合风控水平的正向指标。',
+      },
+    };
+  }
+}).mount('#app');
+</script>
 
 </body>
 </html>

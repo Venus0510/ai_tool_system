@@ -8,164 +8,50 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
   <style id="token-css">
-/* ========================================
-   Design Token: 商务蓝白风格 (Business Blue-White)
-   提取自: A4.html - 货币基金月度收益归因分析
-   适用场景: A4打印报告、正式商务文档、金融分析报告
-   ======================================== */
-
-:root {
-  /* ---- 色板 ---- */
-  --bw-primary-50:  #eff6ff;
-  --bw-primary-100: #dbeafe;
-  --bw-primary-200: #bfdbfe;
-  --bw-primary-300: #93c5fd;
-  --bw-primary-500: #2563eb;
-  --bw-primary-700: #1e3a8a;
-  --bw-primary-800: #1e40af;
-  --bw-primary-900: #0f172a;
-
-  --bw-surface:       #ffffff;
-  --bw-surface-alt:   #f8fafc;
-  --bw-bg:            #f3f6fb;
-
-  --bw-text:          #1f2937;
-  --bw-text-muted:    #64748b;
-  --bw-text-light:    #94a3b8;
-  --bw-text-inverse:  #ffffff;
-
-  --bw-border:        #e5e7eb;
-  --bw-border-light:  #f1f5f9;
-
-  --bw-accent-green:  #16a34a;
-  --bw-accent-red:    #dc2626;
-  --bw-accent-amber:  #d97706;
-
-  /* ---- 排版 ---- */
-  --bw-font:          "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-  --bw-font-mono:     "SF Mono", "Cascadia Code", monospace;
-
-  --bw-text-h1:       40px;
-  --bw-text-h2:       30px;
-  --bw-text-h3:       18px;
-  --bw-text-body:     15px;
-  --bw-text-sm:       13px;
-  --bw-text-xs:       12px;
-
-  --bw-leading:       1.7;
-  --bw-leading-head:  1.25;
-
-  /* ---- 间距 ---- */
-  --bw-page-padding-x: 22mm;
-  --bw-page-padding-y: 18mm;
-  --bw-card-padding:   18px;
-  --bw-grid-gap:       16px;
-  --bw-section-gap:    24px;
-
-  /* ---- 圆角 ---- */
-  --bw-radius-card:    14px;
-  --bw-radius-table:   12px;
-  --bw-radius-tag:     999px;
-  --bw-radius-process: 0 12px 12px 0;
-
-  /* ---- 阴影 ---- */
-  --bw-shadow-card:    0 8px 24px rgba(15, 23, 42, 0.08);
-  --bw-shadow-process: 0 6px 18px rgba(15, 23, 42, 0.06);
-
-  /* ---- 页面 ---- */
-  --bw-page-width:     297mm;
-  --bw-page-height:    210mm;
-
-  /* ---- 组件 Token ---- */
-  --bw-cover-bg:       linear-gradient(135deg, var(--bw-primary-900), var(--bw-primary-700));
-  --bw-table-th-bg:    var(--bw-primary-100);
-  --bw-table-th-text:  var(--bw-primary-700);
-  --bw-tag-bg:         var(--bw-primary-100);
-  --bw-tag-text:       var(--bw-primary-800);
-  --bw-big-number:     48px;
-  --bw-big-number-color: var(--bw-primary-500);
-  --bw-process-border: 4px solid var(--bw-primary-500);
-  --bw-footer-text:    var(--bw-text-light);
-
-  /* === 通用变量别名（组件使用这些变量，适配所有主题） === */
-  --primary-50:      var(--bw-primary-50);
-  --primary-100:     var(--bw-primary-100);
-  --primary-200:     var(--bw-primary-200);
-  --primary-300:     var(--bw-primary-300);
-  --primary-400:     #3b82f6;
-  --primary-500:     var(--bw-primary-500);
-  --primary-700:     var(--bw-primary-700);
-  --primary-800:     var(--bw-primary-800);
-  --primary-900:     var(--bw-primary-900);
-  --surface:         var(--bw-surface);
-  --surface-alt:     var(--bw-surface-alt);
-  --bg:              var(--bw-bg);
-  --text:            var(--bw-text);
-  --text-muted:      var(--bw-text-muted);
-  --text-light:      var(--bw-text-light);
-  --text-inverse:    var(--bw-text-inverse);
-  --border:          var(--bw-border);
-  --border-light:    var(--bw-border-light);
-  --radius-card:     var(--bw-radius-card);
-  --radius-tag:      var(--bw-radius-tag);
-  --radius-circle:   999px;
-  --shadow-card:     var(--bw-shadow-card);
-  --font:            var(--bw-font);
-  --font-display:    var(--bw-font);
-  --accent-green:    var(--bw-accent-green);
-  --accent-red:      var(--bw-accent-red);
-  --accent-amber:    var(--bw-accent-amber);
-  --big-number:      var(--bw-big-number);
-  --big-number-color: var(--bw-big-number-color);
-  --process-border:  var(--bw-process-border);
-  --table-th-bg:     var(--bw-table-th-bg);
-  --table-th-text:   var(--bw-table-th-text);
-  --tag-bg:          var(--bw-tag-bg);
-  --tag-text:        var(--bw-tag-text);
-  --cover-bg:        var(--bw-cover-bg);
-}
+    :root {
+      --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;
+      --bw-primary-300:#93c5fd;--bw-primary-500:#2563eb;--bw-primary-700:#1e3a8a;
+      --bw-primary-800:#1e40af;--bw-primary-900:#0f172a;
+      --bw-surface:#ffffff;--bw-surface-alt:#f8fafc;--bw-bg:#f3f6fb;
+      --bw-text:#1f2937;--bw-text-muted:#64748b;--bw-text-light:#94a3b8;
+      --bw-text-inverse:#ffffff;--bw-border:#e5e7eb;--bw-border-light:#f1f5f9;
+      --bw-accent-green:#16a34a;--bw-accent-red:#dc2626;--bw-accent-amber:#d97706;
+      --bw-font:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card:14px;--bw-shadow-card:0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
+      --bw-big-number:48px;--bw-big-number-color:var(--bw-primary-500);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
+      --big-number:var(--bw-big-number);--big-number-color:var(--bw-big-number-color);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
+    }
   </style>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            bw: {
-              primary: {
-                50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
-                500: '#2563eb', 700: '#1e3a8a', 800: '#1e40af', 900: '#0f172a',
-              },
-              surface: '#ffffff', alt: '#f8fafc', bg: '#f3f6fb',
-              text: '#1f2937', muted: '#64748b', light: '#94a3b8', border: '#e5e7eb',
-            }
-          },
-          fontFamily: {
-            bw: ['"Microsoft YaHei"', '"PingFang SC"', 'Arial', 'sans-serif'],
-          }
-        }
-      }
-    };
-  </script>
-
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
-      width: 297mm; height: 210mm;
-      padding: 18mm 22mm;
-      page-break-after: always; break-after: page;
+      width: 297mm; height: 210mm; padding: 18mm 22mm;
+      box-sizing: border-box; page-break-after: always; break-after: page;
       position: relative; overflow: hidden;
     }
     .a4-page:last-child { page-break-after: auto; break-after: auto; }
+    @media screen {
+      html, body { background: #e5e7eb; margin: 0; padding: 0; }
+      .a4-page {
+        width: min(297mm, calc(100vw - 32px)); height: auto;
+        aspect-ratio: 297 / 210; margin: 20px auto;
+        box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px;
+      }
+    }
     @media print {
       html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .a4-page { margin: 0; box-shadow: none; }
+      .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
     }
-    @media screen {
-      .a4-page { margin: 20px auto; box-shadow: 0 0 30px rgba(0,0,0,.12); border-radius: 4px; }
-    }
-
-    /* stat-card 组件样式 */
     .stat-card {
       background: var(--surface); border-radius: var(--radius-card);
       padding: 20px 22px; box-shadow: var(--shadow-card);
@@ -174,8 +60,6 @@
     .stat-card .num { font-size: var(--big-number); color: var(--big-number-color); font-weight: 700; line-height: 1; margin-bottom: 6px; }
     .stat-card h3 { font-size: 17px; color: var(--primary-700); font-weight: 700; margin: 0 0 6px; }
     .stat-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin: 0; }
-
-    /* 图表容器 */
     .chart-box {
       background: var(--surface); border-radius: var(--radius-card);
       padding: 18px 20px; box-shadow: var(--shadow-card);
@@ -183,8 +67,6 @@
     }
     .chart-box h3 { color: var(--text); font-size: 15px; margin: 0 0 12px; font-weight: 700; }
     .chart { width: 100%; }
-
-    /* 数据表格 */
     .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .data-table thead th {
       background: var(--table-th-bg); color: var(--table-th-text);
@@ -194,14 +76,13 @@
       padding: 10px 14px; color: var(--text);
       border-bottom: 1px solid var(--border-light);
     }
-    .data-table tbody tr { background: var(--surface); }
     .cell-warn { color: var(--accent-red) !important; font-weight: 700; }
     .cell-ok { color: var(--accent-green) !important; }
+  </style>
 </head>
-<body class="bg-bw-bg font-bw">
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
 <div id="app">
-
   <!-- ===== 第1页：核心指标概览 + 趋势图 ===== -->
   <section class="a4-page" style="background: var(--surface-alt);">
     <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">二、核心财务指标审计</h2>
@@ -211,30 +92,20 @@
 
     <!-- stat-card 三列 -->
     <div class="grid grid-cols-3 gap-4 mb-5">
-      <div class="stat-card">
-        <div class="num">62.8<span style="font-size:18px;">%</span></div>
-        <h3>资产负债率（2025）</h3>
-        <p>近三年在58.2%-68.5%区间波动，2025年末为62.8%，高于行业均值58%，长期偿债承压。</p>
-      </div>
-      <div class="stat-card">
-        <div class="num">1.32<span style="font-size:18px;">x</span></div>
-        <h3>流动比率（2025）</h3>
-        <p>近三年从1.58x降至1.32x，流动性和短期偿债能力逐年减弱，已接近1.2x警示线。</p>
-      </div>
-      <div class="stat-card">
-        <div class="num">3.15<span style="font-size:18px;">x</span></div>
-        <h3>利息保障倍数（2025）</h3>
-        <p>近三年从4.80x降至3.15x，息税前利润对利息的覆盖能力明显下滑，需关注盈利持续性。</p>
+      <div v-for="s in statCards" :key="s.title" class="stat-card">
+        <div class="num">{{ s.value }}<span style="font-size:18px;">{{ s.unit }}</span></div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.desc }}</p>
       </div>
     </div>
 
-    <!-- 近三年趋势图 · 分组柱状图 -->
+    <!-- 近三年趋势图 -->
     <div class="chart-box">
       <h3>核心财务指标 · 近三年趋势对比</h3>
       <div class="chart" id="trendChart" style="height:280px;"></div>
     </div>
 
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">03</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">03</div>
   </section>
 
   <!-- ===== 第2页：现金流与债务覆盖 + 表格 ===== -->
@@ -265,8 +136,7 @@
             <td :class="row.warn ? 'cell-warn' : ''">{{ row.v2025 }}</td>
             <td style="color: var(--text-muted);">{{ row.benchmark }}</td>
             <td>
-              <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
-                    :style="row.warn ? 'background:#fef2f2;color:var(--accent-red);' : 'background:#f0fdf4;color:var(--accent-green);'">
+              <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold" :style="row.warn ? 'background:#fef2f2;color:var(--accent-red);' : 'background:#f0fdf4;color:var(--accent-green);'">
                 {{ row.warn ? '异常' : '正常' }}
               </span>
             </td>
@@ -277,108 +147,100 @@
 
     <!-- 底部双栏分析 -->
     <div class="grid grid-cols-2 gap-4">
-      <div class="stat-card" style="border-left: 4px solid var(--accent-red);">
-        <h3 style="color: var(--accent-red);">风险警示</h3>
-        <p>经营活动现金流净额连续两年下滑（2024年-12%，2025年-18%），对短期债务的覆盖倍数已降至<span style="color:var(--accent-red);font-weight:700;">1.2x</span>，低于1.5x安全线。投资活动持续大额净流出，自由现金流为负，依赖外部融资维持流动性。</p>
-      </div>
-      <div class="stat-card" style="border-left: 4px solid var(--accent-amber);">
-        <h3 style="color: var(--accent-amber);">关注事项</h3>
-        <p>应收账款周转天数从45天延长至<span style="color:var(--accent-amber);font-weight:700;">68天</span>，回款效率下降明显。短期借款占比从32%升至<span style="color:var(--accent-amber);font-weight:700;">47%</span>，融资结构短期化趋势值得关注，建议增加中长期融资比例。</p>
+      <div v-for="c in warnCards" :key="c.title" class="stat-card" :style="{borderLeft: '4px solid ' + c.accentColor}">
+        <h3 :style="{color: c.accentColor}">{{ c.title }}</h3>
+        <p v-html="c.body"></p>
       </div>
     </div>
 
-    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-muted);">04</div>
+    <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">04</div>
   </section>
-
 </div>
 
 <script>
-  const { createApp } = Vue;
-  createApp({
-    data() {
-      return {
-        meta: { entity: 'XX集团有限公司' },
-        debtTable: [
-          { label: '经营活动现金流净额（万元）', v2023: '8,520', v2024: '7,498', v2025: '6,148', benchmark: '≥8,000', warn: true },
-          { label: '投资活动现金流净额（万元）', v2023: '-4,200', v2024: '-5,860', v2025: '-7,320', benchmark: '≥-5,000', warn: true },
-          { label: '短期债务/总债务',            v2023: '32%',  v2024: '39%',  v2025: '47%',  benchmark: '≤35%',  warn: true },
-          { label: '经营现金流/短期债务',         v2023: '1.85x', v2024: '1.52x', v2025: '1.20x', benchmark: '≥1.5x', warn: true },
-          { label: 'EBITDA利息覆盖倍数',          v2023: '4.80x', v2024: '3.90x', v2025: '3.15x', benchmark: '≥3.0x', warn: false },
-          { label: '自由现金流（万元）',           v2023: '4,320', v2024: '1,638', v2025: '-1,172', benchmark: '≥0',    warn: true },
+const { createApp, nextTick } = Vue;
+createApp({
+  data() {
+    return {
+      meta: { entity: 'XX集团有限公司' },
+      statCards: [
+        { value: '62.8', unit: '%', title: '资产负债率（2025）', desc: '近三年在58.2%-68.5%区间波动，2025年末为62.8%，高于行业均值58%，长期偿债承压。' },
+        { value: '1.32', unit: 'x', title: '流动比率（2025）', desc: '近三年从1.58x降至1.32x，流动性和短期偿债能力逐年减弱，已接近1.2x警示线。' },
+        { value: '3.15', unit: 'x', title: '利息保障倍数（2025）', desc: '近三年从4.80x降至3.15x，息税前利润对利息的覆盖能力明显下滑，需关注盈利持续性。' },
+      ],
+      chartData: {
+        categories: ['2023年', '2024年', '2025年'],
+        assetLiability: [58.2, 64.3, 62.8],
+        currentRatio: [1.58, 1.45, 1.32],
+        interestCover: [4.80, 3.90, 3.15],
+      },
+      debtTable: [
+        { label: '经营活动现金流净额（万元）', v2023: '8,520', v2024: '7,498', v2025: '6,148', benchmark: '≥8,000', warn: true },
+        { label: '投资活动现金流净额（万元）', v2023: '-4,200', v2024: '-5,860', v2025: '-7,320', benchmark: '≥-5,000', warn: true },
+        { label: '短期债务/总债务',            v2023: '32%',  v2024: '39%',  v2025: '47%',  benchmark: '≤35%',  warn: true },
+        { label: '经营现金流/短期债务',         v2023: '1.85x', v2024: '1.52x', v2025: '1.20x', benchmark: '≥1.5x', warn: true },
+        { label: 'EBITDA利息覆盖倍数',          v2023: '4.80x', v2024: '3.90x', v2025: '3.15x', benchmark: '≥3.0x', warn: false },
+        { label: '自由现金流（万元）',           v2023: '4,320', v2024: '1,638', v2025: '-1,172', benchmark: '≥0',    warn: true },
+      ],
+      warnCards: [
+        {
+          title: '风险警示', accentColor: 'var(--accent-red)',
+          body: '经营活动现金流净额连续两年下滑（2024年-12%，2025年-18%），对短期债务的覆盖倍数已降至<span style="color:var(--accent-red);font-weight:700;">1.2x</span>，低于1.5x安全线。投资活动持续大额净流出，自由现金流为负，依赖外部融资维持流动性。',
+        },
+        {
+          title: '关注事项', accentColor: 'var(--accent-amber)',
+          body: '应收账款周转天数从45天延长至<span style="color:var(--accent-amber);font-weight:700;">68天</span>，回款效率下降明显。短期借款占比从32%升至<span style="color:var(--accent-amber);font-weight:700;">47%</span>，融资结构短期化趋势值得关注，建议增加中长期融资比例。',
+        },
+      ],
+    };
+  },
+  mounted() {
+    nextTick(() => { this.buildCharts(); });
+  },
+  methods: {
+    buildCharts() {
+      const chartDom = document.getElementById('trendChart');
+      if (!chartDom) return;
+      const myChart = echarts.init(chartDom);
+      const d = this.chartData;
+      const option = {
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        legend: {
+          data: ['资产负债率(%)', '流动比率(x)', '利息保障倍数(x)'],
+          bottom: 0, textStyle: { color: '#64748b', fontSize: 11 },
+        },
+        grid: { left: '3%', right: '4%', bottom: '14%', top: '8%', containLabel: true },
+        xAxis: {
+          type: 'category', data: d.categories,
+          axisLabel: { color: '#64748b', fontSize: 12 },
+        },
+        yAxis: {
+          type: 'value', axisLabel: { color: '#64748b', fontSize: 11 },
+          splitLine: { lineStyle: { color: '#e5e7eb' } },
+        },
+        series: [
+          { name: '资产负债率(%)', type: 'bar', data: d.assetLiability, itemStyle: { color: '#2563eb', borderRadius: [6,6,0,0] }, barGap: '10%' },
+          { name: '流动比率(x)', type: 'bar', data: d.currentRatio, itemStyle: { color: '#d97706', borderRadius: [6,6,0,0] } },
+          { name: '利息保障倍数(x)', type: 'bar', data: d.interestCover, itemStyle: { color: '#16a34a', borderRadius: [6,6,0,0] } },
         ],
       };
+      myChart.setOption(option);
+      myChart.setOption({
+        series: [
+          { markLine: { silent: true, symbol: 'none', lineStyle: { type: 'dashed', color: '#dc2626', width: 1.5 },
+            label: { fontSize: 10, color: '#dc2626', formatter: '行业均值\n{c}' },
+            data: [{ yAxis: 58, name: '行业均值' }] } },
+          {}, {},
+        ],
+      });
+      window.addEventListener('resize', () => myChart.resize());
+      this._chart = myChart;
     },
-    mounted() {
-      this.buildCharts();
-    },
-    methods: {
-      buildCharts() {
-        const style = getComputedStyle(document.documentElement);
-        const c = {
-          primary: style.getPropertyValue('--primary-500').trim() || '#2563eb',
-          primaryLight: style.getPropertyValue('--primary-300').trim() || '#93c5fd',
-          accent: style.getPropertyValue('--accent-green').trim() || '#16a34a',
-          accentAmber: style.getPropertyValue('--accent-amber').trim() || '#d97706',
-          accentRed: style.getPropertyValue('--accent-red').trim() || '#dc2626',
-          textMuted: style.getPropertyValue('--text-muted').trim() || '#64748b',
-          text: style.getPropertyValue('--text').trim() || '#1f2937',
-          border: style.getPropertyValue('--border').trim() || '#e5e7eb',
-        };
-
-        const chart = echarts.init(document.getElementById('trendChart'));
-        chart.setOption({
-          tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-          legend: {
-            data: ['资产负债率(%)', '流动比率(x)', '利息保障倍数(x)'],
-            bottom: 0, textStyle: { color: c.textMuted, fontSize: 11 },
-          },
-          grid: { left: '3%', right: '4%', bottom: '14%', top: '8%', containLabel: true },
-          xAxis: {
-            type: 'category', data: ['2023年', '2024年', '2025年'],
-            axisLabel: { color: c.textMuted, fontSize: 12 },
-          },
-          yAxis: {
-            type: 'value', axisLabel: { color: c.textMuted, fontSize: 11 },
-            splitLine: { lineStyle: { color: c.border } },
-          },
-          series: [
-            {
-              name: '资产负债率(%)', type: 'bar',
-              data: [58.2, 64.3, 62.8],
-              itemStyle: { color: c.primary, borderRadius: [6, 6, 0, 0] },
-              barGap: '10%',
-            },
-            {
-              name: '流动比率(x)', type: 'bar',
-              data: [1.58, 1.45, 1.32],
-              itemStyle: { color: c.accentAmber, borderRadius: [6, 6, 0, 0] },
-            },
-            {
-              name: '利息保障倍数(x)', type: 'bar',
-              data: [4.80, 3.90, 3.15],
-              itemStyle: { color: c.accent, borderRadius: [6, 6, 0, 0] },
-            },
-          ],
-        });
-
-        // 添加行业均值标线
-        chart.setOption({
-          series: [
-            { markLine: { silent: true, symbol: 'none', lineStyle: { type: 'dashed', color: c.accentRed, width: 1.5 },
-              label: { fontSize: 10, color: c.accentRed, formatter: '行业均值\n{c}' },
-              data: [{ yAxis: 58, name: '行业均值' }] } },
-            {},
-            {},
-          ],
-        });
-
-        this._chart = chart;
-      },
-    },
-    beforeUnmount() {
-      if (this._chart) this._chart.dispose();
-    },
-  }).mount('#app');
+  },
+  beforeUnmount() {
+    if (this._chart) this._chart.dispose();
+  },
+}).mount('#app');
 </script>
 
 </body>

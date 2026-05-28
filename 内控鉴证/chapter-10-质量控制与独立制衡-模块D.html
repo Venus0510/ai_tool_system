@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
   <style id="token-css">
     :root {
       --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
@@ -20,19 +19,16 @@
       --bw-process-border:4px solid var(--bw-primary-500);
       --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
       --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
-      --primary-300:var(--bw-primary-300);--primary-400:#3b82f6;--primary-500:var(--bw-primary-500);
-      --primary-700:var(--bw-primary-700);--primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
       --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
       --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
       --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
-      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);
-      --font:var(--bw-font);--font-display:var(--bw-font);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
       --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
-      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);
-      --table-th-text:var(--bw-table-th-text);
+      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
     }
   </style>
-
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
@@ -53,11 +49,7 @@
       html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
     }
-    body { font-family: var(--font); }
-    .badge {
-      display: inline-block; padding: 3px 12px; border-radius: 999px;
-      font-size: 12px; font-weight: 700;
-    }
+    .badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
     .ctrl-card {
       background: var(--surface); border-radius: var(--radius-card);
       padding: 16px 20px; box-shadow: var(--shadow-card);
@@ -72,10 +64,9 @@
     .ctrl-card li { font-size: 12px; color: var(--text-muted); line-height: 1.55; margin-bottom: 2px; }
   </style>
 </head>
-<body>
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
 <div id="app">
-
   <!-- ===== 模块D · 页码 15 ===== -->
   <section class="a4-page flex flex-col" style="background: var(--surface-alt);">
     <div class="flex items-center gap-3 mb-1">
@@ -87,78 +78,21 @@
       证明结果不是未经制衡的单点计算，解决"结果是否可靠、是否经过独立挑战"的问题。
     </p>
 
-    <!-- 控制08 -->
-    <div class="ctrl-card">
+    <div v-for="ctrl in moduleD" :key="ctrl.id" class="ctrl-card">
       <div class="flex items-center gap-2 mb-2">
-        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">08</span>
-        <h3>估值结果质量控制</h3>
+        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">{{ ctrl.id }}</span>
+        <h3>{{ ctrl.title }}</h3>
       </div>
       <div class="grid grid-cols-3 gap-3">
-        <div>
-          <span class="section-label" style="background:var(--primary-100);color:var(--primary-700);">内控建设建议</span>
+        <div v-for="col in ctrl.columns" :key="col.label">
+          <span class="section-label" :style="{background: col.labelBg, color: col.labelColor}">{{ col.label }}</span>
           <ul>
-            <li>建立贯穿事前、事中、事后的估值质量控制机制，覆盖估值清单、数据、模型、人工干预、结果波动和文档完整性</li>
-            <li>设置异常监控指标、阈值和调查处理流程，及时识别价格偏离、模型失效、估值错误和异常波动</li>
-            <li>质量控制深度应与估值风险、产品复杂度、重要性和估值频率相匹配，并形成定期质量报告</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--accent-green);color:#fff;">应形成的制度/记录</span>
-          <ul>
-            <li>质量控制制度和操作记录，覆盖事前、事中、事后质控流程、责任分工和质控范围</li>
-            <li>异常监控和处理材料，包括监控指标、阈值设置、异常调查、估值错误修正和整改记录</li>
-            <li>定期质量报告，包括估值质量分析、重大问题报告、外部质控服务评价和持续改进事项</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--primary-900);color:#fff;">主要依据</span>
-          <ul>
-            <li>IVS 100：估值过程质量控制应支持估值客观、透明、无偏，并评估专业判断合理性</li>
-            <li>IVS 500：质量控制概览、适当质控特征和质控应用要求</li>
-            <li>PBOC：事前分析、事中监控、事后检验；内部评审人员应独立于编制人员</li>
-            <li>PBOC：年度估值产品质量报告和重大问题报告要求</li>
-            <li>NAFMII：独立质控团队、定期校验、异常和错误主动监测要求</li>
+            <li v-for="(item, idx) in col.items" :key="idx">{{ item }}</li>
           </ul>
         </div>
       </div>
     </div>
 
-    <!-- 控制09 -->
-    <div class="ctrl-card">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">09</span>
-        <h3>独立复核与挑战机制</h3>
-      </div>
-      <div class="grid grid-cols-3 gap-3">
-        <div>
-          <span class="section-label" style="background:var(--primary-100);color:var(--primary-700);">内控建设建议</span>
-          <ul>
-            <li>针对重大模型、关键参数、人工调整、复杂产品和异常估值建立独立复核与挑战机制</li>
-            <li>复核应关注专业判断的合理性和估值结论的可靠性，而不仅是形式性检查</li>
-            <li>建立挑战意见、估值团队回应、调整或不调整理由、最终审批和整改跟踪的闭环流程</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--accent-green);color:#fff;">应形成的制度/记录</span>
-          <ul>
-            <li>独立复核与挑战制度，包括触发条件、复核范围、复核权限、复核人员独立性和能力要求</li>
-            <li>复核挑战过程记录，包括挑战意见、估值团队回应、调整或不调整理由、最终审批和复核结论</li>
-            <li>验证和整改闭环材料，包括独立验证报告、缺陷识别、整改跟踪和复核未通过后的重提记录</li>
-          </ul>
-        </div>
-        <div>
-          <span class="section-label" style="background:var(--primary-900);color:#fff;">主要依据</span>
-          <ul>
-            <li>IVS 500：复核与挑战应独立、专业、实质性评估估值判断和估值结论</li>
-            <li>IVS 500：复核人员能力和独立性要求，以及模型独立验证要求</li>
-            <li>PBOC：内部评审人员应独立于估值编制人员</li>
-            <li>NAFMII：独立质控团队和内部审议文件留痕要求</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">15</div>
   </section>
 
@@ -173,63 +107,101 @@
       前者侧重常态化监控与异常识别，后者侧重对关键判断的独立审视与实质性挑战。
     </p>
 
-    <!-- 双层制衡对比 -->
     <div class="grid grid-cols-2 gap-4 mb-5">
-      <div class="p-5 rounded-xl" style="background: var(--surface); border: 1px solid var(--border-light); box-shadow: var(--shadow-card);">
+      <div v-for="card in fenceCards" :key="card.id" class="p-5 rounded-xl" style="background: var(--surface); border: 1px solid var(--border-light); box-shadow: var(--shadow-card);">
         <div class="flex items-center gap-2 mb-3">
-          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-xs font-bold" style="background:var(--primary-300);color:var(--primary-700);">08</span>
-          <h3 style="font-size:15px;color:var(--primary-700);font-weight:700;margin:0;">质量控制（日常防线）</h3>
+          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-xs font-bold" :style="{background: card.badgeBg, color: card.badgeColor}">{{ card.id }}</span>
+          <h3 style="font-size:15px;color:var(--primary-700);font-weight:700;margin:0;">{{ card.title }}</h3>
         </div>
         <ul style="margin:0;padding-left:16px;">
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">嵌入估值生产流程，每日/每批次自动运行</li>
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">监控指标驱动：偏离阈值、异常波动、模型失效</li>
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">目标：快速发现错误和异常，触发调查与修正</li>
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;">输出：质量报告、异常台账、整改跟踪</li>
-        </ul>
-      </div>
-      <div class="p-5 rounded-xl" style="background: var(--surface); border: 1px solid var(--border-light); box-shadow: var(--shadow-card);">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="inline-flex items-center justify-center rounded-full w-8 h-8 text-xs font-bold" style="background:var(--primary-500);color:#fff;">09</span>
-          <h3 style="font-size:15px;color:var(--primary-700);font-weight:700;margin:0;">独立复核（独立防线）</h3>
-        </div>
-        <ul style="margin:0;padding-left:16px;">
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">独立于生产团队，周期性或触发式执行</li>
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">判断驱动：对重大方法、参数、假设进行实质性审视</li>
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">目标：挑战估值结论的合理性，形成独立意见</li>
-          <li style="font-size:12px;color:var(--text-muted);line-height:1.65;">输出：复核报告、挑战记录、回应闭环</li>
+          <li v-for="(item, idx) in card.items" :key="idx" style="font-size:12px;color:var(--text-muted);line-height:1.65;margin-bottom:6px;">{{ item }}</li>
         </ul>
       </div>
     </div>
 
-    <!-- 闭环流程 -->
     <div class="p-4 rounded-xl" style="background: var(--primary-50); border-left: 4px solid var(--primary-500);">
-      <p class="text-sm font-bold mb-2" style="color: var(--primary-700);">复核挑战闭环流程</p>
+      <p class="text-sm font-bold mb-2" style="color: var(--primary-700);">{{ flowTitle }}</p>
       <div class="flex items-center gap-2 text-xs" style="color: var(--primary-700);">
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">触发复核</span>
-        <span style="color:var(--text-light);">→</span>
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">独立评估</span>
-        <span style="color:var(--text-light);">→</span>
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">提出挑战意见</span>
-        <span style="color:var(--text-light);">→</span>
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">团队回应</span>
-        <span style="color:var(--text-light);">→</span>
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">调整/说明理由</span>
-        <span style="color:var(--text-light);">→</span>
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">审批确认</span>
-        <span style="color:var(--text-light);">→</span>
-        <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">整改跟踪</span>
+        <template v-for="(step, i) in flowSteps" :key="step">
+          <span style="background:var(--primary-100);padding:4px 10px;border-radius:6px;">{{ step }}</span>
+          <span v-if="i < flowSteps.length - 1" style="color:var(--text-light);">→</span>
+        </template>
       </div>
     </div>
 
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">16</div>
   </section>
-
 </div>
 
 <script>
-  const { createApp } = Vue;
-  createApp({}).mount('#app');
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      moduleD: [
+        {
+          id: '08', title: '估值结果质量控制',
+          columns: [
+            { label: '内控建设建议', labelBg: 'var(--primary-100)', labelColor: 'var(--primary-700)', items: [
+              '建立贯穿事前、事中、事后的估值质量控制机制，覆盖估值清单、数据、模型、人工干预、结果波动和文档完整性',
+              '设置异常监控指标、阈值和调查处理流程，及时识别价格偏离、模型失效、估值错误和异常波动',
+              '质量控制深度应与估值风险、产品复杂度、重要性和估值频率相匹配，并形成定期质量报告',
+            ]},
+            { label: '应形成的制度/记录', labelBg: 'var(--accent-green)', labelColor: '#fff', items: [
+              '质量控制制度和操作记录，覆盖事前、事中、事后质控流程、责任分工和质控范围',
+              '异常监控和处理材料，包括监控指标、阈值设置、异常调查、估值错误修正和整改记录',
+              '定期质量报告，包括估值质量分析、重大问题报告、外部质控服务评价和持续改进事项',
+            ]},
+            { label: '主要依据', labelBg: 'var(--primary-900)', labelColor: '#fff', items: [
+              'IVS 100：估值过程质量控制应支持估值客观、透明、无偏，并评估专业判断合理性',
+              'IVS 500：质量控制概览、适当质控特征和质控应用要求',
+              'PBOC：事前分析、事中监控、事后检验；内部评审人员应独立于编制人员',
+              'PBOC：年度估值产品质量报告和重大问题报告要求',
+              'NAFMII：独立质控团队、定期校验、异常和错误主动监测要求',
+            ]},
+          ],
+        },
+        {
+          id: '09', title: '独立复核与挑战机制',
+          columns: [
+            { label: '内控建设建议', labelBg: 'var(--primary-100)', labelColor: 'var(--primary-700)', items: [
+              '针对重大模型、关键参数、人工调整、复杂产品和异常估值建立独立复核与挑战机制',
+              '复核应关注专业判断的合理性和估值结论的可靠性，而不仅是形式性检查',
+              '建立挑战意见、估值团队回应、调整或不调整理由、最终审批和整改跟踪的闭环流程',
+            ]},
+            { label: '应形成的制度/记录', labelBg: 'var(--accent-green)', labelColor: '#fff', items: [
+              '独立复核与挑战制度，包括触发条件、复核范围、复核权限、复核人员独立性和能力要求',
+              '复核挑战过程记录，包括挑战意见、估值团队回应、调整或不调整理由、最终审批和复核结论',
+              '验证和整改闭环材料，包括独立验证报告、缺陷识别、整改跟踪和复核未通过后的重提记录',
+            ]},
+            { label: '主要依据', labelBg: 'var(--primary-900)', labelColor: '#fff', items: [
+              'IVS 500：复核与挑战应独立、专业、实质性评估估值判断和估值结论',
+              'IVS 500：复核人员能力和独立性要求，以及模型独立验证要求',
+              'PBOC：内部评审人员应独立于估值编制人员',
+              'NAFMII：独立质控团队和内部审议文件留痕要求',
+            ]},
+          ],
+        },
+      ],
+      fenceCards: [
+        { id: '08', badgeBg: 'var(--primary-300)', badgeColor: 'var(--primary-700)', title: '质量控制（日常防线）', items: [
+          '嵌入估值生产流程，每日/每批次自动运行',
+          '监控指标驱动：偏离阈值、异常波动、模型失效',
+          '目标：快速发现错误和异常，触发调查与修正',
+          '输出：质量报告、异常台账、整改跟踪',
+        ]},
+        { id: '09', badgeBg: 'var(--primary-500)', badgeColor: '#fff', title: '独立复核（独立防线）', items: [
+          '独立于生产团队，周期性或触发式执行',
+          '判断驱动：对重大方法、参数、假设进行实质性审视',
+          '目标：挑战估值结论的合理性，形成独立意见',
+          '输出：复核报告、挑战记录、回应闭环',
+        ]},
+      ],
+      flowTitle: '复核挑战闭环流程',
+      flowSteps: ['触发复核', '独立评估', '提出挑战意见', '团队回应', '调整/说明理由', '审批确认', '整改跟踪'],
+    };
+  }
+}).mount('#app');
 </script>
 
 </body>

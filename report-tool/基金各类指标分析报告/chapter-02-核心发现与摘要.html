@@ -5,34 +5,32 @@
   <title>核心发现与摘要 · 基金各类指标深度分析报告</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style id="token-css">
     :root {
       --bw-primary-50:  #eff6ff; --bw-primary-100: #dbeafe; --bw-primary-200: #bfdbfe;
       --bw-primary-300: #93c5fd; --bw-primary-500: #2563eb; --bw-primary-700: #1e3a8a;
       --bw-primary-800: #1e40af; --bw-primary-900: #0f172a;
-      --bw-surface:       #ffffff; --bw-surface-alt:   #f8fafc; --bw-bg: #f3f6fb;
-      --bw-text:          #1f2937; --bw-text-muted:    #64748b; --bw-text-light: #94a3b8;
-      --bw-border:        #e5e7eb; --bw-border-light:  #f1f5f9;
-      --bw-accent-green:  #16a34a; --bw-accent-red:    #dc2626; --bw-accent-amber: #d97706;
-      --bw-font:          "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-      --bw-radius-card:    14px; --bw-shadow-card: 0 8px 24px rgba(15, 23, 42, 0.08);
-      --bw-table-th-bg:    var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
+      --bw-surface: #ffffff; --bw-surface-alt: #f8fafc; --bw-bg: #f3f6fb;
+      --bw-text: #1f2937; --bw-text-muted: #64748b; --bw-text-light: #94a3b8;
+      --bw-border: #e5e7eb; --bw-border-light: #f1f5f9;
+      --bw-accent-green: #16a34a; --bw-accent-red: #dc2626; --bw-accent-amber: #d97706;
+      --bw-font: "Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      --bw-radius-card: 14px; --bw-shadow-card: 0 8px 24px rgba(15,23,42,0.08);
+      --bw-table-th-bg: var(--bw-primary-100); --bw-table-th-text: var(--bw-primary-700);
       --bw-big-number-color: var(--bw-primary-500);
-      --bw-tag-bg:         var(--bw-primary-100); --bw-tag-text: var(--bw-primary-800);
-      --primary-50: var(--bw-primary-50); --primary-100: var(--bw-primary-100);
-      --primary-200: var(--bw-primary-200); --primary-300: var(--bw-primary-300);
-      --primary-500: var(--bw-primary-500); --primary-700: var(--bw-primary-700);
-      --primary-800: var(--bw-primary-800); --primary-900: var(--bw-primary-900);
-      --surface: var(--bw-surface); --surface-alt: var(--bw-surface-alt); --bg: var(--bw-bg);
-      --text: var(--bw-text); --text-muted: var(--bw-text-muted); --text-light: var(--bw-text-light);
-      --border: var(--bw-border); --border-light: var(--bw-border-light);
-      --radius-card: var(--bw-radius-card); --radius-tag: 999px;
-      --shadow-card: var(--bw-shadow-card); --font: var(--bw-font);
-      --accent-green: var(--bw-accent-green); --accent-red: var(--bw-accent-red);
-      --accent-amber: var(--bw-accent-amber);
-      --big-number: 48px; --big-number-color: var(--bw-big-number-color);
-      --tag-bg: var(--bw-tag-bg); --tag-text: var(--bw-tag-text);
-      --table-th-bg: var(--bw-table-th-bg); --table-th-text: var(--bw-table-th-text);
+      --bw-tag-bg: var(--bw-primary-100); --bw-tag-text: var(--bw-primary-800);
+      --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
+      --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
+      --border:var(--bw-border);--border-light:var(--bw-border-light);--radius-card:var(--bw-radius-card);
+      --radius-tag:999px;--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
+      --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);
+      --accent-amber:var(--bw-accent-amber);--big-number:48px;--big-number-color:var(--bw-big-number-color);
+      --tag-bg:var(--bw-tag-bg);--tag-text:var(--bw-tag-text);
+      --table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
     }
   </style>
   <style>
@@ -61,7 +59,6 @@
 <div id="app">
   <section class="a4-page" style="background: var(--surface-alt);">
 
-    <!-- 标题区 -->
     <div class="flex items-center gap-3 mb-5">
       <div class="w-1.5 h-8 rounded-full" style="background: var(--primary-500);"></div>
       <div>
@@ -70,54 +67,16 @@
       </div>
     </div>
 
-    <!-- 三大核心发现 (3列 numbered stat-card) -->
+    <!-- 三大核心发现 -->
     <div class="grid grid-cols-3 gap-4 mb-5">
-      <!-- 发现 01 -->
-      <div class="rounded-2xl p-5 shadow-lg relative" style="background: var(--surface);">
-        <div class="absolute -top-3 -left-2 text-6xl font-black opacity-10" style="color: var(--primary-500);">01</div>
+      <div v-for="f in findings" :key="f.num" class="rounded-2xl p-5 shadow-lg relative" style="background: var(--surface);">
+        <div class="absolute -top-3 -left-2 text-6xl font-black opacity-10" style="color: var(--primary-500);">{{ f.num }}</div>
         <div class="relative">
-          <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-3" style="background: var(--accent-red); color: #fff;">收益分化</span>
-          <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">收益率极端差距达 1.01pp</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color: var(--text);">
-            7日年化收益率最高 <b style="color: var(--accent-green);">2.32%</b>（岁星利货币A）与最低 <b style="color: var(--accent-red);">1.31%</b>（荧惑富货币A）相差超1个百分点。
-          </p>
+          <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-3" :style="{background: f.badgeBg, color: '#fff'}">{{ f.badge }}</span>
+          <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">{{ f.title }}</h3>
+          <p class="text-sm leading-relaxed mb-3" style="color: var(--text);" v-html="f.desc"></p>
           <div class="flex gap-2 text-xs flex-wrap">
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">均值 1.86%</span>
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">中位数 1.92%</span>
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">75分位 2.08%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 发现 02 -->
-      <div class="rounded-2xl p-5 shadow-lg relative" style="background: var(--surface);">
-        <div class="absolute -top-3 -left-2 text-6xl font-black opacity-10" style="color: var(--primary-500);">02</div>
-        <div class="relative">
-          <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-3" style="background: var(--accent-amber); color: #fff;">质量分化</span>
-          <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">夏普比率 4.3倍极端分化</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color: var(--text);">
-            夏普比率区间 <b>0.81–3.45</b>，最高（星辰增货币F）是最低（毕月利货币B）的 <b>4.3倍</b>。仅约30%基金夏普超过2.0，风险调整收益能力天差地别。
-          </p>
-          <div class="flex gap-2 text-xs flex-wrap">
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">均值 1.96</span>
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">≥2.5 仅4只</span>
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">＜1.0 仅2只</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 发现 03 -->
-      <div class="rounded-2xl p-5 shadow-lg relative" style="background: var(--surface);">
-        <div class="absolute -top-3 -left-2 text-6xl font-black opacity-10" style="color: var(--primary-500);">03</div>
-        <div class="relative">
-          <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-3" style="background: var(--primary-500); color: #fff;">成本透视</span>
-          <h3 class="text-lg font-bold mb-2.5" style="color: var(--primary-700);">销售服务费相差 26 倍</h3>
-          <p class="text-sm leading-relaxed mb-3" style="color: var(--text);">
-            销售服务费率从 <b>0.01%</b> 到 <b>0.26%</b>，综合费率均值 <b>0.56%</b>。费后实际收益率最高与最低差距进一步拉大至 <b>1.17pp</b>。
-          </p>
-          <div class="flex gap-2 text-xs flex-wrap">
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">综合费率均值 0.56%</span>
-            <span class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">费后收益均值 1.31%</span>
+            <span v-for="s in f.stats" :key="s" class="px-2 py-1 rounded-full" style="background: var(--primary-50); color: var(--primary-700);">{{ s }}</span>
           </div>
         </div>
       </div>
@@ -127,52 +86,73 @@
     <div class="mb-4">
       <h3 class="text-lg font-bold mb-3" style="color: var(--text);">关键指标速览</h3>
       <div class="grid grid-cols-4 gap-3">
-        <div class="rounded-xl p-4 text-center shadow-sm" style="background: var(--surface);">
-          <div class="text-xs font-bold mb-1.5 tracking-wider uppercase" style="color: var(--text-muted);">7日年化均值</div>
-          <div style="font-size: var(--big-number); font-weight: 700; color: var(--big-number-color); line-height: 1.1;">1.86<span class="text-lg">%</span></div>
-          <div class="text-xs mt-1.5" style="color: var(--text-light);">区间 1.31% – 2.32%</div>
-        </div>
-        <div class="rounded-xl p-4 text-center shadow-sm" style="background: var(--surface);">
-          <div class="text-xs font-bold mb-1.5 tracking-wider uppercase" style="color: var(--text-muted);">夏普比率均值</div>
-          <div style="font-size: var(--big-number); font-weight: 700; color: var(--big-number-color); line-height: 1.1;">1.96</div>
-          <div class="text-xs mt-1.5" style="color: var(--text-light);">区间 0.81 – 3.45</div>
-        </div>
-        <div class="rounded-xl p-4 text-center shadow-sm" style="background: var(--surface);">
-          <div class="text-xs font-bold mb-1.5 tracking-wider uppercase" style="color: var(--text-muted);">规模中位数</div>
-          <div style="font-size: var(--big-number); font-weight: 700; color: var(--big-number-color); line-height: 1.1;">1,052<span class="text-lg">亿</span></div>
-          <div class="text-xs mt-1.5" style="color: var(--text-light);">区间 63亿 – 2,716亿</div>
-        </div>
-        <div class="rounded-xl p-4 text-center shadow-sm" style="background: var(--surface);">
-          <div class="text-xs font-bold mb-1.5 tracking-wider uppercase" style="color: var(--text-muted);">综合费率均值</div>
-          <div style="font-size: var(--big-number); font-weight: 700; color: var(--accent-red); line-height: 1.1;">0.56<span class="text-lg">%</span></div>
-          <div class="text-xs mt-1.5" style="color: var(--text-light);">区间 0.33% – 0.67%</div>
+        <div v-for="k in kpiCards" :key="k.label" class="rounded-xl p-4 text-center shadow-sm" style="background: var(--surface);">
+          <div class="text-xs font-bold mb-1.5 tracking-wider uppercase" style="color: var(--text-muted);">{{ k.label }}</div>
+          <div :style="{fontSize: 'var(--big-number)', fontWeight: 700, color: k.color || 'var(--big-number-color)', lineHeight: 1.1}">{{ k.value }}</div>
+          <div class="text-xs mt-1.5" style="color: var(--text-light);">{{ k.range }}</div>
         </div>
       </div>
     </div>
 
-    <!-- 分组洞察 -->
+    <!-- 分组洞察 (2列) -->
     <div class="grid grid-cols-2 gap-4">
-      <div class="rounded-xl p-4 shadow-sm" style="background: var(--surface);">
+      <div v-for="ins in insights" :key="ins.title" class="rounded-xl p-4 shadow-sm" style="background: var(--surface);">
         <h4 class="text-sm font-bold mb-2.5" style="color: var(--primary-700);">
-          <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--primary-500);"></span>规模分组洞察
+          <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--primary-500);"></span>{{ ins.title }}
         </h4>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">
-          小型基金（<500亿）7日年化均值 <b style="color: var(--accent-green);">2.02%</b>，显著高于大型基金（>1500亿）的 <b style="color: var(--text);">1.76%</b>——小规模基金在收益端具有边际优势，但需关注其稳定性。
-        </p>
-      </div>
-      <div class="rounded-xl p-4 shadow-sm" style="background: var(--surface);">
-        <h4 class="text-sm font-bold mb-2.5" style="color: var(--primary-700);">
-          <span class="inline-block w-2 h-2 rounded-full mr-1.5" style="background: var(--primary-500);"></span>流动性洞察
-        </h4>
-        <p class="text-xs leading-relaxed" style="color: var(--text);">
-          T+0基金（12只）夏普均值 <b style="color: var(--accent-green);">2.19</b>，优于T+1基金（21只）的 <b style="color: var(--text);">1.82</b>——高流动性并不以牺牲收益质量为代价，反而是优质基金的共同特征。
-        </p>
+        <p class="text-xs leading-relaxed" style="color: var(--text);" v-html="ins.body"></p>
       </div>
     </div>
 
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color: var(--text-light);">02</div>
   </section>
 </div>
+
+<script>
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      findings: [
+        {
+          num: '01', badge: '收益分化', badgeBg: 'var(--accent-red)',
+          title: '收益率极端差距达 1.01pp',
+          desc: '7日年化收益率最高 <b style="color:var(--accent-green);">2.32%</b>（岁星利货币A）与最低 <b style="color:var(--accent-red);">1.31%</b>（荧惑富货币A）相差超1个百分点。',
+          stats: ['均值 1.86%', '中位数 1.92%', '75分位 2.08%'],
+        },
+        {
+          num: '02', badge: '质量分化', badgeBg: 'var(--accent-amber)',
+          title: '夏普比率 4.3倍极端分化',
+          desc: '夏普比率区间 <b>0.81–3.45</b>，最高（星辰增货币F）是最低（毕月利货币B）的 <b>4.3倍</b>。仅约30%基金夏普超过2.0，风险调整收益能力天差地别。',
+          stats: ['均值 1.96', '≥2.5 仅4只', '＜1.0 仅2只'],
+        },
+        {
+          num: '03', badge: '成本透视', badgeBg: 'var(--primary-500)',
+          title: '销售服务费相差 26 倍',
+          desc: '销售服务费率从 <b>0.01%</b> 到 <b>0.26%</b>，综合费率均值 <b>0.56%</b>。费后实际收益率最高与最低差距进一步拉大至 <b>1.17pp</b>。',
+          stats: ['综合费率均值 0.56%', '费后收益均值 1.31%'],
+        },
+      ],
+      kpiCards: [
+        { label: '7日年化均值', value: '1.86%', color: 'var(--big-number-color)', range: '区间 1.31% – 2.32%' },
+        { label: '夏普比率均值', value: '1.96', color: 'var(--big-number-color)', range: '区间 0.81 – 3.45' },
+        { label: '规模中位数', value: '1,052亿', color: 'var(--big-number-color)', range: '区间 63亿 – 2,716亿' },
+        { label: '综合费率均值', value: '0.56%', color: 'var(--accent-red)', range: '区间 0.33% – 0.67%' },
+      ],
+      insights: [
+        {
+          title: '规模分组洞察',
+          body: '小型基金（<500亿）7日年化均值 <b style="color:var(--accent-green);">2.02%</b>，显著高于大型基金（>1500亿）的 <b style="color:var(--text);">1.76%</b>——小规模基金在收益端具有边际优势，但需关注其稳定性。',
+        },
+        {
+          title: '流动性洞察',
+          body: 'T+0基金（12只）夏普均值 <b style="color:var(--accent-green);">2.19</b>，优于T+1基金（21只）的 <b style="color:var(--text);">1.82</b>——高流动性并不以牺牲收益质量为代价，反而是优质基金的共同特征。',
+        },
+      ],
+    };
+  }
+}).mount('#app');
+</script>
 
 </body>
 </html>

@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
   <style id="token-css">
     :root {
       --bw-primary-50:#eff6ff;--bw-primary-100:#dbeafe;--bw-primary-200:#bfdbfe;--bw-primary-300:#93c5fd;
@@ -20,19 +19,16 @@
       --bw-process-border:4px solid var(--bw-primary-500);
       --bw-table-th-bg:var(--bw-primary-100);--bw-table-th-text:var(--bw-primary-700);
       --primary-50:var(--bw-primary-50);--primary-100:var(--bw-primary-100);--primary-200:var(--bw-primary-200);
-      --primary-300:var(--bw-primary-300);--primary-400:#3b82f6;--primary-500:var(--bw-primary-500);
-      --primary-700:var(--bw-primary-700);--primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
+      --primary-300:var(--bw-primary-300);--primary-500:var(--bw-primary-500);--primary-700:var(--bw-primary-700);
+      --primary-800:var(--bw-primary-800);--primary-900:var(--bw-primary-900);
       --surface:var(--bw-surface);--surface-alt:var(--bw-surface-alt);--bg:var(--bw-bg);
       --text:var(--bw-text);--text-muted:var(--bw-text-muted);--text-light:var(--bw-text-light);
       --text-inverse:var(--bw-text-inverse);--border:var(--bw-border);--border-light:var(--bw-border-light);
-      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);
-      --font:var(--bw-font);--font-display:var(--bw-font);
+      --radius-card:var(--bw-radius-card);--shadow-card:var(--bw-shadow-card);--font:var(--bw-font);
       --accent-green:var(--bw-accent-green);--accent-red:var(--bw-accent-red);--accent-amber:var(--bw-accent-amber);
-      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);
-      --table-th-text:var(--bw-table-th-text);
+      --process-border:var(--bw-process-border);--table-th-bg:var(--bw-table-th-bg);--table-th-text:var(--bw-table-th-text);
     }
   </style>
-
   <style>
     @page { size: A4 landscape; margin: 0; }
     .a4-page {
@@ -53,7 +49,6 @@
       html, body { width: 297mm; height: 210mm; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .a4-page { width: 297mm; height: 210mm; aspect-ratio: auto; margin: 0; box-shadow: none; border-radius: 0; }
     }
-    body { font-family: var(--font); }
     .process-item {
       padding: 16px 20px; border-radius: 0 14px 14px 0; margin-bottom: 12px;
       border-left: var(--process-border); background: var(--surface);
@@ -73,147 +68,103 @@
     table td { padding: 9px 12px; color: var(--text); border-bottom: 1px solid var(--border-light); line-height: 1.5; }
   </style>
 </head>
-<body>
+<body style="background: var(--bg); font-family: var(--font), sans-serif;">
 
 <div id="app">
-
-  <!-- ===== 构建四步路径 · 页码 08 ===== -->
+  <!-- ===== 第1页：构建四步路径 ===== -->
   <section class="a4-page flex flex-col justify-center" style="background: var(--surface-alt);">
     <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">第6章 内控框架构建路径</h2>
     <p class="text-base mb-6 max-w-3xl leading-relaxed" style="color: var(--text-muted);">
       以业务流程为主线识别控制环节，以 IVS 500 五大主线校验覆盖完整性，
       最终归纳为层级清晰、可落地执行的一二级内控模块。
     </p>
-
     <div>
-      <div class="process-item">
+      <div v-for="(s, i) in buildSteps" :key="i" class="process-item">
         <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-9 h-9 text-sm font-bold" style="background:var(--primary-500);color:#fff;">1</span>
-          <h3>以业务流程识别控制环节</h3>
+          <span class="inline-flex items-center justify-center rounded-full w-9 h-9 text-sm font-bold" style="background:var(--primary-500);color:#fff;">{{ i + 1 }}</span>
+          <h3>{{ s.title }}</h3>
         </div>
-        <p>按照估值作业的先后顺序——边界确定、数据获取、方法模型、结果生成、复核制衡、异常处理、披露反馈、文档留痕——逐一识别每个环节中的关键控制点，确保控制设计贴合实际业务运行链条，而非架空于流程之上。</p>
-      </div>
-      <div class="process-item">
-        <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-9 h-9 text-sm font-bold" style="background:var(--primary-500);color:#fff;">2</span>
-          <h3>以 IVS 500 校验覆盖完整性</h3>
-        </div>
-        <p>以数据与输入、估值模型、质量控制、复核与挑战、估值控制框架五大主线进行交叉校验，逐一比对准则条款与流程环节，避免仅按流程拆分导致关键准则要求遗漏，确保"准则有落地、流程有准则"。</p>
-      </div>
-      <div class="process-item">
-        <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-9 h-9 text-sm font-bold" style="background:var(--primary-500);color:#fff;">3</span>
-          <h3>归纳形成一级控制模块</h3>
-        </div>
-        <p>将流程环节和准则主线归并为 A-E 五个一级控制模块：治理基础（A）、数据管理（B）、方法模型（C）、质量控制（D）、持续改进（E），层级清晰、职责明确、便于分块落地执行。</p>
-      </div>
-      <div class="process-item">
-        <div class="flex items-center gap-3 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-9 h-9 text-sm font-bold" style="background:var(--primary-500);color:#fff;">4</span>
-          <h3>拆解形成 13 项二级控制清单</h3>
-        </div>
-        <p>在一级模块下进一步细化为 13 项可执行、可留痕、可复核的二级控制点，每项明确建设建议、应形成的制度记录和主要监管/准则依据，便于后续测试与 ISAE 3402 鉴证。</p>
+        <p>{{ s.desc }}</p>
       </div>
     </div>
-
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">08</div>
   </section>
 
-  <!-- ===== 八阶段业务流程 · 页码 09 ===== -->
+  <!-- ===== 第2页：八阶段业务流程 ===== -->
   <section class="a4-page flex flex-col" style="background: var(--surface-alt);">
     <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">第6章 估值业务八阶段流程</h2>
     <p class="text-sm mb-5 max-w-3xl leading-relaxed" style="color: var(--text-muted);">
       从估值边界确定到文档留痕与持续改进，八个阶段覆盖估值作业全生命周期。
       每个阶段对应 IVS 500 的一条或多条主线，确保控制设计的准则覆盖完整。
     </p>
-
     <table class="rounded-xl overflow-hidden">
       <thead>
         <tr><th style="width:6%;">阶段</th><th style="width:17%;">环节</th><th style="width:45%;">核心工作</th><th style="width:32%;">对应 IVS 500 主线</th></tr>
       </thead>
       <tbody>
-        <tr><td>01</td><td>估值边界确定</td><td>明确估值对象、使用目的、价值基础和适用口径，确保后续估值工作有清晰边界</td><td>估值控制框架</td></tr>
-        <tr><td>02</td><td>数据获取与筛选</td><td>获取、清洗、筛选并验证估值数据和市场输入，形成可支持估值判断的数据基础</td><td>数据与输入</td></tr>
-        <tr><td>03</td><td>方法模型与参数判断</td><td>选择估值方法，运行估值模型，确定关键参数、假设和必要的专业判断</td><td>估值模型</td></tr>
-        <tr><td>04</td><td>估值结果生成与质量控制</td><td>形成估值结果，并通过质量控制识别偏差、错误、异常波动和可能的模型失效</td><td>质量控制</td></tr>
-        <tr><td>05</td><td>复核与独立制衡</td><td>对关键数据、模型、参数、专业判断和估值结果进行独立复核与实质性挑战</td><td>复核与挑战</td></tr>
-        <tr><td>06</td><td>特殊异常处理</td><td>处理复杂产品、低流动性资产、违约事件和极端市场情形下的估值判断与调整</td><td>质量控制 / 估值控制框架</td></tr>
-        <tr><td>07</td><td>披露反馈</td><td>向用户、审计师、监管或自律组织提供估值说明，并对反馈、投诉和异议进行处理</td><td>估值控制框架</td></tr>
-        <tr><td>08</td><td>文档留痕与持续改进</td><td>保存估值全过程证据，定期复盘数据、模型、控制和制度，推动估值体系持续优化</td><td>估值控制框架</td></tr>
+        <tr v-for="f in flowStages" :key="f.id">
+          <td>{{ f.id }}</td><td>{{ f.stage }}</td><td>{{ f.work }}</td><td>{{ f.ivsLine }}</td>
+        </tr>
       </tbody>
     </table>
-
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">09</div>
   </section>
 
-  <!-- ===== IVS 500 五大主线 · 页码 10 ===== -->
+  <!-- ===== 第3页：IVS 500 五大主线 ===== -->
   <section class="a4-page flex flex-col justify-center" style="background: var(--surface-alt);">
     <h2 class="text-3xl font-bold mb-1" style="color: var(--text);">第6章 IVS 500 五大主线</h2>
     <p class="text-sm mb-5 max-w-3xl leading-relaxed" style="color: var(--text-muted);">
       以 IVS 500 五大主线校验估值内控覆盖范围，与 IVS 通用准则衔接，确保数据、模型、质控、复核挑战和控制框架全覆盖。
     </p>
-
     <div>
-      <div class="process-item-sm">
+      <div v-for="(m, i) in ivsLines" :key="i" class="process-item-sm">
         <div class="flex items-center gap-2 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">1</span>
-          <h3>数据与输入 Data and Inputs</h3>
-          <span class="text-xs" style="color:var(--text-light);">IVS 104、500</span>
+          <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">{{ i + 1 }}</span>
+          <h3>{{ m.title }}</h3>
+          <span class="text-xs" style="color:var(--text-light);">{{ m.refs }}</span>
         </div>
-        <p>关注数据来源、可观察性、及时性、输入选择、代理数据使用和输入文档，确保估值输入可靠、适当、及时、可追溯。</p>
-      </div>
-      <div class="process-item-sm">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">2</span>
-          <h3>估值模型 Valuation Models</h3>
-          <span class="text-xs" style="color:var(--text-light);">IVS 103、105、500</span>
-        </div>
-        <p>关注方法选择、模型适用性、模型测试、市场校准、模型文档和外部模型评估，确保方法和模型适合金融工具特征。</p>
-      </div>
-      <div class="process-item-sm">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">3</span>
-          <h3>质量控制 Quality Control</h3>
-          <span class="text-xs" style="color:var(--text-light);">IVS 100、500</span>
-        </div>
-        <p>关注质控设计、执行以及与估值风险、复杂度、重要性和频率的匹配，及时识别异常、错误和偏差。</p>
-      </div>
-      <div class="process-item-sm">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">4</span>
-          <h3>复核与挑战 Review and Challenge</h3>
-          <span class="text-xs" style="color:var(--text-light);">IVS 500</span>
-        </div>
-        <p>关注对关键数据、模型、参数和专业判断进行独立、专业、实质性的复核与挑战，形成对估值结论的独立制衡。</p>
-      </div>
-      <div class="process-item-sm">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="inline-flex items-center justify-center rounded-full w-7 h-7 text-xs font-bold" style="background:var(--primary-500);color:#fff;">5</span>
-          <h3>估值控制框架 Valuation Control Framework</h3>
-          <span class="text-xs" style="color:var(--text-light);">IVS 100、106、500</span>
-        </div>
-        <p>关注职责、流程、数据、模型、质控、升级、披露、文档和持续改进的总体治理框架，支撑估值体系稳定运行。</p>
+        <p>{{ m.desc }}</p>
       </div>
     </div>
-
     <div class="mt-5 p-3 rounded-xl" style="background: var(--primary-50); border-left: 4px solid var(--primary-500);">
-      <p class="text-xs leading-relaxed" style="color: var(--primary-700);">
-        <strong>设计逻辑：</strong>业务流程确保控制"贴业务"，IVS 500 五大主线确保控制"合准则"——
-        两者交叉校验后归纳为 A-E 五大控制模块，再拆解为 13 项可执行的二级内控清单。
-      </p>
+      <p class="text-xs leading-relaxed" style="color: var(--primary-700);" v-html="designLogic"></p>
     </div>
-
-    <div class="absolute bottom-[10mm] left-[22mm] text-xs" style="color:var(--text-light);">金融工具估值内控建设与鉴证 · 培训材料</div>
     <div class="absolute bottom-[10mm] right-[22mm] text-xs" style="color:var(--text-light);">10</div>
   </section>
-
 </div>
 
 <script>
-  const { createApp } = Vue;
-  createApp({}).mount('#app');
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      buildSteps: [
+        { title: '以业务流程识别控制环节', desc: '按照估值作业的先后顺序——边界确定、数据获取、方法模型、结果生成、复核制衡、异常处理、披露反馈、文档留痕——逐一识别每个环节中的关键控制点，确保控制设计贴合实际业务运行链条，而非架空于流程之上。' },
+        { title: '以 IVS 500 校验覆盖完整性', desc: '以数据与输入、估值模型、质量控制、复核与挑战、估值控制框架五大主线进行交叉校验，逐一比对准则条款与流程环节，避免仅按流程拆分导致关键准则要求遗漏，确保"准则有落地、流程有准则"。' },
+        { title: '归纳形成一级控制模块', desc: '将流程环节和准则主线归并为 A-E 五个一级控制模块：治理基础（A）、数据管理（B）、方法模型（C）、质量控制（D）、持续改进（E），层级清晰、职责明确、便于分块落地执行。' },
+        { title: '拆解形成 13 项二级控制清单', desc: '在一级模块下进一步细化为 13 项可执行、可留痕、可复核的二级控制点，每项明确建设建议、应形成的制度记录和主要监管/准则依据，便于后续测试与 ISAE 3402 鉴证。' },
+      ],
+      flowStages: [
+        { id: '01', stage: '估值边界确定', work: '明确估值对象、使用目的、价值基础和适用口径，确保后续估值工作有清晰边界', ivsLine: '估值控制框架' },
+        { id: '02', stage: '数据获取与筛选', work: '获取、清洗、筛选并验证估值数据和市场输入，形成可支持估值判断的数据基础', ivsLine: '数据与输入' },
+        { id: '03', stage: '方法模型与参数判断', work: '选择估值方法，运行估值模型，确定关键参数、假设和必要的专业判断', ivsLine: '估值模型' },
+        { id: '04', stage: '估值结果生成与质量控制', work: '形成估值结果，并通过质量控制识别偏差、错误、异常波动和可能的模型失效', ivsLine: '质量控制' },
+        { id: '05', stage: '复核与独立制衡', work: '对关键数据、模型、参数、专业判断和估值结果进行独立复核与实质性挑战', ivsLine: '复核与挑战' },
+        { id: '06', stage: '特殊异常处理', work: '处理复杂产品、低流动性资产、违约事件和极端市场情形下的估值判断与调整', ivsLine: '质量控制 / 估值控制框架' },
+        { id: '07', stage: '披露反馈', work: '向用户、审计师、监管或自律组织提供估值说明，并对反馈、投诉和异议进行处理', ivsLine: '估值控制框架' },
+        { id: '08', stage: '文档留痕与持续改进', work: '保存估值全过程证据，定期复盘数据、模型、控制和制度，推动估值体系持续优化', ivsLine: '估值控制框架' },
+      ],
+      ivsLines: [
+        { title: '数据与输入 Data and Inputs', refs: 'IVS 104、500', desc: '关注数据来源、可观察性、及时性、输入选择、代理数据使用和输入文档，确保估值输入可靠、适当、及时、可追溯。' },
+        { title: '估值模型 Valuation Models', refs: 'IVS 103、105、500', desc: '关注方法选择、模型适用性、模型测试、市场校准、模型文档和外部模型评估，确保方法和模型适合金融工具特征。' },
+        { title: '质量控制 Quality Control', refs: 'IVS 100、500', desc: '关注质控设计、执行以及与估值风险、复杂度、重要性和频率的匹配，及时识别异常、错误和偏差。' },
+        { title: '复核与挑战 Review and Challenge', refs: 'IVS 500', desc: '关注对关键数据、模型、参数和专业判断进行独立、专业、实质性的复核与挑战，形成对估值结论的独立制衡。' },
+        { title: '估值控制框架 Valuation Control Framework', refs: 'IVS 100、106、500', desc: '关注职责、流程、数据、模型、质控、升级、披露、文档和持续改进的总体治理框架，支撑估值体系稳定运行。' },
+      ],
+      designLogic: '<strong>设计逻辑：</strong>业务流程确保控制"贴业务"，IVS 500 五大主线确保控制"合准则"——两者交叉校验后归纳为 A-E 五大控制模块，再拆解为 13 项可执行的二级内控清单。',
+    };
+  }
+}).mount('#app');
 </script>
 
 </body>
